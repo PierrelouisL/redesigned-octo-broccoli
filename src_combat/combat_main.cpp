@@ -87,7 +87,7 @@ int aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi)
 	}
 
 	// On fait clignotter le texte!
-	blink(&A, &blinking_way);;
+	blink(&A, &blinking_way);;;
 
 #ifdef DEBUG
 	std::cout << " last_pos= " << (int)last_pos << " A= " << (int)A << " last_pressed= " << (int)last_pressed << std::endl;
