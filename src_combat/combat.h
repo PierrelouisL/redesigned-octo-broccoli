@@ -10,6 +10,7 @@
 
 #define VICTOIRE 1
 #define DEFAITE 2
+#define TEMPO_MESS 3
 
 // Classe de test pour permettre de tester les combats!
 class classetest
@@ -44,7 +45,8 @@ typedef enum
 ////// Prototype fonctions /////
 void aff_background(sf::RenderWindow *window);
 
-void aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi);
+// Retourne -1 si un des personnage est mort donc on quitte, 0 sinon
+int aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi);
 void aff_hp(sf::RenderWindow *window);
 
 int handleEvents(sf::Event event);

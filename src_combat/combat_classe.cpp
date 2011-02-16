@@ -14,10 +14,10 @@ classetest::classetest(){
     dmg_atq[2] = 100;
     dmg_atq[3] = -1;
 
-    atq_desc[0] = "Le souleve avec une puissance phenomenale de 50PV";
-    atq_desc[1] = "Vous pleurez comme une victime ce qui fait perdre 2 PV a l'adversaire par compassion";
-    atq_desc[2] = "HOW DAARE YOU?!";
-    atq_desc[3] = "Vous fuiez comme un lâche";
+    atq_desc[0] = sf::String("Le souleve avec une puissance phenomenale de 50PV");
+    atq_desc[1] = sf::String("Vous pleurez comme une victime ce qui fait perdre 2 PV a l'adversaire par compassion");
+    atq_desc[2] = sf::String("HOW DAARE YOU?!");
+    atq_desc[3] = sf::String("Vous fuiez comme un lâche");
 }
 
 sf::String classetest::get_atq(int nb){
