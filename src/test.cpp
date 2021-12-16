@@ -15,6 +15,7 @@ public:
         m_vertices.resize(width * height * 4);
 
         // on remplit le tableau de vertex, avec un quad par tuile
+        // Width et Height -> largeur et hauteur de l'image finale!
         for (unsigned int i = 0; i < width; ++i)
             for (unsigned int j = 0; j < height; ++j)
             {
@@ -65,10 +66,10 @@ private:
 int main()
 {
     // on crée la fenêtre
-    sf::RenderWindow window(sf::VideoMode(512, 256), "Tilemap");
+    sf::RenderWindow window(sf::VideoMode(1000, 500), "Tilemap");
 
     // on définit le niveau à l'aide de numéro de tuiles
-    const int level[] =
+    /*const int level[] =
     {
         0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
@@ -78,11 +79,19 @@ int main()
         0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0,
         2, 0, 1, 0, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1,
         0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1,
+    };*/
+    const int level[]=
+    {
+        0, 1, 2, 3, 4, 5, 25, 26, 27, 28, 29, 30,
+        50, 51, 52, 53, 54, 55, 75, 76, 77, 78, 79,
+        80, 100, 101, 102, 103, 104, 105, 125, 126, 127,
+        128, 129, 130, 150, 151, 152, 153, 154, 155 
     };
 
     // on crée la tilemap avec le niveau précédemment défini
     TileMap map;
-    if (!map.load("tileset.png", sf::Vector2u(32, 32), level, 16, 8))
+    if (!map.load("images/tileset_nouv64.png", sf::Vector2u(64, 64), level, 6, 7))
+    //if (!map.load("tileset.png", sf::Vector2u(32, 32), level, 16, 8))
         return -1;
 
     // on fait tourner la boucle principale
