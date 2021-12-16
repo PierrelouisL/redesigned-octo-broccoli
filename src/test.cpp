@@ -1,4 +1,19 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
+
+/*
+ *  Nous aurons une map de 944 pixels de large contre 576 pixels de hauteur en 16x16, nous affichons
+ *  en 64x64(tile map déjà faite comme ça). Donc cela nous fait 59 blocs de large et 36 blocks de hauteur.
+ *  Il y a donc une map de 59*64=3776 pixels de large et 36*64=2304 pixels de hauteur. Tous ces pixels ne seront 
+ *  cependant pas affichés car la fenetre n'affichera que 3 immeubles de large et 1 immeuble + une route de hauteur.
+ *  Cela fait donc une fenêtre de 3*6*64=1152 pixels de large et (7+4)*64=704 pixels de hauteur.
+ *  Chaque case de 64*64 correspond à une classe définie: Immeuble, Route, voiture, Décor...
+ *  Un immeuble n'est pas un décor (comme la route par exemple) car on peut interagir avec lui, pour entrer chez les boss.
+ *  
+ * 
+ * 
+ *             
+ */
 
 class TileMap : public sf::Drawable, public sf::Transformable
 {
@@ -66,20 +81,9 @@ private:
 int main()
 {
     // on crée la fenêtre
-    sf::RenderWindow window(sf::VideoMode(1000, 500), "Tilemap");
+    sf::RenderWindow window(sf::VideoMode(1152, 704), "EcoBehave");
 
     // on définit le niveau à l'aide de numéro de tuiles
-    /*const int level[] =
-    {
-        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-        1, 1, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
-        0, 1, 0, 0, 2, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 0,
-        0, 1, 1, 0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2, 0, 0,
-        0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0,
-        2, 0, 1, 0, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1,
-        0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1,
-    };*/
     const int level[]=
     {
         0, 1, 2, 3, 4, 5, 25, 26, 27, 28, 29, 30,
@@ -90,8 +94,9 @@ int main()
 
     // on crée la tilemap avec le niveau précédemment défini
     TileMap map;
+    sf::View view = window.getDefaultView();
+    window.setView(view);
     if (!map.load("images/tileset_nouv64.png", sf::Vector2u(64, 64), level, 6, 7))
-    //if (!map.load("tileset.png", sf::Vector2u(32, 32), level, 16, 8))
         return -1;
 
     // on fait tourner la boucle principale
@@ -103,8 +108,31 @@ int main()
         {
             if(event.type == sf::Event::Closed)
                 window.close();
+            if(event.key.code == sf::Keyboard::Left){
+                // left key is pressed: move our character
+                view.move(10.f, 0.f);
+                window.setView(view);
+                std::cout << "Left" << std::endl; 
+            }
+            if(event.key.code == sf::Keyboard::Right){
+                // left key is pressed: move our character
+                view.move(-10.f, 0.f);
+                window.setView(view);
+                std::cout << "Right" << std::endl; 
+            }
+            if(event.key.code == sf::Keyboard::Up){
+                // left key is pressed: move our character
+                view.move(0.f, 10.f);
+                window.setView(view);
+                std::cout << "Up" << std::endl; 
+            }
+            if(event.key.code == sf::Keyboard::Down){
+                // left key is pressed: move our character
+                view.move(0.f, -10.f);
+                window.setView(view);
+                std::cout << "Down" << std::endl; 
+            }
         }
-
         // on dessine le niveau
         window.clear();
         window.draw(map);
