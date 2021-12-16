@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <vector>
 
 /*
  *  Nous aurons une map de 944 pixels de large contre 576 pixels de hauteur en 16x16, nous affichons
@@ -9,11 +10,14 @@
  *  Cela fait donc une fenêtre de 3*6*64=1152 pixels de large et (7+4)*64=704 pixels de hauteur.
  *  Chaque case de 64*64 correspond à une classe définie: Immeuble, Route, voiture, Décor...
  *  Un immeuble n'est pas un décor (comme la route par exemple) car on peut interagir avec lui, pour entrer chez les boss.
- *  
- * 
- * 
+ *  Nous aurons un vecteur géant 2D qui nous servira de map, permettant de situer n'importe quel élément et accéder directement
+ *  aux fonctions de sa classe, l'affichage sera géré par les classes (constructeurs), collisions de même. 
+ *  Pour cela nous aurons une classe mère, la classe Map qui servira de mère pour toutes les autres classes et ainsi créer un
+ *  vecteur de la classe "Map". 
  *             
  */
+
+
 
 class TileMap : public sf::Drawable, public sf::Transformable
 {
@@ -77,6 +81,8 @@ private:
     sf::VertexArray m_vertices;
     sf::Texture m_tileset;
 };
+
+std::vector<std::vector<TileMap>> MainVect;
 
 int main()
 {
