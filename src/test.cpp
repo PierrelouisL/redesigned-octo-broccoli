@@ -19,7 +19,7 @@
 
 
 
-class TileMap : public sf::Drawable, public sf::Transformable
+class TileMap : public sf::Drawable, public sf::Transformable, public sf::Clock
 {
 public:
 
@@ -105,40 +105,65 @@ int main()
     if (!map.load("images/tileset_nouv64.png", sf::Vector2u(64, 64), level, 6, 7))
         return -1;
 
+
+    // Flags for key pressed
+    bool upFlag    = false;
+    bool downFlag  = false;
+    bool leftFlag  = false;
+    bool rightFlag = false;
+
     // on fait tourner la boucle principale
     while (window.isOpen())
     {
         // on gère les évènements
         sf::Event event;
+
         while (window.pollEvent(event))
         {
-            if(event.type == sf::Event::Closed)
+            if(event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape){
                 window.close();
-            if(event.key.code == sf::Keyboard::Left){
-                // left key is pressed: move our character
-                view.move(10.f, 0.f);
-                window.setView(view);
-                std::cout << "Left" << std::endl; 
             }
-            if(event.key.code == sf::Keyboard::Right){
-                // left key is pressed: move our character
-                view.move(-10.f, 0.f);
-                window.setView(view);
-                std::cout << "Right" << std::endl; 
+            
+            // Si on appuit sur une touche
+            if (event.type == sf::Event::KeyPressed){
+                switch (event.key.code){
+                    case sf::Keyboard::Up :     upFlag=true; break;
+                    case sf::Keyboard::Down:    downFlag=true; break;
+                    case sf::Keyboard::Left:    leftFlag=true; break;
+                    case sf::Keyboard::Right:   rightFlag=true; break;
+                    default : break;
+                }
             }
-            if(event.key.code == sf::Keyboard::Up){
-                // left key is pressed: move our character
-                view.move(0.f, 10.f);
-                window.setView(view);
-                std::cout << "Up" << std::endl; 
+
+            // Si on relache la touche
+            if (event.type == sf::Event::KeyReleased){
+                switch (event.key.code){
+                // Process the up, down, left and right keys
+                case sf::Keyboard::Up :     upFlag=false; break;
+                case sf::Keyboard::Down:    downFlag=false; break;
+                case sf::Keyboard::Left:    leftFlag=false; break;
+                case sf::Keyboard::Right:   rightFlag=false; break;
+                default : break;
+                }
             }
-            if(event.key.code == sf::Keyboard::Down){
-                // left key is pressed: move our character
-                view.move(0.f, -10.f);
-                window.setView(view);
-                std::cout << "Down" << std::endl; 
-            }
+            
         }
+
+        if(leftFlag){  // left key is pressed: move our character
+            view.move(0.5f, 0.f);
+        }
+        if(rightFlag){  // right key is pressed: move our character
+            view.move(-0.5f, 0.f);
+        }
+        if(upFlag){     // up key is pressed: move our character
+            view.move(0.f, 0.5f);
+        }
+        if(downFlag){   // down key is pressed: move our character
+            view.move(0.f, -0.5f);              
+        }
+
+        window.setView(view);
+
         // on dessine le niveau
         window.clear();
         window.draw(map);
