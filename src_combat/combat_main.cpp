@@ -91,8 +91,11 @@ void aff_combat(sf::RenderWindow *window)
 	window->display();
 }
 
-void handleEvents(sf::Event event)
+int handleEvents(sf::Event event)
 {
+	if (event.type == sf::Event::Closed){
+		return 1;
+	}
 	if (event.type == sf::Event::KeyPressed)
 	{
 		switch (event.key.code)
@@ -112,6 +115,8 @@ void handleEvents(sf::Event event)
 		case sf::Keyboard::Return:
 			returnFlag = true;
 			break;
+		case sf::Keyboard::Escape:
+			return 1;
 		default:
 			break;
 		}
@@ -147,6 +152,7 @@ void handleEvents(sf::Event event)
 	{
 		std::cout << "x=" << event.mouseButton.x << "y=" << event.mouseButton.y << std::endl;
 	}*/
+	return 0;
 }
 
 int main(int argc, char *argv[])
@@ -172,31 +178,21 @@ int main(int argc, char *argv[])
 	// Allocation HP2
 	sf::Sprite *Hp2_Sprite = new sf::Sprite;
 	Hp_Sprite->setTexture(*Hp);
-	bool MABITE = 0;
+
+	// Allocations events
+	sf::Event *event = new sf::Event;
+
 	while (1)
 	{
-		if(!window->isOpen() && MABITE){
-			MABITE  = false;
-			// Si la fenêtre se ferme pour aucune raison encore on en crée une autre :c
-			std::cout << "creation nouvelle fenetre" << std::endl;
-			//delete window;
-			window = new sf::RenderWindow;
-			window->create(sf::VideoMode(1152, 704),
-								"Petage de gueule en regle des pollueurs");
-			
-		}
-		MABITE = true;
 		// on gère les évènements
-		sf::Event event;
-
-		while (window->pollEvent(event))
+		while (window->pollEvent(*event))
 		{
-			if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
+			if (handleEvents(*event))
 			{
 				window->close();
+				std::cout << "goodbye!" << std::endl;
 				return 0;
 			}
-			handleEvents(event);
 		}
 		// ScreenMutex.unlock();
 		window->clear();

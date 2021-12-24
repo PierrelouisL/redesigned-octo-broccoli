@@ -43,7 +43,7 @@ void aff_background(sf::RenderWindow *window);
 void aff_combat(sf::RenderWindow *window);
 void aff_hp(sf::RenderWindow *window);
 
-void handleEvents(sf::Event event);
+int handleEvents(sf::Event event);
 
 void blink(sf::Uint8 *A, char *blinking_way);
 

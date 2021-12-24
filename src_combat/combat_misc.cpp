@@ -64,7 +64,9 @@ void blink(sf::Uint8 *A, char *blinking_way)
 
 void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8 G, sf::Uint8 B, char last_pressed)
 {
+	#ifdef DEBUG
 	std::cout << (int)flag << "=f" << std::endl;
+	#endif
 	if (flag == UP)
 	{ // Up
 		Atq[*last_pos].setFillColor(sf::Color(R, G, B, 255));
