@@ -12,14 +12,14 @@ bool actionFlag = false; // Si une action est en cours on ne gere plus les evene
 
 sf::Font NiceFont;
 
-void aff_combat(sf::RenderWindow *window)
+void aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi)
 {
 	static sf::Uint8 R = 255, G = 0, B = 0, A = 250;
 	static char last_pressed = UP, blinking_way = 1;
 	static int last_pos = 0;
 	static sf::RectangleShape Battle_outline(sf::Vector2f(1142.f, 200.f));
-	classetest test;
 	static sf::Text Atq[4];
+	srand(time(0));
 	if (R == 255)
 	{
 		R = 254;
@@ -46,13 +46,13 @@ void aff_combat(sf::RenderWindow *window)
 		if (i != last_pos)
 		{
 			Atq[i].setFont(NiceFont);
-			Atq[i].setString(test.get_atq(i));
+			Atq[i].setString(joueur->get_atq(i));
 			Atq[i].setCharacterSize(40);
 			Atq[i].setFillColor(sf::Color(R, G, B, 255));
 			window->draw(Atq[i]);
 		}
 	}
-	if (!actionFlag)
+	if (/*!actionFlag*/ 1)
 	{
 		if (upFlag)
 		{
@@ -72,8 +72,13 @@ void aff_combat(sf::RenderWindow *window)
 		}
 		else if (returnFlag)
 		{
-			flagHandler(RETURN_, &last_pos, Atq, R, G, B, last_pressed);
-			// actionFlag = 1;
+			if(!actionFlag){
+				actionFlag = 1;
+				ennemi->subit_atq(joueur->get_dmg_atq(last_pos));
+				std::cout << ennemi->get_PV() << " " << std::endl;
+				joueur->subit_atq(ennemi->get_dmg_atq((int)rand()%4));
+				std::cout << joueur->get_PV() << std::endl;
+			}
 		}
 	}
 
@@ -84,11 +89,14 @@ void aff_combat(sf::RenderWindow *window)
 	std::cout << " last_pos= " << (int)last_pos << " A= " << (int)A << " last_pressed= " << (int)last_pressed << std::endl;
 #endif
 	Atq[last_pos].setFont(NiceFont);
-	Atq[last_pos].setString(test.get_atq(last_pos));
+	Atq[last_pos].setString(joueur->get_atq(last_pos));
 	Atq[last_pos].setCharacterSize(40);
 	Atq[last_pos].setFillColor(sf::Color(R, G, B, A));
+	window->draw(aff_hp(window, *joueur, true));
+	window->draw(aff_hp(window, *ennemi, false));
+	//window->draw(aff_hp(window, *ennemi, false));
 	window->draw(Atq[last_pos]);
-	window->display();
+	//window->display();
 }
 
 int handleEvents(sf::Event event)
@@ -142,6 +150,7 @@ int handleEvents(sf::Event event)
 			break;
 		case sf::Keyboard::Return:
 			returnFlag = false;
+			actionFlag = false;
 			break;
 		default:
 			break;
@@ -174,13 +183,24 @@ int main(int argc, char *argv[])
 	Hp->loadFromFile("images/hpbar.png");
 	sf::Sprite *Hp_Sprite = new sf::Sprite;
 	Hp_Sprite->setTexture(*Hp);
+	Hp_Sprite->setPosition(sf::Vector2f(50.f, 0.f));
 
 	// Allocation HP2
 	sf::Sprite *Hp2_Sprite = new sf::Sprite;
-	Hp_Sprite->setTexture(*Hp);
+	Hp2_Sprite->setTexture(*Hp);
+	Hp2_Sprite->setPosition(sf::Vector2f(840.f, 0.f));
 
 	// Allocations events
 	sf::Event *event = new sf::Event;
+
+	// Creation des classes joueur et ennemi
+	classetest joueur, ennemi;
+
+	sf::Text nom_joueur(sf::String("Joueur"), NiceFont, 20);
+	nom_joueur.setPosition(sf::Vector2f(120.f, 10.f));
+
+	sf::Text Pollueur(sf::String("Pollueur"), NiceFont, 20);
+	nom_joueur.setPosition(sf::Vector2f(120.f, 10.f));
 
 	while (1)
 	{
@@ -195,15 +215,21 @@ int main(int argc, char *argv[])
 			}
 		}
 		// ScreenMutex.unlock();
+		// TODO: Gérer tout ça dans une fonction plus tard...
 		window->clear();
 		window->draw(*Background_sprite);
+		aff_combat(window, &joueur, &ennemi);
 		window->draw(*Hp_Sprite);
-		aff_combat(window);
+		window->draw(*Hp2_Sprite);
+		window->draw(nom_joueur);
+		window->draw(Pollueur);
+		window->display();
 	}
 
 	free(Background);
 	free(Background_sprite);
 	free(Hp);
 	free(Hp_Sprite);
+	free(Hp2_Sprite);
 	return 0;
 }

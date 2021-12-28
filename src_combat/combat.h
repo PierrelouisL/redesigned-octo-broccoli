@@ -5,6 +5,8 @@
 #include <functional> //std::bind
 #include <iostream>
 #include <vector>
+#include <time.h>
+#include <stdlib.h>
 
 #define VICTOIRE 1
 #define DEFAITE 2
@@ -20,9 +22,11 @@ public:
 	void subit_atq(int dmg);
 	sf::String get_Desc_Atq(int nb);
 	int get_dmg_atq(int nb);
+	int get_pourcent_PV();
 
 private:
 	sf::String atq[4];		// Nom de l'attaque
+	int PV_base;	 			// PV initiaux pour pourcent
 	int PV;						// Points de vie
 	int dmg_atq[4];			// degats de chaque attaque
 	sf::String atq_desc[4]; // Description quand on lance l'attaque
@@ -40,7 +44,7 @@ typedef enum
 ////// Prototype fonctions /////
 void aff_background(sf::RenderWindow *window);
 
-void aff_combat(sf::RenderWindow *window);
+void aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi);
 void aff_hp(sf::RenderWindow *window);
 
 int handleEvents(sf::Event event);
@@ -48,3 +52,6 @@ int handleEvents(sf::Event event);
 void blink(sf::Uint8 *A, char *blinking_way);
 
 void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8 G, sf::Uint8 B, char last_pressed);
+
+// Actualise la barre d'hp du joueur ou de l'ennemi who = false pour ennemi who = true pour joueur
+sf::RectangleShape aff_hp(sf::RenderWindow* window, classetest perso, bool who);

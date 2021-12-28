@@ -1,5 +1,6 @@
 #include "combat.h"
 
+
 void aff_background(sf::RenderWindow *window)
 {
 	sf::Texture backgroundTexture;
@@ -10,18 +11,19 @@ void aff_background(sf::RenderWindow *window)
 	window->draw(background);
 }
 
+/*
 void aff_hp(sf::RenderWindow *window)
 {
 	// Affichage de la barre d'hp du personnage
 	sf::Texture hppersoTexture;
 	hppersoTexture.loadFromFile("images/hpbar.png");
 	sf::Sprite hpperso(hppersoTexture);
-	// sf::Vector2u Position(/* x= */ 500, /* y= */ 500);
+	// sf::Vector2u Position() 500, 500);
 	// hpperso.setOrigin(Position.x, Position.y);
 	window->draw(hpperso);
 
 	// Affichage de la barre d'hp de l'ennemi
-}
+}*/
 
 void aff_background_hp(sf::RenderWindow *window, sf::Sprite *hp1, sf::Sprite *hp2, sf::Sprite *Background)
 {
@@ -30,11 +32,11 @@ void aff_background_hp(sf::RenderWindow *window, sf::Sprite *hp1, sf::Sprite *hp
 	//hp1->setOrigin();
 }
 
-void StartCombatMsgThread(sf::RenderWindow *window)
+/*void StartCombatMsgThread(sf::RenderWindow *window)
 {
 	sf::Thread thread(std::bind(&aff_combat, window));
 	thread.launch();
-}
+}*/
 
 void blink(sf::Uint8 *A, char *blinking_way)
 {
@@ -143,4 +145,26 @@ void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8
 	{ // Return
 	  // Nous venons d'appuyer sur enter donc nous devons gérer une attaque!
 	}
+}
+
+// Actualise la barre d'hp du joueur ou de l'ennemi who = false pour ennemi who = true pour joueur
+sf::RectangleShape aff_hp(sf::RenderWindow* window, classetest perso, bool who){
+	sf::RectangleShape barre_hp(sf::Vector2f(172.f,22.f)); // Ce qui sera en vert pour afficher ce qu'il reste d'hp au perso
+	int PV = perso.get_PV();
+	float size = ((float)perso.get_pourcent_PV()/100)*172;
+	if(size < 0){
+		size = 0;
+	}
+	if(who){
+		// who = true donc joueur
+		barre_hp.setFillColor(sf::Color(0,255,0));
+		barre_hp.setPosition(sf::Vector2f(110.f, 32.f));
+		barre_hp.setSize(sf::Vector2f(size, 22.f));
+	}else{
+		// who = false donc ennemi
+		barre_hp.setFillColor(sf::Color(0,255,0));
+		barre_hp.setPosition(sf::Vector2f(900.f, 32.f));
+		barre_hp.setSize(sf::Vector2f(size, 22.f));
+	}
+	return barre_hp;
 }

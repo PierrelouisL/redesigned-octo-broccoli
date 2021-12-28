@@ -7,6 +7,7 @@ classetest::classetest(){
     atq[3] = "Fuir";
 
     PV = 200;
+    PV_base = PV;
 
     dmg_atq[0] = 50;
     dmg_atq[1] = 2;
@@ -33,6 +34,10 @@ int classetest::get_dmg_atq(int nb){
 
 int classetest::get_PV(){
     return PV;
+}
+
+int classetest::get_pourcent_PV(){
+    return 100-(int)(((float)(PV_base-PV)/(float)PV_base)*100);
 }
 
 void classetest::subit_atq(int dmg){
