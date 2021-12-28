@@ -1,6 +1,9 @@
+#include <stdlib.h>
 #include "Window.h"
-#include "Map.h"
 #include "Character.h"
+#include "Map.h"
+
+
 
 /*
  *  Nous aurons une map de 944 pixels de large contre 624 pixels de hauteur en 16x16, nous affichons
@@ -22,23 +25,22 @@ int main(){
 
 	// on crée la fenêtre
     sf::RenderWindow window(sf::VideoMode(1152, 768), "EcoBehave");
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(45);
     window.setVerticalSyncEnabled(true);	
 	sf::View view = window.getDefaultView();
     window.setView(view);
 
     // on crée la TileWindow avec le niveau précédemment défini
     TileMap map("images/Ville_proto1.png", 59, 39);
-    TileCharacter perso("perso_Fleche");
+    TileCharacter perso("perso_debug");
 
     map = map.load_map();
     perso = perso.load_character(Face);
 
-    // Flags for key pressed
-    bool upFlag    = false;
-    bool downFlag  = false;
-    bool leftFlag  = false;
-    bool rightFlag = false;
+    //--
+    view.setCenter(sf::Vector2f(3*64, 36*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
+    perso.init_coord(view);
+    //--
 
     // on gère les évènements   
 	sf::Event event;
@@ -50,58 +52,17 @@ int main(){
             if(event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape){
                 window.close();
             }          
-            // Si on appuit sur une touche
-            if (event.type == sf::Event::KeyPressed){
-                switch (event.key.code){
-                    case sf::Keyboard::Up :     upFlag=true; break;
-                    case sf::Keyboard::Down:    downFlag=true; break;
-                    case sf::Keyboard::Left:    leftFlag=true; break;
-                    case sf::Keyboard::Right:   rightFlag=true; break;
-                    default : break;
-                }
-            }
-
-            // Si on relache la touche
-            if (event.type == sf::Event::KeyReleased){
-                switch (event.key.code){
-	                // Process the up, down, left and right keys
-	                case sf::Keyboard::Up :     upFlag=false; break;
-	                case sf::Keyboard::Down:    downFlag=false; break;
-	                case sf::Keyboard::Left:    leftFlag=false; break;
-	                case sf::Keyboard::Right:   rightFlag=false; break;
-	                default : break;
-                }
-            }
-            
+            perso.checkKey(event);  // Check status of movement key
         }
 
-        if(leftFlag){  // left key is pressed: move our character
-            view.move(-3.f, 0.f);
-            perso = perso.load_character(Left);
-        }
-        else if(rightFlag){  // right key is pressed: move our character
-            view.move(3.f, 0.f);
-            perso = perso.load_character(Right);
-        }
-        else if(upFlag){     // up key is pressed: move our character
-            view.move(0.f, -3.f);
-            perso = perso.load_character(Back);
-        }
-        else if(downFlag){   // down key is pressed: move our character
-            view.move(0.f, 3.f);
-            perso = perso.load_character(Face);              
-        }
-
-
-        window.setView(view);
+        perso.move(view);           // Move character
 
         // on dessine le niveau
+        window.setView(view);
         window.clear();
         window.draw(map);
-
-        sf::Vector2f center = view.getCenter();
-        sf::Vector2f offsetCenter(-64, -64);
-	    perso.setPosition(center+offsetCenter);
+   
+        perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
         window.draw(perso);
 
         window.display();
