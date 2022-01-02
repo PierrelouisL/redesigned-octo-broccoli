@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "Character.h"
 #include "Map.h"
+#include "Element.h"
 
 
 
@@ -30,12 +31,13 @@ int main(){
 	sf::View view = window.getDefaultView();
     window.setView(view);
 
-    // on crée la TileWindow avec le niveau précédemment défini
+    // on crée les objects qu'on va manipuler
     TileMap map("images/Ville_proto1.png", 59, 39);
     TileCharacter perso("perso_debug");
+    TileElement element;
 
     map = map.load_map();
-    perso = perso.load_character(Face);
+    perso.load_character();
 
     //--
     view.setCenter(sf::Vector2f(3*64, 36*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
@@ -49,13 +51,17 @@ int main(){
     {
         while (window.pollEvent(event))
         {
-            if(event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape){
+            if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
+                printf("C'est chao\n");
                 window.close();
-            }          
-            perso.checkKey(event);  // Check status of movement key
+            }
+            
+            perso.actionKey(event, element);         
+            perso.checkKeyMove(event);  // Check status of movement key
         }
 
         perso.move(view);           // Move character
+        //perso.checkFrontCase();
 
         // on dessine le niveau
         window.setView(view);
@@ -64,6 +70,8 @@ int main(){
    
         perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
         window.draw(perso);
+
+        element.load_allElement(window);
 
         window.display();
     }

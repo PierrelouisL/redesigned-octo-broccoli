@@ -12,8 +12,8 @@ TileMap TileMap::load_map(){
     	level[i] = i; 
     }
 
-    if(!map.load( _pathMap , level, _width, _height )){
-    	std::cout << "Erreur lors du chargement de la map" << std::endl;
+    if(!map.load( _path , level, _width, _height )){
+    	std::cout << "Erreur lors du chargement" << std::endl;
     }
 
 	return map;
