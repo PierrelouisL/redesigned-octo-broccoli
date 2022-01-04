@@ -68,10 +68,6 @@ void classetest::aff_fin(sf::RenderWindow* window, int issue_du_match){
     window->draw(Msg_Fin);
 }
 
-void classetest::aff_atq(sf::RenderWindow* win){
-
-}
-
 void classetest::aff_message(sf::RenderWindow* win, int nb_atq){
     static sf::Uint8 R = 255, G = 0, B = 0, A = 250;
     sf::Font NiceFont;

@@ -25,7 +25,6 @@ public:
 	sf::String get_Desc_Atq(int nb);
 	int get_dmg_atq(int nb);
 	int get_pourcent_PV();
-	void aff_atq(sf::RenderWindow* win);
 	void aff_message(sf::RenderWindow* win, int nb_atq);
 	void aff_fin(sf::RenderWindow* window, int issue_du_match);
 

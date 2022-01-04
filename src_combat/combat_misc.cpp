@@ -1,43 +1,5 @@
 #include "combat.h"
 
-
-void aff_background(sf::RenderWindow *window)
-{
-	sf::Texture backgroundTexture;
-	backgroundTexture.loadFromFile("images/bacgroundcombattemp.png");
-	sf::Sprite background(backgroundTexture);
-	// sf::Vector2u size = backgroundTexture.getSize();
-	// background.setOrigin(size.x/2, size.y/2);
-	window->draw(background);
-}
-
-/*
-void aff_hp(sf::RenderWindow *window)
-{
-	// Affichage de la barre d'hp du personnage
-	sf::Texture hppersoTexture;
-	hppersoTexture.loadFromFile("images/hpbar.png");
-	sf::Sprite hpperso(hppersoTexture);
-	// sf::Vector2u Position() 500, 500);
-	// hpperso.setOrigin(Position.x, Position.y);
-	window->draw(hpperso);
-
-	// Affichage de la barre d'hp de l'ennemi
-}*/
-
-void aff_background_hp(sf::RenderWindow *window, sf::Sprite *hp1, sf::Sprite *hp2, sf::Sprite *Background)
-{
-	window->draw(*Background);
-	sf::Vector2f();
-	//hp1->setOrigin();
-}
-
-/*void StartCombatMsgThread(sf::RenderWindow *window)
-{
-	sf::Thread thread(std::bind(&aff_combat, window));
-	thread.launch();
-}*/
-
 void blink(sf::Uint8 *A, char *blinking_way)
 {
 	if (*blinking_way)
