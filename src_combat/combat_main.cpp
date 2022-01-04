@@ -8,7 +8,7 @@ bool downFlag = false;
 bool leftFlag = false;
 bool rightFlag = false;
 bool returnFlag = false;
-bool actionFlag = false; // Si une action est en cours on ne gere plus les evenements!
+char actionFlag = RIEN; // Si une action est en cours on ne gere plus les evenements!
 
 
 sf::Font NiceFont;
@@ -21,7 +21,18 @@ int aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi)
 	static sf::RectangleShape Battle_outline(sf::Vector2f(1142.f, 200.f));
 	static sf::Text Atq[4];
 	static sf::Clock clk;
+	static int last_atq_ennemi; // Permet de stoquer -1 si c'est la premiere fois que l'ennemi atq (donc doit faire des degats) ou alors dire la derniere attaque
 	srand(time(0));
+
+	// On gère ici le temps écoulé depuis l'action pour durer TEMPO_MESS (afficher le message pendant 3s) 
+	if(clk.getElapsedTime().asSeconds() > TEMPO_MESS){
+		if(actionFlag == MES_JOUEUR){
+			clk.restart();
+			actionFlag = MES_ENNEMI;
+		}else if(actionFlag == MES_ENNEMI){
+			actionFlag = RIEN;
+		}
+	}
 	if (R == 255)
 	{
 		R = 254;
@@ -36,13 +47,14 @@ int aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi)
 		Atq[3].setPosition(sf::Vector2f(600.f, 610.f));
 	}
 
+
 #ifdef DEBUG
 	std::cout << "up = " << upFlag << "down = " << downFlag << "right" << rightFlag << "left=" << leftFlag << std::endl;
 #endif
 
 	for (int i = 0; i < 4; i++)
 	{
-		if ((i != last_pos) && !actionFlag)
+		if ((i != last_pos) && actionFlag == RIEN)
 		{
 			Atq[i].setFont(NiceFont);
 			Atq[i].setString(joueur->get_atq(i));
@@ -70,19 +82,11 @@ int aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi)
 	}
 	else if (returnFlag)
 	{
-		if(!actionFlag){
+		if(actionFlag == RIEN){
+			actionFlag = MES_JOUEUR;
 			ennemi->subit_atq(joueur->get_dmg_atq(last_pos));
 			std::cout << "Ennemi PV= " <<ennemi->get_PV() << " " << std::endl;
-			joueur->subit_atq(ennemi->get_dmg_atq((int)rand()%4));
-			std::cout << "Joueur PV="<<joueur->get_PV() << std::endl;
 			clk.restart();
-		}
-	}else{
-		if(clk.getElapsedTime().asSeconds() < TEMPO_MESS){
-			if(returnFlag)
-				actionFlag = true;
-		}else{
-			actionFlag = false;
 		}
 	}
 
@@ -98,16 +102,28 @@ int aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi)
 	Atq[last_pos].setFillColor(sf::Color(R, G, B, A));
 	window->draw(aff_hp(window, *joueur, true));
 	window->draw(aff_hp(window, *ennemi, false));
-	//window->draw(aff_hp(window, *ennemi, false));
-	if(!actionFlag){ // On print le texte cintillant 
-		window->draw(Atq[last_pos]);
-	}else{ // Ou le message d'attaque...
-		std::cout << last_pos << std::endl;
-		sf::Text Msg_Atq(joueur->get_Desc_Atq(last_pos), NiceFont, 20);
-		Msg_Atq.setPosition(sf::Vector2f(10.f, 910.f));
-		window->draw(Msg_Atq);
+	switch(actionFlag){
+		case RIEN:
+			window->draw(Atq[last_pos]);
+			last_atq_ennemi = -1;
+			break;
+		case MES_JOUEUR:
+			joueur->aff_message(window, last_pos);
+			last_atq_ennemi = -1;
+			std::cout << "MES_JOUEUR" << std::endl;
+			break;
+		case MES_ENNEMI:
+			if(last_atq_ennemi != -1){
+				ennemi->aff_message(window, last_atq_ennemi);
+				std::cout << "MES_ENNEMI" << std::endl;
+			}else{
+				last_atq_ennemi = rand()%4;
+				joueur->subit_atq(ennemi->get_dmg_atq(last_atq_ennemi));
+				std::cout << "ennemi atq = " << last_atq_ennemi << std::endl;
+				ennemi->aff_message(window, last_atq_ennemi);
+			}
+			break;
 	}
-	//window->display();
 	if(joueur->get_PV() <= 0 || ennemi->get_PV() <= 0)
 		return -1;
 	return 0;
@@ -164,7 +180,7 @@ int handleEvents(sf::Event event)
 			break;
 		case sf::Keyboard::Return:
 			returnFlag = false;
-			actionFlag = false;
+			//actionFlag = false;
 			break;
 		default:
 			break;
@@ -227,11 +243,22 @@ int main(int argc, char *argv[])
 		window->clear();
 		window->draw(*Background_sprite);
 		if(aff_combat(window, &joueur, &ennemi) < 0){
+			window->clear();
+			window->draw(*Background_sprite);
+			sf::Clock clk_fin;
+			sf::RectangleShape HideMes(sf::Vector2f(1142.f, 200.f));
+			HideMes.setFillColor(sf::Color(200, 226, 226, 255));
+			HideMes.setPosition(sf::Vector2f(5.f, 499.f));
+			window->draw(HideMes);
 			if(joueur.get_PV() < 0){
 				std::cout << "le joueur est mort" << std::endl;
-				exit(0);
+				joueur.aff_fin(window, VICTOIRE); // A remplacer  plus tard
+			}else{
+				std::cout << "Le pollueur est mort bien vu" << std::endl;
+				ennemi.aff_fin(window, DEFAITE);
 			}
-			std::cout << "Le pollueur est mort bien vu" << std::endl;
+			window->display();
+			while(clk_fin.getElapsedTime().asSeconds() < 10); // Petit délai de 10s
 			exit(0);
 		}
 		window->draw(*Hp_Sprite);
