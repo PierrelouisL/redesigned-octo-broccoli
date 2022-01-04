@@ -23,7 +23,7 @@
 
 
 int main(){
-
+    std::cout << "bonjour sur la nouvelle branche!" << std::endl;
 	// on crée la fenêtre
     sf::RenderWindow window(sf::VideoMode(1152, 768), "EcoBehave");
     window.setFramerateLimit(45);
