@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "Map.h"
 #include "Element.h"
+#include "bot.h"
 
 
 
@@ -34,6 +35,8 @@ int main(){
     // on crée les objects qu'on va manipuler
     TileMap map("images/Ville_proto1.png", 59, 39);
     TileCharacter perso("perso_debug");
+    TileCharacter perso2("Gretta");
+    perso2.load_character();
     TileElement element;
 
     map = map.load_map();
@@ -42,7 +45,9 @@ int main(){
     //--
     view.setCenter(sf::Vector2f(3*64, 36*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
     perso.init_coord(view);
+    //perso2.init_coord(view);
     //--
+    bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant)
 
     // on gère les évènements   
 	sf::Event event;
@@ -58,6 +63,7 @@ int main(){
             
             perso.actionKey(event, element);         
             perso.checkKeyMove(event);  // Check status of movement key
+            bots.check_and_follow(perso);
         }
 
         perso.move(view);           // Move character
@@ -69,10 +75,14 @@ int main(){
         window.draw(map);
    
         perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
+        std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
+        
+        //perso2.setPosition(sf::Vector2f(192,2304 ));
+        //window.draw(perso2);
         window.draw(perso);
 
         element.load_allElement(window);
-
+        bots.draw(window);
         window.display();
     }
 
