@@ -160,10 +160,12 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 	if(event.type == sf::Event::KeyReleased){
 
 		if(event.key.code == sf::Keyboard::A){
-	        sf::Vector2f next_case = checkFrontCase(2);
+	        sf::Vector2f next_case = checkFrontCase(4);
 
 	    	if( next_case != sf::Vector2f(-1, -1) ){
 	    		
+	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = -1;
+
 				TileMap temp_element;
 	    		int level[] = { 0, 1 };
 	    		
@@ -178,7 +180,8 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 	    }
 
 	    if( (event.key.code == sf::Keyboard::Left) || (event.key.code == sf::Keyboard::Right) || (event.key.code == sf::Keyboard::Up) || (event.key.code == sf::Keyboard::Down) ){
-	    	sf::Vector2f next_case = checkFrontCase(3);
+	    	sf::Vector2f next_case = checkFrontCase(5);
+	    	
 	    	if( next_case != sf::Vector2f(-1, -1) ){
 
 	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
