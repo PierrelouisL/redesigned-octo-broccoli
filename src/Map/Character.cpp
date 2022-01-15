@@ -59,22 +59,22 @@ sf::Vector2f TileCharacter::checkFrontCase(int val){
 			next_case2 = _feet_bottomright + sf::Vector2f(8, 0);
 			break;
 		case Back:
-			next_case1 = _feet_topright + sf::Vector2f(0, -25);
-			next_case2 = _feet_topleft + sf::Vector2f(0, -25);
+			next_case1 = _feet_topright + sf::Vector2f(0, -16);
+			next_case2 = _feet_topleft + sf::Vector2f(0, -16);
 			break;
 		case Face:
-			next_case1 = _feet_bottomright + sf::Vector2f(0, 25);
-			next_case2 = _feet_bottomleft + sf::Vector2f(0, 25);   		
+			next_case1 = _feet_bottomright + sf::Vector2f(0, 16);
+			next_case2 = _feet_bottomleft + sf::Vector2f(0, 16);   		
 			break;
 		default:
 			break;
 	}
 
+	next_case1 = next_case1 + next_case2;
+	next_case1 = next_case1/2.f;
+
 	if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] == val){
 		return next_case1;
-	}
-	else if(obstacle_ville1[ abs((int) ((next_case2.y)/64)) ][ abs((int) (next_case2.x/64)) ] == val ){
-		return next_case2;
 	}
 	else{
 		return sf::Vector2f(-1, -1);	// Aucune case
