@@ -18,6 +18,8 @@ class TileCharacter : public TileWindow{
 		void checkKeyMove(sf::Event &event);
 		void move(sf::View &view);
 		void actionKey(sf::Event &event, TileElement &element);
+
+		bool oneMoveFlag(){return _upFlag || _downFlag || _leftFlag || _rightFlag;}
 		
 
 	private:

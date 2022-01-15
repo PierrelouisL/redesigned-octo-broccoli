@@ -51,20 +51,20 @@ sf::Vector2f TileCharacter::checkFrontCase(int val){
 
 	switch(_eye){
 		case Left:
-			next_case1 = _feet_topleft + sf::Vector2f(MOVESPEED, 0);
-			next_case2 = _feet_bottomleft + sf::Vector2f(MOVESPEED, 0);
+			next_case1 = _feet_topleft + sf::Vector2f(-8, 0);
+			next_case2 = _feet_bottomleft + sf::Vector2f(-8, 0);
 			break;
 		case Right:
-			next_case1 = _feet_topright + sf::Vector2f(-MOVESPEED, 0);
-			next_case2 = _feet_bottomright + sf::Vector2f(-MOVESPEED, 0);
+			next_case1 = _feet_topright + sf::Vector2f(8, 0);
+			next_case2 = _feet_bottomright + sf::Vector2f(8, 0);
 			break;
 		case Back:
-			next_case1 = _feet_topright + sf::Vector2f(0, MOVESPEED);
-			next_case2 = _feet_topleft + sf::Vector2f(0, MOVESPEED);
+			next_case1 = _feet_topright + sf::Vector2f(0, -25);
+			next_case2 = _feet_topleft + sf::Vector2f(0, -25);
 			break;
 		case Face:
-			next_case1 = _feet_bottomright + sf::Vector2f(0, -MOVESPEED);
-			next_case2 = _feet_bottomleft + sf::Vector2f(0, -MOVESPEED);   		
+			next_case1 = _feet_bottomright + sf::Vector2f(0, 25);
+			next_case2 = _feet_bottomleft + sf::Vector2f(0, 25);   		
 			break;
 		default:
 			break;
@@ -157,7 +157,7 @@ void TileCharacter::move(sf::View &view){
 
 void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 	
-	if(event.type == sf::Event::KeyReleased){
+	if(event.type == sf::Event::KeyPressed){
 
 		if(event.key.code == sf::Keyboard::A){
 	        sf::Vector2f next_case = checkFrontCase(4);
@@ -179,7 +179,7 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 	    	}
 	    }
 
-	    if( (event.key.code == sf::Keyboard::Left) || (event.key.code == sf::Keyboard::Right) || (event.key.code == sf::Keyboard::Up) || (event.key.code == sf::Keyboard::Down) ){
+	    if(oneMoveFlag()){
 	    	sf::Vector2f next_case = checkFrontCase(5);
 	    	
 	    	if( next_case != sf::Vector2f(-1, -1) ){

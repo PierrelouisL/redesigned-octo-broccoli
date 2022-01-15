@@ -32,11 +32,13 @@ int main(){
     window.setView(view);
 
     // on crée les objects qu'on va manipuler
-    TileMap map("images/Ville2.png", 59, 39);
+    TileMap map("images/Ville1.png", 59, 39);
+    TileMap map_decors("images/Ville2.png", 59, 39);
     TileCharacter perso("perso_debug");
     TileElement element;
 
-    map = map.load_map();
+    map.load_map();
+    map_decors.load_map();
     perso.load_character();
 
     //--
@@ -73,6 +75,7 @@ int main(){
 
         element.load_allElement(window);
 
+        window.draw(map_decors);
         window.display();
     }
 
