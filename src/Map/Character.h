@@ -8,17 +8,18 @@ typedef enum orientation{ Face, Back, Left, Right } orientation;
 class TileCharacter : public TileWindow{
 
 	public:
-		TileCharacter():_character("perso_Fleche"), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false){}
-		TileCharacter(const std::string &character): _character(character), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false){}
+		TileCharacter():_character("perso_Fleche"), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
+		TileCharacter(const std::string &character): _character(character), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
 
 		void load_character();
 
-		void init_coord(sf::View &view);
+		void init_coord(sf::View &view); // If main character
+		void init_coord(sf::Vector2f coords); // If bot
 		sf::Vector2f checkFrontCase(int val);
 		void checkKeyMove(sf::Event &event);
 		void move(sf::View &view);
 		void actionKey(sf::Event &event, TileElement &element);
-
+		void change_char(std::string character){_character = character;};
 		bool oneMoveFlag(){return _upFlag || _downFlag || _leftFlag || _rightFlag;}
 		
 
@@ -35,5 +36,7 @@ class TileCharacter : public TileWindow{
 	    bool _downFlag;						//	Mouvement key flag
 	    bool _leftFlag;						//
 	    bool _rightFlag;					//
+
+		 bool _is_main_character; 		// Is the character the playable character
 
 };

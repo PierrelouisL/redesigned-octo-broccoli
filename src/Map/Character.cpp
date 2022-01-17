@@ -1,8 +1,14 @@
 #include "Character.h"
 #include "Obstacle.h"
 #include <wait.h>
+#include "bot.h"
+
+// Pour avoir une vraie fonction random
+#include "random.hpp"
+using Random = effolkronium::random_static;
 
 #define MOVESPEED 10
+
 
 void TileCharacter::load_character(){
 
@@ -37,12 +43,20 @@ void TileCharacter::load_character(){
 }
 
 
-void TileCharacter::init_coord(sf::View &view){
-	_feet_bottomleft 	= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +64));	//
-    _feet_bottomright	= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +64));	// Save the coord of each
-    _feet_topleft		= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +32));	// coord of character's feet
-	_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
+void TileCharacter::init_coord(sf::View &view){ // If main character
+		_feet_bottomleft 	= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +64));	//
+		_feet_bottomright	= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +64));	// Save the coord of each
+		_feet_topleft		= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +32));	// coord of character's feet
+		_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
 }
+
+void TileCharacter::init_coord(sf::Vector2f coords){ // If bot
+		_feet_bottomleft 	= sf::Vector2f(coords + sf::Vector2f(-32, +64));	//
+		_feet_bottomright	= sf::Vector2f(coords + sf::Vector2f(+32, +64));	// Save the coord of each
+		_feet_topleft		= sf::Vector2f(coords + sf::Vector2f(-32, +32));	// coord of character's feet
+		_feet_topright		= sf::Vector2f(coords + sf::Vector2f(+32, +32));	//
+}
+
 
 sf::Vector2f TileCharacter::checkFrontCase(int val){
 
@@ -190,7 +204,7 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 	    		int level[] = { 0, 1, 2, 3};
 	    		
 				if(!temp_element.load("images/voiture.png", level, 2, 2)){
-					std::cout << "Erreur du chargement de l'élément" << std::endl;
+					std::cout << "Erreur du chargement de l'élément voiture" << std::endl;
 				}
 
 				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(640, -64)); 		
@@ -202,4 +216,43 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 }
 
 
+/**
+ * @brief We'll init every positions using the bot_number, bot_difficulty and the obstacle array
+ * 
+ */
+void bot::initpositions(){
+	//obstacle_ville1;
+	std::vector<sf::Vector2f> locations;
+	float spawn = (float)this->bot_number/TOT_POSSIBLE_SPOTS;
+	sf::View pos;
+	int nb_spawned = 0;
+	// For every bot we try to find a appropriate location!
+	//auto val = Random::get<bool>( 0.7 ) // 70% to generate true
 
+	std::cout << "chances to spawn = " << spawn << std::endl;
+	for(int y = 0; y < 59; ++y){
+		for(int x = 0; x < 39; ++x){
+			// For each case of the obstacle array we check if we can spawn!
+			if(obstacle_ville1[x][y] > -1){
+				//std::cout << "x=" << x << " y=" << y << " obst=" << obstacle_ville1[y][x] << std::endl;
+				if(Random::get<bool>(spawn)){
+					if(nb_spawned < this->bot_number){
+						nb_spawned++;
+						// A bot can spawn!
+						std::cout << "a bot spawned! pos=" << x*64 << " y= " << y*64 <<" nb = " << nb_spawned << "obstc=" << obstacle_ville1[x][y]<< std::endl;
+						//bots.insert(bots.end(), new TileCharacter());
+						bots.push_back(new TileCharacter("Gretta"));
+						bots[nb_spawned]->change_char("Gretta");
+						bots[nb_spawned]->load_character();
+						bots[nb_spawned]->init_coord(sf::Vector2f(y*64, x*64));
+						bots[nb_spawned]->setPosition(sf::Vector2f(y*64, x*64));
+						//pos.setCenter(x,y);
+						//bots[i]->init_coord();
+					}else{
+						return;
+					}
+				}
+			}
+		}
+	}
+}
