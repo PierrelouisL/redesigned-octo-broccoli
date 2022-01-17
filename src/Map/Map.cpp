@@ -1,9 +1,7 @@
 #include "Window.h"
 #include "Map.h"
 
-TileMap TileMap::load_map(){
-
-	TileMap map;
+void TileMap::load_map(){
 
 	// on définit le niveau à l'aide de numéro de tuiles
 	int level[ _width * _height ];
@@ -12,9 +10,7 @@ TileMap TileMap::load_map(){
     	level[i] = i; 
     }
 
-    if(!map.load( _path , level, _width, _height )){
+    if(!this->load( _path , level, _width, _height )){
     	std::cout << "Erreur lors du chargement" << std::endl;
     }
-
-	return map;
 }

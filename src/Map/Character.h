@@ -20,6 +20,7 @@ class TileCharacter : public TileWindow{
 		void move(sf::View &view);
 		void actionKey(sf::Event &event, TileElement &element);
 		void change_char(std::string character){_character = character;};
+		bool oneMoveFlag(){return _upFlag || _downFlag || _leftFlag || _rightFlag;}
 		
 
 	private:

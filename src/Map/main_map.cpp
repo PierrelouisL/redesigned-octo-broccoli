@@ -33,17 +33,19 @@ int main(){
     window.setView(view);
 
     // on crée les objects qu'on va manipuler
-    TileMap map("images/Ville_proto1.png", 59, 39);
-    TileCharacter perso;
     TileCharacter perso2("perso_debug");
     perso2.load_character();
+    TileMap map("images/Ville1.png", 59, 39);
+    TileMap map_decors("images/Ville2.png", 59, 39);
+    TileCharacter perso("perso_debug");
     TileElement element;
 
-    map = map.load_map();
+    map.load_map();
+    map_decors.load_map();
     perso.load_character();
 
     //--
-    view.setCenter(sf::Vector2f(3*64, 36*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
+    view.setCenter(sf::Vector2f(3.5*64, 30.5*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
     perso.init_coord(view);
     //perso2.init_coord(view);
     //--
@@ -83,6 +85,9 @@ int main(){
 
         element.load_allElement(window);
         bots.draw(window);
+
+
+        window.draw(map_decors);
         window.display();
     }
 
