@@ -53,9 +53,19 @@ void bot::draw(sf::RenderWindow &win){
  */
 int bot::checknearby(TileCharacter player){
 	// We first check if we have a player nearby any of all the bots!
+	float xbot = 0, ybot = 0;
 	for(int nb_bot = 0; nb_bot < this->bot_number ; ++nb_bot){
-
+		xbot = bots[nb_bot]->getPosition().x;
+		ybot = bots[nb_bot]->getPosition().y;
+		if((xbot + 200) > player.getPosition().x && (xbot-200) < player.getPosition().x){
+			if((ybot + 200) > player.getPosition().y && (ybot-200)< player.getPosition().y){
+				std::cout << "player nearby! x = "<< xbot << " y = " << ybot << "nb_bot" << nb_bot<< std::endl;
+				return nb_bot;
+			}
+		}
 	}
+	return -1;
+
 	
 }
 
@@ -66,10 +76,16 @@ int bot::checknearby(TileCharacter player){
  */
 void bot::check_and_follow(TileCharacter player){
 	int bot_following_nb = checknearby(player);
+	if(bot_following_nb < 0){
+		return;
+	}
+	sf::View vieww(sf::Vector2f(this->bots[bot_following_nb]->getPosition().x, this->bots[bot_following_nb]->getPosition().y));
+	std::cout << "player nearby nb= " << bot_following_nb << std::endl;
 	// We first check where should we be heading to follow him
 	if(player.getPosition().x < this->bots[bot_following_nb]->getPosition().x){
 		// player coord x < bot coord x so we should decrease x
 		std::cout << "decreasing x... xplayer= " <<  player.getPosition().x << " xbot= " << this->bots[bot_following_nb]->getPosition().x << std::endl;
+		this->bots[bot_following_nb]->move
 	}else if(player.getPosition().x > this->bots[bot_following_nb]->getPosition().x){
 		// player coord x > bot coord x so we should increase x
 		std::cout << "increasing x... xplayer= " <<  player.getPosition().x << " xbot= " << this->bots[bot_following_nb]->getPosition().x << std::endl;

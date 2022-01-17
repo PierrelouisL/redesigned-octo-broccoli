@@ -25,6 +25,8 @@
 /**
  * @brief Class to setup every bot in the map, initialize it with the bot difficulty
  * 
+ * A bot location is defined by a "20" and a walkable area for a bot by a "21", it walks in a straight line 
+ * 
  */
 class bot
 {

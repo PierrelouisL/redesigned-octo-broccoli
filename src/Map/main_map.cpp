@@ -34,8 +34,8 @@ int main(){
 
     // on crée les objects qu'on va manipuler
     TileMap map("images/Ville_proto1.png", 59, 39);
-    TileCharacter perso("perso_debug");
-    TileCharacter perso2("Gretta");
+    TileCharacter perso;
+    TileCharacter perso2("perso_debug");
     perso2.load_character();
     TileElement element;
 
@@ -76,7 +76,7 @@ int main(){
    
         perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
         std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
-        
+        bots.check_and_follow(perso);
         //perso2.setPosition(sf::Vector2f(192,2304 ));
         //window.draw(perso2);
         window.draw(perso);
