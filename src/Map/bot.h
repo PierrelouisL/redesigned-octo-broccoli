@@ -12,6 +12,7 @@
 #pragma once
 #include "Window.h"
 #include "Character.h"
+#include "fighter.h"
 
 #define EASY 0
 #define MEDIUM 1
@@ -35,11 +36,14 @@ class bot
 private:
 	int difficulty;
 	int bot_number;
-	std::vector<TileCharacter*> bots;
+	int current;
+	std::vector<fighter*> bots;
 public:
 	bot(int difficulty);
+	fighter* current_bot(){return bots[current];}
+	void rm_bot(){bots.erase(bots.begin()+current-1);}
 	void draw(sf::RenderWindow &win);
-	void check_and_follow(TileCharacter player);
+	int check_and_follow(fighter player);
 	~bot();
 };
 

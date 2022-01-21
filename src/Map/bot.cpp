@@ -11,6 +11,7 @@
 #include "bot.h"
 //#include "Obstacle.h"
 
+extern bool fight;
 
 bot::bot(int difficulty):difficulty(difficulty)
 {
@@ -26,7 +27,8 @@ bot::bot(int difficulty):difficulty(difficulty)
 			break;
 	}
 	for(int i = 0; i < this->bot_number; ++i){
-		bots.insert(bots.end(), new TileCharacter());
+		bots.push_back(new fighter());
+		//bots.insert(bots.end(), new fighter());
 	}
 	initpositions();
 }
@@ -57,11 +59,14 @@ int bot::checknearby(TileCharacter player){
 	for(int nb_bot = 0; nb_bot < this->bot_number ; ++nb_bot){
 		xbot = bots[nb_bot]->getPosition().x;
 		ybot = bots[nb_bot]->getPosition().y;
-		if((xbot + 200) > player.getPosition().x && (xbot-200) < player.getPosition().x){
-			if((ybot + 200) > player.getPosition().y && (ybot-200)< player.getPosition().y){
+		if((xbot + 20) > player.getPosition().x && (xbot-20) < player.getPosition().x){
+			if((ybot + 20) > player.getPosition().y && (ybot-20)< player.getPosition().y){
 				std::cout << "player nearby! x = "<< xbot << " y = " << ybot << "nb_bot" << nb_bot<< std::endl;
+				current = nb_bot;
 				return nb_bot;
 			}
+			current = nb_bot;
+			return nb_bot;
 		}
 	}
 	return -1;
@@ -74,32 +79,35 @@ int bot::checknearby(TileCharacter player){
  * 
  * @param player
  */
-void bot::check_and_follow(TileCharacter player){
-	int bot_following_nb = checknearby(player);
-	if(bot_following_nb < 0){
-		return;
+int bot::check_and_follow(fighter player){
+	checknearby(player);
+	if(this->current < 0){
+		return this->current;
 	}
-	sf::View vieww(sf::Vector2f(this->bots[bot_following_nb]->getPosition().x, this->bots[bot_following_nb]->getPosition().y));
-	std::cout << "player nearby nb= " << bot_following_nb << std::endl;
+	//sf::View vieww(sf::Vector2f(this->bots[this->current]->getPosition().x, this->bots[this->current]->getPosition().y));
+	std::cout << "player nearby nb= " << this->current << std::endl;
+	fight = true;
+	return this->current;
+	
 	// We first check where should we be heading to follow him
-	if(player.getPosition().x < this->bots[bot_following_nb]->getPosition().x){
+	/*if(player.getPosition().x < this->bots[this->current]->getPosition().x){
 		// player coord x < bot coord x so we should decrease x
-		std::cout << "decreasing x... xplayer= " <<  player.getPosition().x << " xbot= " << this->bots[bot_following_nb]->getPosition().x << std::endl;
-		this->bots[bot_following_nb]->move
-	}else if(player.getPosition().x > this->bots[bot_following_nb]->getPosition().x){
+		std::cout << "decreasing x... xplayer= " <<  player.getPosition().x << " xbot= " << this->bots[this->current]->getPosition().x << std::endl;
+		//this->bots[this->current]->move
+	}else if(player.getPosition().x > this->bots[this->current]->getPosition().x){
 		// player coord x > bot coord x so we should increase x
-		std::cout << "increasing x... xplayer= " <<  player.getPosition().x << " xbot= " << this->bots[bot_following_nb]->getPosition().x << std::endl;
+		std::cout << "increasing x... xplayer= " <<  player.getPosition().x << " xbot= " << this->bots[this->current]->getPosition().x << std::endl;
 	}else{
 		// player coord x = bot coord x so we check y now
-		if(player.getPosition().y < this->bots[bot_following_nb]->getPosition().y){
+		if(player.getPosition().y < this->bots[this->current]->getPosition().y){
 			// player coord y < bot coord y so we should decrease y
-			std::cout << "decreasing y... yplayer= " <<  player.getPosition().y << " ybot= " << this->bots[bot_following_nb]->getPosition().y << std::endl;
-		}else if(player.getPosition().y > this->bots[bot_following_nb]->getPosition().y){
+			std::cout << "decreasing y... yplayer= " <<  player.getPosition().y << " ybot= " << this->bots[this->current]->getPosition().y << std::endl;
+		}else if(player.getPosition().y > this->bots[this->current]->getPosition().y){
 			// player coord y > bot coord y so we should increase y
-			std::cout << "increasing y... yplayer= " <<  player.getPosition().y << " ybot= " << this->bots[bot_following_nb]->getPosition().y << std::endl;
+			std::cout << "increasing y... yplayer= " <<  player.getPosition().y << " ybot= " << this->bots[this->current]->getPosition().y << std::endl;
 		}else{
 			// same spot so we launch COMBATTT
 			std::cout << "FIGHT!" << std::endl;
 		}
-	}
+	}*/
 }

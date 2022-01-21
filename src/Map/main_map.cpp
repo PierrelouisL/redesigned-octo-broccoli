@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "Element.h"
 #include "bot.h"
+#include "fighter.h"
 
 
 
@@ -22,6 +23,9 @@
  *             
  */
 
+#define FIGHT_ENABLED  // A commenter si tu veux pas de combat!
+
+bool fight = false;
 
 int main(){
     std::cout << "bonjour sur la nouvelle branche!" << std::endl;
@@ -49,46 +53,65 @@ int main(){
     perso.init_coord(view);
     //perso2.init_coord(view);
     //--
-    bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant)
-
+    fighter joueur(perso);
+    bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant
     // on gère les évènements   
 	sf::Event event;
     // on fait tourner la boucle principale
     while (window.isOpen())
     {
-        while (window.pollEvent(event))
-        {
-            if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
-                printf("C'est chao\n");
-                window.close();
+        //std::cout << fight << std::endl;
+        if(fight){
+            //std::cout << "entree combat" << std::endl;
+            // Here we can disable the fights or not
+            #ifdef FIGHT_ENABLED 
+            if(fight_scene(&window, &joueur, bots.current_bot()) == VICTOIRE){
+                // On a gagné le combat -> on détruit le bot
+                std::cout << "victory" << std::endl;
+                bots.rm_bot();
+                joueur.heal();
+            }else{
+                // On est mort donc game over!
+                std::cout << "game over!" << std::endl;
             }
+            window.clear();
+            #endif
+            std::cout << "fini combat" << std::endl;
+            fight = false;
+        }else{
+            while (window.pollEvent(event))
+            {
+                if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
+                    printf("C'est chao\n");
+                    window.close();
+                }
+                
+                perso.actionKey(event, element);         
+                perso.checkKeyMove(event);  // Check status of movement key
+            }
+
+            perso.move(view);           // Move character
+            //perso.checkFrontCase();
+
+            // on dessine le niveau
+            window.setView(view);
+            window.clear();
+            window.draw(map);
             
-            perso.actionKey(event, element);         
-            perso.checkKeyMove(event);  // Check status of movement key
-            bots.check_and_follow(perso);
+            perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
+            //std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
+            bots.check_and_follow(joueur);
+            bots.draw(window);
+            //perso2.setPosition(sf::Vector2f(192,2304 ));
+            //window.draw(perso2);
+            window.draw(perso);
+
+            element.load_allElement(window);
+
+
+            window.draw(map_decors);
+            window.display();
         }
-
-        perso.move(view);           // Move character
-        //perso.checkFrontCase();
-
-        // on dessine le niveau
-        window.setView(view);
-        window.clear();
-        window.draw(map);
-   
-        perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
-        std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
-        bots.check_and_follow(perso);
-        //perso2.setPosition(sf::Vector2f(192,2304 ));
-        //window.draw(perso2);
-        window.draw(perso);
-
-        element.load_allElement(window);
-        bots.draw(window);
-
-
-        window.draw(map_decors);
-        window.display();
     }
 
     return 0;
