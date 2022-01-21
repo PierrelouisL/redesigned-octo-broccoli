@@ -58,7 +58,7 @@ void TileCharacter::init_coord(sf::Vector2f coords){ // If bot
 }
 
 
-sf::Vector2f TileCharacter::checkFrontCase(int val){
+sf::Vector2f TileCharacter::checkFrontCase(int val, bool flag){
 
 	sf::Vector2f next_case1;
 	sf::Vector2f next_case2;
@@ -87,11 +87,21 @@ sf::Vector2f TileCharacter::checkFrontCase(int val){
 	next_case1 = next_case1 + next_case2;
 	next_case1 = next_case1/2.f;
 
-	if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] == val){
-		return next_case1;
+	if(!flag){
+		if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] == val){
+			return next_case1;
+		}
+		else{
+			return sf::Vector2f(-1, -1);	// Aucune case
+		}
 	}
 	else{
-		return sf::Vector2f(-1, -1);	// Aucune case
+		if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] > val){
+			return next_case1;
+		}
+		else{
+			return sf::Vector2f(-1, -1);	// Aucune case
+		}
 	}
 }
 
@@ -128,7 +138,7 @@ void TileCharacter::move(sf::View &view){
 	if(_leftFlag){  // left key is pressed: move our character
 		
 		_eye = Left;
-		next_case = checkFrontCase(0);
+		next_case = checkFrontCase(-1, true);
 		if( next_case != sf::Vector2f(-1, -1) ){
 			// Check if both corner touch an obstacle	
 			view.move(-MOVESPEED, 0);
@@ -137,7 +147,7 @@ void TileCharacter::move(sf::View &view){
     else if(_rightFlag){  // right key is pressed: move our character
     	
     	_eye = Right;
-    	next_case = checkFrontCase(0);
+    	next_case = checkFrontCase(-1, true);
     	if( next_case != sf::Vector2f(-1, -1) ){
 			// Check if both corner touch an obstacle
        		view.move(MOVESPEED, 0);
@@ -146,7 +156,7 @@ void TileCharacter::move(sf::View &view){
     else if(_upFlag){     // up key is pressed: move our character
 		
 		_eye = Back;
-		next_case = checkFrontCase(0);
+		next_case = checkFrontCase(-1, true);
 		if( next_case != sf::Vector2f(-1, -1) ){
 			// Check if both corner touch an obstacle
         	view.move(0, -MOVESPEED);
@@ -154,7 +164,7 @@ void TileCharacter::move(sf::View &view){
     }
     else if(_downFlag){   // down key is pressed: move our character
 		_eye = Face; 
-		next_case = checkFrontCase(0);
+		next_case = checkFrontCase(-1, true);
     	if( next_case != sf::Vector2f(-1, -1) ){
 			// Check if both corner touch an obstacle
         	view.move(0, MOVESPEED);
@@ -165,7 +175,7 @@ void TileCharacter::move(sf::View &view){
 
     _feet_bottomleft 	= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +64));	//
     _feet_bottomright	= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +64));	// Save the coord of each
-    _feet_topleft		= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +32));	// coord of character's feet
+    _feet_topleft		= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +32));	// corner of character's feet
 	_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
 }
 
@@ -174,7 +184,7 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 	if(event.type == sf::Event::KeyPressed){
 
 		if(event.key.code == sf::Keyboard::A){
-	        sf::Vector2f next_case = checkFrontCase(4);
+	        sf::Vector2f next_case = checkFrontCase(4, false);
 
 	    	if( next_case != sf::Vector2f(-1, -1) ){
 	    		
@@ -194,7 +204,7 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 	    }
 
 	    if(oneMoveFlag()){
-	    	sf::Vector2f next_case = checkFrontCase(5);
+	    	sf::Vector2f next_case = checkFrontCase(5, false);
 	    	
 	    	if( next_case != sf::Vector2f(-1, -1) ){
 
