@@ -11,8 +11,8 @@
 
 #include "fighter.h"
 
+#define DEBUG // A commenter pour enlever les commentaires
 
-#define DEBUG
 
 /* Miscs */
 
@@ -128,7 +128,7 @@ void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8
 // Actualise la barre d'hp du joueur ou de l'ennemi who = false pour ennemi who = true pour joueur
 sf::RectangleShape aff_hp(sf::RenderWindow* window, fighter perso, bool who){
 	sf::RectangleShape barre_hp(sf::Vector2f(172.f,22.f)); // Ce qui sera en vert pour afficher ce qu'il reste d'hp au perso
-	int PV = perso.get_PV();
+	//int PV = perso.get_PV();
 	float size = ((float)perso.get_pourcent_PV()/100)*172;
 	if(size < 0){
 		size = 0;
@@ -148,7 +148,6 @@ sf::RectangleShape aff_hp(sf::RenderWindow* window, fighter perso, bool who){
 }
 
 /* Fighter class */
-//#define DEBUG // A commenter pour enlever les commentaires
 
 // Flags for key pressed
 bool upFlag = false;
@@ -176,6 +175,8 @@ void goodbye(sf::Texture *Background, sf::Sprite *Background_sprite, sf::Texture
 
 
 sf::Font NiceFont;
+sf::Text Atq[4];
+
 
 int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 {
@@ -183,7 +184,6 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 	static char last_pressed = UP, blinking_way = 1;
 	static int last_pos = 0;
 	static sf::RectangleShape Battle_outline(sf::Vector2f(1142.f, 200.f));
-	static sf::Text Atq[4];
 	static sf::Clock clk;
 	static int last_atq_ennemi; // Permet de stoquer -1 si c'est la premiere fois que l'ennemi atq (donc doit faire des degats) ou alors dire la derniere attaque
 	srand(time(0));
@@ -225,8 +225,11 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 			Atq[i].setCharacterSize(40);
 			Atq[i].setFillColor(sf::Color(R, G, B, 255));
 			window->draw(Atq[i]);
+			std::string s = joueur->get_atk(i);
+			std::cout << "----------printing atq " << i << "string =" << s << std::endl;
 		}
 	}
+	std::cout << "x win= "<< window->getView().getCenter().x << " y win = " << window->getView().getCenter().y << "comparé à 500 500" << std::endl;
 
 	if (upFlag)
 	{
@@ -268,22 +271,31 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 	window->draw(aff_hp(window, *ennemi, false));
 	switch(actionFlag){
 		case NOTHING:
+			#ifdef DEBUG
+			std::cout << "--->draw atq" << std::endl;
+			#endif
 			window->draw(Atq[last_pos]);
 			last_atq_ennemi = -1;
 			break;
 		case MES_PLAYER:
 			joueur->aff_message(window, last_pos);
 			last_atq_ennemi = -1;
-			std::cout << "MES_PLAYER" << std::endl;
+			#ifdef DEBUG
+			std::cout << "---->MES_PLAYER" << std::endl;
+			#endif
 			break;
 		case MES_ENNEMY:
 			if(last_atq_ennemi != -1){
 				ennemi->aff_message(window, last_atq_ennemi);
-				std::cout << "MES_ENNEMY" << std::endl;
+				#ifdef DEBUG
+				std::cout << "---->MES_ENNEMY" << std::endl;
+				#endif
 			}else{
 				last_atq_ennemi = rand()%4;
 				joueur->subit_atq(ennemi->get_dmg_atq(last_atq_ennemi));
-				std::cout << "ennemi atq = " << last_atq_ennemi << std::endl;
+				#ifdef DEBUG
+				std::cout << "----->ennemi atq = " << last_atq_ennemi << std::endl;
+				#endif
 				ennemi->aff_message(window, last_atq_ennemi);
 			}
 			break;
@@ -393,6 +405,9 @@ int fight_scene(sf::RenderWindow* window, fighter* joueur, fighter* ennemi)
 
 	while (1)
 	{
+		#ifndef DEBUG
+		std::cout << "|" << std::endl;
+		#endif
 		// on gère les évènements
 		while (window->pollEvent(*event))
 		{
@@ -426,7 +441,9 @@ int fight_scene(sf::RenderWindow* window, fighter* joueur, fighter* ennemi)
 			goodbye(Background, Background_sprite, Hp, Hp_Sprite, Hp2_Sprite, event);
 			return 0 ;
 		}
+		#ifdef DEBUG
 		std::cout <<"drawing.."<< std::endl;
+		#endif
 		window->draw(*Hp_Sprite);
 		window->draw(*Hp2_Sprite);
 		window->draw(nom_joueur);

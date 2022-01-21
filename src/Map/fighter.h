@@ -25,6 +25,7 @@ typedef enum{
 class fighter : public TileCharacter
 {
 public:
+	int alive;
     fighter();
 	fighter(TileCharacter& character);
     sf::String get_atk(int nb);

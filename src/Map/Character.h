@@ -10,7 +10,7 @@ class TileCharacter : public TileWindow{
 	public:
 		TileCharacter():_character("perso_Fleche"), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
 		TileCharacter(const std::string &character): _character(character), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
-
+		TileCharacter(const TileCharacter& T);
 		void load_character();
 
 		void init_coord(sf::View &view); // If main character

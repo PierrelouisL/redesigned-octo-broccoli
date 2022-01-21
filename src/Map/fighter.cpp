@@ -23,6 +23,8 @@ fighter::fighter(){
    atk_desc[5] = sf::String("2"); // Deuxième ligne atq2
    atk_desc[6] = sf::String("Vous fuiez comme un lâche");
    atk_desc[7] = sf::String("3"); // Deuxième ligne atq3
+
+   alive = true;
 }
 
 fighter::fighter(TileCharacter& character): fighter(){
@@ -30,6 +32,8 @@ fighter::fighter(TileCharacter& character): fighter(){
     this->setPosition(character.getPosition());
     this->setScale(character.getScale());
     this->setRotation(character.getRotation());
+
+    alive = true;
 }
 
 sf::String fighter::get_atk(int nb){

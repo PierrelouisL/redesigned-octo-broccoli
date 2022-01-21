@@ -9,6 +9,23 @@ using Random = effolkronium::random_static;
 
 #define MOVESPEED 10
 
+TileCharacter::TileCharacter(const TileCharacter& T){
+	this->setPosition(T.getPosition());
+	this->setOrigin(T.getOrigin());
+	this->setRotation(T.getRotation());
+	this->setScale(T.getScale());
+	_character = T._character;
+	_eye = T._eye;
+	_feet_topleft = T._feet_topleft;
+	_feet_topright = T._feet_topright;
+	_feet_bottomleft = T._feet_bottomleft;
+	_feet_bottomright = T._feet_bottomright;
+	_upFlag = T._upFlag;
+	_downFlag = T._downFlag;
+	_rightFlag = T._rightFlag;
+	_leftFlag = T._leftFlag;
+	_is_main_character = T._is_main_character;
+}
 
 void TileCharacter::load_character(){
 

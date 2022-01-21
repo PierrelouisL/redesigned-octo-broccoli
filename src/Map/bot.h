@@ -31,7 +31,7 @@
  */
 class bot
 {
-	int checknearby(TileCharacter player);
+	int checknearby(sf::Vector2f coords);
 	void initpositions();
 private:
 	int difficulty;
@@ -41,9 +41,10 @@ private:
 public:
 	bot(int difficulty);
 	fighter* current_bot(){return bots[current];}
-	void rm_bot(){bots.erase(bots.begin()+current-1);}
+	void rm_bot(){bots[current]->alive = false;}
+	void print();
 	void draw(sf::RenderWindow &win);
-	int check_and_follow(fighter player);
+	int check_and_follow(sf::Vector2f coords);
 	~bot();
 };
 

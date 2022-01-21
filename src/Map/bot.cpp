@@ -39,7 +39,11 @@ bot::~bot()
 		free(bots[i]);
 	}
 }
-
+/**
+ * @brief 
+ * 
+ * @param win 
+ */
 void bot::draw(sf::RenderWindow &win){
 	//std::cout << "printing" << std::endl;
 	for(int i = 0; i < this->bot_number; ++i){
@@ -53,20 +57,21 @@ void bot::draw(sf::RenderWindow &win){
  * 
  * @param player 
  */
-int bot::checknearby(TileCharacter player){
+int bot::checknearby(sf::Vector2f coords){
 	// We first check if we have a player nearby any of all the bots!
 	float xbot = 0, ybot = 0;
-	for(int nb_bot = 0; nb_bot < this->bot_number ; ++nb_bot){
+	for(int nb_bot = 1; nb_bot < this->bot_number ; ++nb_bot){
 		xbot = bots[nb_bot]->getPosition().x;
 		ybot = bots[nb_bot]->getPosition().y;
-		if((xbot + 20) > player.getPosition().x && (xbot-20) < player.getPosition().x){
-			if((ybot + 20) > player.getPosition().y && (ybot-20)< player.getPosition().y){
+		std::cout << "coords bot " << nb_bot << " x=" << xbot << " y=" << ybot << "coords perso x=" << coords.x << " y=" << coords.y << std::endl;
+		if((xbot + 20) > coords.x && (xbot-20) < coords.x){
+			if((ybot + 20) > coords.y && (ybot-20)< coords.y){
 				std::cout << "player nearby! x = "<< xbot << " y = " << ybot << "nb_bot" << nb_bot<< std::endl;
 				current = nb_bot;
 				return nb_bot;
 			}
-			current = nb_bot;
-			return nb_bot;
+			//current = nb_bot;
+			//return nb_bot;
 		}
 	}
 	return -1;
@@ -74,19 +79,33 @@ int bot::checknearby(TileCharacter player){
 	
 }
 
+
+
+/**
+ * @brief Prints every bot to debug
+ * 
+ */
+void bot::print(){
+	std::cout << "printing every bot..." << std::endl;
+	for(int i =0; i < bot_number; ++i){
+		std::cout << "Bot nb "<< i<< " x="<<bots[i]->getPosition().x << " y=" << bots[i]->getPosition().y << " HP=" << bots[i]->get_PV() << std::endl;
+	}
+}
+
 /**
  * @brief Checks if player is nearby then follows him to battle
  * 
  * @param player
  */
-int bot::check_and_follow(fighter player){
-	checknearby(player);
-	if(this->current < 0){
+int bot::check_and_follow(sf::Vector2f coords){
+	std::cout << "coords = " << coords.x << " " << coords.y << std::endl;
+	checknearby(coords);
+	if(this->current <= 0){
+		std::cout << "not found!" << std::endl;
 		return this->current;
 	}
 	//sf::View vieww(sf::Vector2f(this->bots[this->current]->getPosition().x, this->bots[this->current]->getPosition().y));
 	std::cout << "player nearby nb= " << this->current << std::endl;
-	fight = true;
 	return this->current;
 	
 	// We first check where should we be heading to follow him

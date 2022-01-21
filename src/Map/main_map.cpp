@@ -58,12 +58,22 @@ int main(){
     // on gère les évènements   
 	sf::Event event;
     // on fait tourner la boucle principale
+    bots.print();
     while (window.isOpen())
     {
+        bots.check_and_follow(perso.getPosition());
+        std::cout << "alive?" << bots.current_bot()->alive << std::endl;
+        if(bots.current_bot()->alive){
+            fight = true;
+        }else{
+            fight = false;
+        }
         //std::cout << fight << std::endl;
         if(fight){
             //std::cout << "entree combat" << std::endl;
             // Here we can disable the fights or not
+            std::cout << "joeuru " << perso.getPosition().x << " " << perso.getPosition().y << std::endl;
+            
             #ifdef FIGHT_ENABLED 
             if(fight_scene(&window, &joueur, bots.current_bot()) == VICTOIRE){
                 // On a gagné le combat -> on détruit le bot
@@ -73,12 +83,17 @@ int main(){
             }else{
                 // On est mort donc game over!
                 std::cout << "game over!" << std::endl;
+
             }
             window.clear();
             #endif
+            bots.print();
             std::cout << "fini combat" << std::endl;
+            bots.current_bot()->alive = false;
             fight = false;
         }else{
+                        std::cout << "joeuru " << perso.getPosition().x << " " << perso.getPosition().y << std::endl;
+
             while (window.pollEvent(event))
             {
                 if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
@@ -97,10 +112,9 @@ int main(){
             window.setView(view);
             window.clear();
             window.draw(map);
-            
+    
             perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
             //std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
-            bots.check_and_follow(joueur);
             bots.draw(window);
             //perso2.setPosition(sf::Vector2f(192,2304 ));
             //window.draw(perso2);
