@@ -1,14 +1,14 @@
 #include "Character.h"
-#include "Obstacle.h"
-#include <wait.h>
 #include "bot.h"
-#include <SFML/Audio.hpp>
+
 
 // Pour avoir une vraie fonction random
 #include "random.hpp"
 using Random = effolkronium::random_static;
 
-#define MOVESPEED 8
+#define MOVESPEED 3.5
+
+extern int obstacle_ville1[61][60];
 
 void TileCharacter::load_character(){
 
@@ -193,70 +193,6 @@ void TileCharacter::move(sf::View &view){
 	_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
 }
 
-void TileCharacter::actionKey(sf::Event &event, TileElement &element, sf::View &view){
-	
-	if(event.type == sf::Event::KeyPressed){
-		if(event.key.code == sf::Keyboard::A){
-
-	        sf::Vector2f next_case = checkFrontCase(4, false);					// Tree spawn
-	    	if( next_case != sf::Vector2f(-1, -1) ){
-	    		
-	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = -1;
-
-				TileMap temp_element;
-	    		int level[] = { 0, 1 };
-	    		
-				if(!temp_element.load("images/arbre.png", level, 1, 2)){
-					std::cout << "Erreur du chargement de l'élément" << std::endl;
-				}
-
-				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(-2, -80)); 		
-				element.put_VectorElement(temp_element);
-				element.put_VectorType(4);
-	    	}		
-	    	else if( checkFrontCase(-2, false) != sf::Vector2f(-1, -1) ){		// City to Trump's room	
-				view.setCenter(sf::Vector2f(7*64, 57.5*64));
-	    	
-	    	}
-	    	if( checkFrontCase(-3, false) != sf::Vector2f(-1, -1) ){			// Trump's room to City
-				view.setCenter(sf::Vector2f(22*64, 11.5*64));
-	    	
-	    	}			
-	    	else if( checkFrontCase(3, false) != sf::Vector2f(-1, -1) ){		// Camera event
-	    		if(get_eye() == Left){
-
-		    		sf::Music music;
-				    music.openFromFile("sound/discours_Greta.wav");
-				    music.setVolume(100.f);
-				    music.play();
-				    while(music.getStatus() == sf::Music::Playing);
-				}
-	    	}
-	    }
-
-	    if(oneMoveFlag()){										
-	    	sf::Vector2f next_case = checkFrontCase(5, false);					// Car event
-	    	
-	    	if( next_case != sf::Vector2f(-1, -1) ){
-
-	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
-
-				TileMap temp_element;
-	    		int level[] = { 0, 1, 2, 3};
-	    		
-				if(!temp_element.load("images/voiture.png", level, 2, 2)){
-					std::cout << "Erreur du chargement de l'élément voiture" << std::endl;
-				}
-
-				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(640, -64)); 		
-				element.put_VectorElement(temp_element);
-				element.put_VectorType(5);
-	    	}
-	    }
-    } 
-}
-
-
 /**
  * @brief We'll init every positions using the bot_number, bot_difficulty and the obstacle array
  * 
@@ -283,7 +219,7 @@ void bot::initpositions(){
 						std::cout << "a bot spawned! pos=" << x*64 << " y= " << y*64 <<" nb = " << nb_spawned << "obstc=" << obstacle_ville1[x][y]<< std::endl;
 						//bots.insert(bots.end(), new TileCharacter());
 						bots.push_back(new TileCharacter("Gretta"));
-						bots[nb_spawned]->change_char("Gretta");
+						//bots[nb_spawned]->change_char("Gretta");
 						bots[nb_spawned]->load_character();
 						bots[nb_spawned]->init_coord(sf::Vector2f(y*64, x*64));
 						bots[nb_spawned]->setPosition(sf::Vector2f(y*64, x*64));
