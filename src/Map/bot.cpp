@@ -73,8 +73,13 @@ int bot::checknearby(TileCharacter player){
  * @brief Checks if player is nearby then follows him to battle
  * 
  * @param player
+<<<<<<< HEAD
+ */
+/*void bot::check_and_follow(TileCharacter player){
+=======
  
 void bot::check_and_follow(TileCharacter player){
+>>>>>>> 3a05de747694ce76a38ed0cf0911517c7da28ca6
 	int bot_following_nb = checknearby(player);
 	if(bot_following_nb < 0){
 		return;

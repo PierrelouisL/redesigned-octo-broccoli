@@ -33,11 +33,11 @@ int main(){
     window.setView(view);
 
     // on crée les objects qu'on va manipuler
-    TileCharacter perso2("perso_debug");
-    perso2.load_character();
-    TileMap map("images/Ville1.png", 59, 39);
-    TileMap map_decors("images/Ville2.png", 59, 39);
-    TileCharacter perso("perso_debug");
+    //TileCharacter perso2("perso_debug");
+    //perso2.load_character();
+    TileMap map("images/Map1.png", 60, 61);
+    TileMap map_decors("images/Map2.png", 60, 61);
+    TileCharacter perso("Greta");
     TileElement element;
 
     map.load_map();
@@ -45,7 +45,7 @@ int main(){
     perso.load_character();
 
     //--
-    view.setCenter(sf::Vector2f(3.5*64, 30.5*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
+    view.setCenter(sf::Vector2f(4.5*64, 30.5*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
     perso.init_coord(view);
     //perso2.init_coord(view);
     //--
@@ -54,6 +54,7 @@ int main(){
     // on gère les évènements   
 	sf::Event event;
     // on fait tourner la boucle principale
+
     while (window.isOpen())
     {
         while (window.pollEvent(event))
@@ -62,14 +63,14 @@ int main(){
                 printf("C'est chao\n");
                 window.close();
             }
-            
-            perso.actionKey(event, element);         
+
+            perso.actionKey(event, element, view); 
+                   
             perso.checkKeyMove(event);  // Check status of movement key
             //bots.check_and_follow(perso);
         }
 
         perso.move(view);           // Move character
-        //perso.checkFrontCase();
 
         // on dessine le niveau
         window.setView(view);
@@ -77,7 +78,7 @@ int main(){
         window.draw(map);
    
         perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
-        std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
+        //std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
         //bots.check_and_follow(perso);
         //perso2.setPosition(sf::Vector2f(192,2304 ));
         //window.draw(perso2);

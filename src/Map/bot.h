@@ -39,7 +39,7 @@ private:
 public:
 	bot(int difficulty);
 	void draw(sf::RenderWindow &win);
-	void check_and_follow(TileCharacter player);
+	//void check_and_follow(TileCharacter player);
 	~bot();
 };
 

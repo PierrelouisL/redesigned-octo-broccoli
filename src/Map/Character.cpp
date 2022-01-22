@@ -2,17 +2,17 @@
 #include "Obstacle.h"
 #include <wait.h>
 #include "bot.h"
+#include <SFML/Audio.hpp>
 
 // Pour avoir une vraie fonction random
 #include "random.hpp"
 using Random = effolkronium::random_static;
 
-#define MOVESPEED 10
-
+#define MOVESPEED 8
 
 void TileCharacter::load_character(){
 
-	TileCharacter perso(_character);
+	static sf::Clock clk;
 
 	// on définit le niveau à l'aide de numéro de tuiles
 	int level[] = { 0, 1, 8, 9 };
@@ -35,8 +35,22 @@ void TileCharacter::load_character(){
     	default:
     		break;
     }
+    if(oneMoveFlag()){
+    	if(clk.getElapsedTime().asSeconds() > 0.15f){
+	    	if(_n_sprite == 4){
+				_n_sprite = 1;
+			}
+			else{
+				_n_sprite += 1; 
+			}
+			clk.restart();
+	    }
+    }
+    else{
+    	_n_sprite = 1;
+    }
 
-   	std::string pathCharacter = "images/Personnage/" + _character + ".png";
+   	std::string pathCharacter = "images/Personnage/" + _character + std::to_string(_n_sprite) + ".png";
 	if(!this->load(pathCharacter, level, 2, 2)){
 		std::cout << "Erreur du chargement du personnage" << std::endl;
 	}
@@ -179,13 +193,12 @@ void TileCharacter::move(sf::View &view){
 	_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
 }
 
-void TileCharacter::actionKey(sf::Event &event, TileElement &element){
+void TileCharacter::actionKey(sf::Event &event, TileElement &element, sf::View &view){
 	
 	if(event.type == sf::Event::KeyPressed){
-
 		if(event.key.code == sf::Keyboard::A){
-	        sf::Vector2f next_case = checkFrontCase(4, false);
 
+	        sf::Vector2f next_case = checkFrontCase(4, false);					// Tree spawn
 	    	if( next_case != sf::Vector2f(-1, -1) ){
 	    		
 	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = -1;
@@ -199,12 +212,30 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 
 				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(-2, -80)); 		
 				element.put_VectorElement(temp_element);
-				element.put_VectorType(2);
+				element.put_VectorType(4);
+	    	}		
+	    	else if( checkFrontCase(-2, false) != sf::Vector2f(-1, -1) ){		// City to Trump's room	
+				view.setCenter(sf::Vector2f(7*64, 57.5*64));
+	    	
+	    	}
+	    	if( checkFrontCase(-3, false) != sf::Vector2f(-1, -1) ){			// Trump's room to City
+				view.setCenter(sf::Vector2f(22*64, 11.5*64));
+	    	
+	    	}			
+	    	else if( checkFrontCase(3, false) != sf::Vector2f(-1, -1) ){		// Camera event
+	    		if(get_eye() == Left){
+
+		    		sf::Music music;
+				    music.openFromFile("sound/discours_Greta.wav");
+				    music.setVolume(100.f);
+				    music.play();
+				    while(music.getStatus() == sf::Music::Playing);
+				}
 	    	}
 	    }
 
-	    if(oneMoveFlag()){
-	    	sf::Vector2f next_case = checkFrontCase(5, false);
+	    if(oneMoveFlag()){										
+	    	sf::Vector2f next_case = checkFrontCase(5, false);					// Car event
 	    	
 	    	if( next_case != sf::Vector2f(-1, -1) ){
 
@@ -219,7 +250,7 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element){
 
 				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(640, -64)); 		
 				element.put_VectorElement(temp_element);
-				element.put_VectorType(3);
+				element.put_VectorType(5);
 	    	}
 	    }
     } 
@@ -241,7 +272,7 @@ void bot::initpositions(){
 
 	std::cout << "chances to spawn = " << spawn << std::endl;
 	for(int y = 0; y < 59; ++y){
-		for(int x = 0; x < 39; ++x){
+		for(int x = 2; x < 39; ++x){
 			// For each case of the obstacle array we check if we can spawn!
 			if(obstacle_ville1[x][y] > -1){
 				//std::cout << "x=" << x << " y=" << y << " obst=" << obstacle_ville1[y][x] << std::endl;

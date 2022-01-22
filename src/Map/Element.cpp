@@ -4,10 +4,9 @@ void TileElement::load_allElement(sf::RenderWindow &window){
 
 
 	for(unsigned int i = 0; i < _vector_element.size(); i++){
-		//_vector_element[i].setPosition(_vector_coord[i]);
 		window.draw(_vector_element[i]);
 		
-		if(_vector_type[i] == 3){
+		if(_vector_type[i] == 5){									// If  vector_element[i] is a car
 			_vector_element[i].move(-5, 0);
 			if(_vector_element[i].getPosition().x < 0){
 				_vector_element.erase(_vector_element.begin() + i);
