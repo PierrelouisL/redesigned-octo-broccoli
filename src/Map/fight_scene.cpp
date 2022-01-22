@@ -181,6 +181,8 @@ sf::Text Atq[4];
 int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 {
 	static sf::Uint8 R = 255, G = 0, B = 0, A = 250;
+	sf::Font Font;
+	Font.loadFromFile("images/SourceSansPro-Regular.otf");
 	static char last_pressed = UP, blinking_way = 1;
 	static int last_pos = 0;
 	static sf::RectangleShape Battle_outline(sf::Vector2f(1142.f, 200.f));
@@ -220,7 +222,7 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 	{
 		if ((i != last_pos) && actionFlag == NOTHING)
 		{
-			Atq[i].setFont(NiceFont);
+			Atq[i].setFont(Font);
 			Atq[i].setString(joueur->get_atk(i));
 			Atq[i].setCharacterSize(40);
 			Atq[i].setFillColor(sf::Color(R, G, B, 255));
@@ -263,7 +265,7 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 #ifdef DEBUG
 	std::cout << " last_pos= " << (int)last_pos << " A= " << (int)A << " last_pressed= " << (int)last_pressed << std::endl;
 #endif
-	Atq[last_pos].setFont(NiceFont);
+	Atq[last_pos].setFont(Font);
 	Atq[last_pos].setString(joueur->get_atk(last_pos));
 	Atq[last_pos].setCharacterSize(40);
 	Atq[last_pos].setFillColor(sf::Color(R, G, B, A));
