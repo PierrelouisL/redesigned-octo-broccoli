@@ -59,7 +59,7 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     	clk.restart();
     }
 
-    if(clk.getElapsedTime().asSeconds() > 0.35){	// Jump time
+    if(clk.getElapsedTime().asSeconds() > 0.37){	// Jump time
 		_gravity = false;
     }
 
