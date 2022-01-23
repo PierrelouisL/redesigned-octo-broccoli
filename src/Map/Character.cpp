@@ -1,5 +1,4 @@
 #include "Character.h"
-#include "bot.h"
 
 
 // Pour avoir une vraie fonction random
@@ -195,34 +194,3 @@ void TileCharacter::move(sf::View &view){
 }
 
 
-/**
- * @brief We'll init every positions using the bot_number, bot_difficulty and the obstacle array
- * 
- */
-void bot::initpositions(){
-	//obstacle_ville1;
-	std::vector<sf::Vector2f> locations;
-	//float spawn = (float)this->bot_number/TOT_POSSIBLE_SPOTS;
-	sf::View pos;
-	int nb_spawned = 0;
-	// For every bot we try to find a appropriate location!
-	//auto val = Random::get<bool>( 0.7 ) // 70% to generate true
-
-	//std::cout << "chances to spawn = " << spawn << std::endl;
-	for(int y = 0; y < 59; ++y){
-		for(int x = 0; x < 39; ++x){
-			if(obstacle_ville1[x][y] == 8){
-				// We are in a spot for a bot so we should make one spawn!
-				nb_spawned++;
-				std::cout << "a bot spawned! pos=" << x*64 << " y= " << y*64 <<" nb = " << nb_spawned << "obstc=" << obstacle_ville1[x][y]<< std::endl;
-				//bots.insert(bots.end(), new TileCharacter());
-				bots.push_back(new fighter);
-				bots[nb_spawned]->change_char("Gretta");
-				bots[nb_spawned]->load_character();
-				bots[nb_spawned]->init_coord(sf::Vector2f(y*64, x*64));
-				bots[nb_spawned]->setPosition(sf::Vector2f(y*64, x*64));
-			}
-		}
-	}
-	this->bot_number = nb_spawned;
-}

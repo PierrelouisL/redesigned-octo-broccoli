@@ -91,6 +91,7 @@ int main(){
     sf::Music music;
     sf::Music sound_effect;
     // on fait tourner la boucle principale
+    std::cout << "printing bot" << std::endl;
     bots.print();
 
     sf::Thread thread(std::bind(&Thread_fight, window, player));
@@ -102,6 +103,7 @@ int main(){
     element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
     while (window->isOpen() && !quit){
         WinMutex.lock();
+        bots.check_and_follow(ptr_perso->getPosition());
         while (window->pollEvent(event)){
             if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
                 printf("C'est chao\n");
@@ -138,7 +140,6 @@ int main(){
                             }
                         }
                     }
-                    bots.check_and_follow(perso.getPosition());
                     switch(g_mode){
                         case normal:
                             if(bots.current_bot()->alive){
@@ -266,8 +267,8 @@ int main(){
         // on dessine le niveau
         window->setView(view);
         window->clear();
-        std::cout << "drawing map!" << std::endl;
         window->draw(map);
+        bots.draw(*window);
 
         ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
         //std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
@@ -277,8 +278,7 @@ int main(){
         window->draw(*ptr_perso);
 
         element.load_allElement(*window);
-        //bots.draw(window);
-
+        
         window->draw(map_decors);
         allGoal.display_goal(*window, view.getCenter());
 
