@@ -15,7 +15,7 @@
 
 #include <thread>
 #include <mutex>
-
+#include <functional>
 
 
 extern int obstacle_ville1[61][60];
