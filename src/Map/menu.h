@@ -1,6 +1,8 @@
 #pragma once
 #include "Window.h"
 
+#define PI 3.14159265
+
 typedef enum{
     intro, play, credits
 }sel;

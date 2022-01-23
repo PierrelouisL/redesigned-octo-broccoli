@@ -17,14 +17,13 @@
 #define FIGHT_ENABLED  // A commenter si tu veux pas de combat!
 #define DEBUG
 
-bool quit = false;
-
-bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant
-
 sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
 sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
 
+bool quit = false;
+
 Gamemode g_mode = menu_;
+bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant
 
 void Thread_fight(sf::RenderWindow* window, fighter* player){
     fight_scene f_sc;
@@ -61,13 +60,13 @@ void Thread_menu(sf::RenderWindow* window){
 
 
 int main(){
+
 	// on crée la fenêtre
-    sf::RenderWindow* window = new sf::RenderWindow;
-	window->create(sf::VideoMode(1152, 768), "redesigned-octo-broccoli");
-    window->setFramerateLimit(120);
-    window->setVerticalSyncEnabled(true);	
-	sf::View view = window->getDefaultView();
-    window->setView(view);
+    sf::RenderWindow window(sf::VideoMode(1152, 768), "redesigned-octo-broccoli");
+    window.setFramerateLimit(120);
+    window.setVerticalSyncEnabled(true);	
+	sf::View view = window.getDefaultView();
+    window.setView(view);
 
     // on crée les objects qu'on va manipuler
     TileMap map("images/Map/Map1.png", 60, 61);
@@ -77,6 +76,7 @@ int main(){
     TileCharacter *ptr_perso = &perso;      // Object that we will manipulate
     TileElement element;
     TileGoal allGoal;
+    
 
     map.load_map();
     map_decors.load_map();
@@ -94,25 +94,27 @@ int main(){
     std::cout << "printing bot" << std::endl;
     bots.print();
 
-    sf::Thread thread(std::bind(&Thread_fight, window, player));
+    sf::Thread thread(std::bind(&Thread_fight, &window, player));
     thread.launch();
-    sf::Thread t_menu(std::bind(&Thread_menu, window));
+    sf::Thread t_menu(std::bind(&Thread_menu, &window));
     t_menu.launch();
     bots.current_bot()->alive = false;
     bool heal = false;
+    
     element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
-    while (window->isOpen() && !quit){
+    
+    while (window.isOpen() && !quit){
         if(g_mode == normal || g_mode == mario){
             WinMutex.lock();
-            while (window->pollEvent(event)){
+            while (window.pollEvent(event)){
                 if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
                     printf("C'est chao\n");
-                    window->close();
+                    window.close();
                     quit = true;
                 }
 
                 if(event.type == sf::Event::KeyPressed){
-                    if(event.key.code == sf::Keyboard::A){  // Action key = A
+                    if(event.key.code == sf::Keyboard::A){  // Action key = space
 
                         sf::Vector2f next_case = ptr_perso->checkFrontCase(4, false);                  // Tree spawn
                         if( next_case != sf::Vector2f(-1, -1) ){
@@ -189,11 +191,11 @@ int main(){
                                     for(int i=0; i<4; i++){
                                         ptr_perso->scale( sf::Vector2f(2, 2));
                                         ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64*2*(i*i+1), -64*2*(i+1+1)) );
-                                        window->setActive();
-                                        window->clear();
-                                        window->draw(map);
-                                        window->draw(*ptr_perso);
-                                        window->display();
+                                        window.setActive();
+                                        window.clear();
+                                        window.draw(map);
+                                        window.draw(*ptr_perso);
+                                        window.display();
                                         clk.restart();
                                         while(clk.getElapsedTime().asSeconds() < 2);
                                     }
@@ -208,7 +210,7 @@ int main(){
                                     g_mode = normal;
                                 }
                                 break;
-                            case menu_:
+                            case menu_ :
                                 // We don't do anything here
                                 break;
                             default :
@@ -258,37 +260,36 @@ int main(){
                 ptr_perso->checkKeyMove(event);  // Check status of movement key
                 //bots.check_and_follow(perso);
             }
+<<<<<<< HEAD
+            window.setActive();
+=======
             if( ptr_perso->checkFrontCase(8, false) != sf::Vector2f(-1, -1)){
                 ptr_perso->resetkey();
                 g_mode = fight;
             }
             window->setActive();
+>>>>>>> 2267624fa9e41362268d88963bf74e26ab6462f1
             ptr_perso->move(view);           // Move character
 
             // on dessine le niveau
-            window->setView(view);
-            window->clear();
-            window->draw(map);
-            bots.draw(*window);
+            window.setView(view);
+            window.clear();
+            window.draw(map);
+            bots.draw(window);
 
             ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
-            //std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
-            //bots.check_and_follow(perso);
-            //perso2.setPosition(sf::Vector2f(192,2304 ));
-            //window.draw(perso2);
-            window->draw(*ptr_perso);
+            window.draw(*ptr_perso);
 
-            element.load_allElement(*window);
+            element.load_allElement(window);
             
-            window->draw(map_decors);
-            allGoal.display_goal(*window, view.getCenter());
+            window.draw(map_decors);
+            allGoal.display_goal(window, view.getCenter());
 
-            window->display();
+            window.display();
             WinMutex.unlock();
         }
     }
     std::cout << "le vrai chao!"<< std::endl;
     //thread.wait();
-    delete window;
     return 0;
 }

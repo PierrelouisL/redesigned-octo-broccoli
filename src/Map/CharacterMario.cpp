@@ -30,13 +30,11 @@ void TileCharacterMario::checkKeyMove(sf::Event &event){
 void TileCharacterMario::move(sf::View &view){	// Allow player to move in different direction at the same time ( for gravity )
 	  
 	sf::Vector2f next_case;
-	orientation temp_eye = get_eye();
 	static sf::Clock clk;
 	static sf::Music sound_effect;
 
 	if(get_leftflag()){  // left key is pressed: move our character
 		
-		temp_eye = Left;
 		set_eye(Left);
 		next_case = checkFrontCase(-1, true);
 		if( next_case != sf::Vector2f(-1, -1) ){
@@ -46,7 +44,6 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     }
     else if(get_rightflag()){  // right key is pressed: move our character
     	
-    	temp_eye = Right;
     	set_eye(Right);
     	next_case = checkFrontCase(-1, true);
     	if( next_case != sf::Vector2f(-1, -1) ){
@@ -59,7 +56,7 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     	clk.restart();
     }
 
-    if(clk.getElapsedTime().asSeconds() > 0.37){	// Jump time
+    if(clk.getElapsedTime().asSeconds() > 0.38){	// Jump time
 		_gravity = false;
     }
 
@@ -69,20 +66,16 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     }
     if(_gravity){ 									// Go up for the jump
     	_enable_jump = false;
-    	set_eye(Back); 
-		next_case = checkFrontCase(-1, true);
-		if( next_case != sf::Vector2f(-1, -1) ){
-			view.move(0, -6);
+		if( checkFrontCase(-1, true, sf::Vector2f(0, -100)) != sf::Vector2f(-1, -1) ){
+			view.move(0, -7);
 		}
 		else{										// If the hit something with your head
 			_gravity = false;
-			view.move(0, 6);
+			view.move(0, 7);
 		}
     }
     else{											// Go down
-    	set_eye(Face); 
-		next_case = checkFrontCase(-1, true);
-		if( next_case != sf::Vector2f(-1, -1) ){
+		if( checkFrontCase(-1, true, sf::Vector2f(0, 0)) != sf::Vector2f(-1, -1) ){
 			view.move(0, 7);
 		}
 		else{										// Hit the ground
@@ -91,16 +84,10 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
 	}
     
     // Some event when you touch the right case in mario land
-    set_eye(Face);
-    if( checkFrontCase(10, false) != sf::Vector2f(-1, -1) ){	
+    if( checkFrontCase(10, false, sf::Vector2f(0, 0)) != sf::Vector2f(-1, -1) ){	
         view.setCenter(sf::Vector2f(22*64, 56.5*64));
     }
 
-	set_eye(temp_eye);
     this->load_character();
-
-    set_feet_bottomleft	(sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +64)));	//
-    set_feet_bottomright(sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +64)));	// Save the coord of each
-    set_feet_topleft	(sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +32)));	// corner of character's feet
-	set_feet_topright	(sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32)));	//
+    init_coord(view);
 }

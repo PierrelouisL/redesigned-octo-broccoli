@@ -1,7 +1,7 @@
 #include "menu.h"
 #include "math.h"
 
-menu::menu(){
+menu::menu() : rotation(0), rotation2(0){
     TextFont.loadFromFile("images/webpixel bitmap_medium.otf");
     SelFont.loadFromFile("images/webpixel bitmap_medium-italic.otf");
     // Background management
@@ -17,8 +17,7 @@ menu::menu(){
         Brocco_S.push_back(new sf::Sprite);
         Brocco_S[i]->setTexture(*Brocco_T); 
     }
-    rotation = 0;
-    rotation2 = 0;
+
     rotate_circle(rotation);
     selected = intro;
     Sel_arrow_T = new sf::Texture;
@@ -66,7 +65,7 @@ void menu::update_displayed_text(){
         Menu_text[4]->setString(sf::String("n'hesitez pas a planter des arbres dans les emplacements"));
         Menu_text[5]->setString(sf::String("avec de la terre pour regenerer votre vie entre les combats."));
         Menu_text[6]->setString(sf::String("La touche d'action (planter arbre, parler devant la camera"));
-        Menu_text[7]->setString(sf::String("ou encore entrer dans la Trump Tower) est la touche A."));
+        Menu_text[7]->setString(sf::String("ou encore entrer dans la Trump Tower) est la touche Espace."));
         break;
     case play:  
         // No text bcs we launch game
@@ -85,25 +84,25 @@ void menu::update_displayed_text(){
 }
 
 void menu::rotate_circle(float theta){
-    //x = x0 + r * cos(theta) x0 = 560
-    //y = y0 + r * sin(theta) y0 = 200 r = 50
+    
     float x0 = 570, y0 = 200, r = 200;
-    Brocco_S[0]->setPosition(sf::Vector2f(x0+r*cos(theta), y0+r*sin(theta)));
+    Brocco_S[0]->setPosition(sf::Vector2f(x0+r*cos(theta*PI/180), y0+r*sin(theta*PI/180)));
     Brocco_S[0]->setRotation(rotation2);
-    Brocco_S[1]->setPosition(sf::Vector2f(x0+r*cos(theta+45), y0+r*sin(theta+45)));
+    Brocco_S[1]->setPosition(sf::Vector2f(x0+r*cos((theta+45)*PI/180), y0+r*sin((theta+45)*PI/180)));
     Brocco_S[1]->setRotation(rotation2);
-    Brocco_S[2]->setPosition(sf::Vector2f(x0+r*cos(theta+90), y0+r*sin(theta+90)));
+    Brocco_S[2]->setPosition(sf::Vector2f(x0+r*cos((theta+90)*PI/180), y0+r*sin((theta+90)*PI/180)));
     Brocco_S[2]->setRotation(rotation2);
-    Brocco_S[3]->setPosition(sf::Vector2f(x0+r*cos(theta+135), y0+r*sin(theta+135)));
+    Brocco_S[3]->setPosition(sf::Vector2f(x0+r*cos((theta+135)*PI/180), y0+r*sin((theta+135)*PI/180)));
     Brocco_S[3]->setRotation(rotation2);
-    Brocco_S[4]->setPosition(sf::Vector2f(x0+r*cos(theta+180), y0+r*sin(theta+180)));
+    Brocco_S[4]->setPosition(sf::Vector2f(x0+r*cos((theta+180)*PI/180), y0+r*sin((theta+180)*PI/180)));
     Brocco_S[4]->setRotation(rotation2);
-    Brocco_S[5]->setPosition(sf::Vector2f(x0+r*cos(theta+200), y0+r*sin(theta+200)));
+    Brocco_S[5]->setPosition(sf::Vector2f(x0+r*cos((theta+225)*PI/180), y0+r*sin((theta+225)*PI/180)));
     Brocco_S[5]->setRotation(rotation2);
-    Brocco_S[6]->setPosition(sf::Vector2f(x0+r*cos(theta+270), y0+r*sin(theta+270)));
+    Brocco_S[6]->setPosition(sf::Vector2f(x0+r*cos((theta+270)*PI/180), y0+r*sin((theta+270)*PI/180)));
     Brocco_S[6]->setRotation(rotation2);
-    Brocco_S[7]->setPosition(sf::Vector2f(x0+r*cos(theta+315), y0+r*sin(theta+315)));
+    Brocco_S[7]->setPosition(sf::Vector2f(x0+r*cos((theta+315)*PI/180), y0+r*sin((theta+315)*PI/180)));
     Brocco_S[7]->setRotation(rotation2);
+    
 }
 
 
@@ -171,7 +170,7 @@ void menu::Display(sf::RenderWindow* window){
                 _returnFlag = false;
             }
             update_arrow();
-            if(rotation < 360){
+            if(rotation < 180){
                 rotation += 0.5;
             }else{
                 rotation = 0;

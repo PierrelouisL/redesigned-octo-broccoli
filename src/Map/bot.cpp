@@ -145,14 +145,14 @@ void bot::initpositions(){
 
 	//std::cout << "chances to spawn = " << spawn << std::endl;
 	for(int y = 0; y < 59; ++y){
-		for(int x = 0; x < 39; ++x){
+		for(int x = 1; x < 39; ++x){
 			if(obstacle_ville1[x][y] == 8){
 				// We are in a spot for a bot so we should make one spawn!
 				nb_spawned++;
 				std::cout << "a bot spawned! pos=" << x*64 << " y= " << y*64 <<" nb = " << nb_spawned << "obstc=" << obstacle_ville1[x][y]<< std::endl;
 				//bots.insert(bots.end(), new TileCharacter());
 				bots.push_back(new fighter);
-				bots[nb_spawned]->change_char("Gretta");
+				bots[nb_spawned]->change_char("Routier");
 				bots[nb_spawned]->load_character();
 				bots[nb_spawned]->init_coord(sf::Vector2f(y*64, x*64));
 				bots[nb_spawned]->setPosition(sf::Vector2f(y*64, x*64));

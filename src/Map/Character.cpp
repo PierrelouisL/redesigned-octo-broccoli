@@ -119,6 +119,32 @@ sf::Vector2f TileCharacter::checkFrontCase(int val, bool flag){
 	}
 }
 
+sf::Vector2f TileCharacter::checkFrontCase(int val, bool flag, sf::Vector2f offset){
+	// Default bottom of the feet
+	sf::Vector2f next_case1 = _feet_bottomright + offset;
+	sf::Vector2f next_case2 = _feet_bottomleft  + offset;
+
+	next_case1 = next_case1 + next_case2;
+	next_case1 = next_case1/2.f;
+
+	if(!flag){
+		if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] == val){
+			return next_case1;
+		}
+		else{
+			return sf::Vector2f(-1, -1);	// Aucune case
+		}
+	}
+	else{
+		if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] > val){
+			return next_case1;
+		}
+		else{
+			return sf::Vector2f(-1, -1);	// Aucune case
+		}
+	}
+}
+
 void TileCharacter::checkKeyMove(sf::Event &event){
         
     // Si on appuit sur une touche
@@ -186,11 +212,7 @@ void TileCharacter::move(sf::View &view){
     }
 
     this->load_character();
-
-    _feet_bottomleft 	= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +64));	//
-    _feet_bottomright	= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +64));	// Save the coord of each
-    _feet_topleft		= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +32));	// corner of character's feet
-	_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
+    init_coord(view);
 }
 
 

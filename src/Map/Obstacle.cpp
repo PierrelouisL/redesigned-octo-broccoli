@@ -77,9 +77,11 @@ int obstacle_ville1[61][60]{
 
 6  : event glitch
 
+8  : Combat
+
 10 : event special plante mario / tp vers début event marion
 11 : porte vers maison
 12 : event champignon
 
-8  : Combat
+
 */
