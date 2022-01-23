@@ -39,15 +39,19 @@ menu::menu(){
     Menu_options[2]->setString(sf::String("Credits"));
     Menu_options[2]->setPosition(sf::Vector2f(800, 600));
 
-    for(int i = 0; i< 4; ++i){
+    for(int i = 0; i< 8; ++i){
         Menu_text.push_back(new sf::Text);
         Menu_text[i]->setFont(TextFont);
-        Menu_text[i]->setCharacterSize(40);
+        Menu_text[i]->setCharacterSize(25);
     }
-    Menu_text[0]->setPosition(sf::Vector2f(40, 450));
-    Menu_text[1]->setPosition(sf::Vector2f(40, 500));
-    Menu_text[2]->setPosition(sf::Vector2f(40, 550));
-    Menu_text[3]->setPosition(sf::Vector2f(40, 600));
+    Menu_text[0]->setPosition(sf::Vector2f(30, 450));
+    Menu_text[1]->setPosition(sf::Vector2f(30, 480));
+    Menu_text[2]->setPosition(sf::Vector2f(30, 510));
+    Menu_text[3]->setPosition(sf::Vector2f(30, 540));
+    Menu_text[4]->setPosition(sf::Vector2f(30, 570));
+    Menu_text[5]->setPosition(sf::Vector2f(30, 600));
+    Menu_text[6]->setPosition(sf::Vector2f(30, 630));
+    Menu_text[7]->setPosition(sf::Vector2f(30, 660));
     update_displayed_text();
     
 }
@@ -56,19 +60,27 @@ void menu::update_displayed_text(){
     switch (selected)
     {
     case intro:
-        Menu_text[0]->setString(sf::String("Bla bla intro1"));
-        Menu_text[1]->setString(sf::String("Bla bla intro2"));
-        Menu_text[2]->setString(sf::String("Bla bla intro3"));
-        Menu_text[3]->setString(sf::String("Bla bla intro4"));
+        Menu_text[0]->setString(sf::String("Bonjour et bienvenue sur redesigned-octo-broccoli!"));
+        Menu_text[1]->setString(sf::String("Le but du jeu est de sauver la planete, vous incarnez"));
+        Menu_text[2]->setString(sf::String("la jeune militante Greta Thunberg. "));
+        Menu_text[3]->setString(sf::String("A vous de sauver la planete contre les pollueurs, "));
+        Menu_text[4]->setString(sf::String("n'hesitez pas a planter des arbres dans les emplacements"));
+        Menu_text[5]->setString(sf::String("avec de la terre pour regenerer votre vie entre les combats."));
+        Menu_text[6]->setString(sf::String("La touche d'action (planter arbre, parler devant la camera"));
+        Menu_text[7]->setString(sf::String("ou encore entrer dans la Trump Tower) est la touche A."));
         break;
     case play:  
         // No text bcs we launch game
         break;
     case credits:
-        Menu_text[0]->setString(sf::String("Bla bla credits 1"));
-        Menu_text[1]->setString(sf::String("Bla bla credits 2"));
-        Menu_text[2]->setString(sf::String("Bla bla credits 3"));
-        Menu_text[3]->setString(sf::String("Bla bla credits 4"));
+        Menu_text[0]->setString(sf::String("Jeu cree par Thanh-Liem TA et Pierre-Louis "));
+        Menu_text[1]->setString(sf::String("Lagunegrand, graphiques en jeu entièrement fait a la main"));
+        Menu_text[2]->setString(sf::String("principalement par Thanh-Liem."));
+        Menu_text[3]->setString(sf::String(" "));
+        Menu_text[4]->setString(sf::String(" "));
+        Menu_text[5]->setString(sf::String(" "));
+        Menu_text[6]->setString(sf::String(" "));
+        Menu_text[7]->setString(sf::String("(font) Webpixel bitmap by Manuel Viergutz"));
         break;
     }
 }
@@ -173,7 +185,7 @@ void menu::Display(sf::RenderWindow* window){
             for(int i = 0; i< 8; ++i){
                 window->draw(*Brocco_S[i]);
             }
-            for(int i = 0; i < 4; ++i){
+            for(int i = 0; i < 8; ++i){
                 window->draw(*Menu_text[i]);
             }
             for(int i=0; i< 3; ++i){
