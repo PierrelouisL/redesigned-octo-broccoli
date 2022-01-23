@@ -4,7 +4,6 @@
 menu::menu(){
     TextFont.loadFromFile("images/webpixel bitmap_medium.otf");
     SelFont.loadFromFile("images/webpixel bitmap_medium-italic.otf");
-
     // Background management
     Background = new sf::Texture;
     //Background->loadFromFile(""); BG IM

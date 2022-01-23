@@ -50,9 +50,11 @@ void Thread_fight(sf::RenderWindow* window, fighter* player){
 
 void Thread_menu(sf::RenderWindow* window){
     std::cout << "Thread lancé !" << std::endl;
+    WinMutex.lock();
     menu Ecran_menu;
     Ecran_menu.Display(window);
     g_mode = normal;
+    WinMutex.unlock();
     printf_s("we quit!");
 }
 
@@ -95,6 +97,7 @@ int main(){
     bool heal = false;
     element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
     while (window->isOpen() && !quit){
+        WinMutex.lock();
         while (window->pollEvent(event)){
             if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
                 printf("C'est chao\n");
@@ -131,7 +134,7 @@ int main(){
                             }
                         }
                     }
-
+                    std::cout << "jusque avant bot and follow" << std::endl;
                     bots.check_and_follow(perso.getPosition());
                     switch(g_mode){
                         case normal:
@@ -277,6 +280,7 @@ int main(){
         allGoal.display_goal(*window, view.getCenter());
 
         window->display();
+        WinMutex.unlock();
     }
     std::cout << "le vrai chao!"<< std::endl;
     thread.wait();
