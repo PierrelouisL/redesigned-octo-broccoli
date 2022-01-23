@@ -18,7 +18,7 @@ class TileCharacter : public TileWindow{
 		sf::Vector2f checkFrontCase(int val);
 		void checkKeyMove(sf::Event &event);
 		void move(sf::View &view);
-		void actionKey(sf::Event &event, TileElement &element);
+		void actionKey(sf::Event &event, TileElement &element, bool* heal);
 		void resetkey(){_upFlag = false; _downFlag = false; _leftFlag = false; _rightFlag = false;}
 		void change_char(std::string character){_character = character;};
 		bool oneMoveFlag(){return _upFlag || _downFlag || _leftFlag || _rightFlag;}

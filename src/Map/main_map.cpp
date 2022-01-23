@@ -40,7 +40,6 @@ sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in anot
 sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
 
 
-
 void Thread_fight(sf::RenderWindow* window, fighter* player){
     fight_scene f_sc;
     sf::Event event;
@@ -60,6 +59,7 @@ void Thread_fight(sf::RenderWindow* window, fighter* player){
         }
         WinMutex.unlock();
     }
+    return;
 }
 
 
@@ -77,25 +77,23 @@ int main(){
 
 
     // on crée les objects qu'on va manipuler
-    TileCharacter perso2("perso_debug");
-    perso2.load_character();
 
     TileMap map("images/Ville1.png", 59, 39);
     TileMap map_decors("images/Ville2.png", 59, 39);
 
     TileCharacter perso("perso_debug");
+    fighter joueur(perso);
+    perso.load_character();
     TileElement element;
 
     
     map.load_map();
     map_decors.load_map();
-    perso.load_character();
 
     //--
     view.setCenter(sf::Vector2f(3.5*64, 30.5*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
     perso.init_coord(view);
 
-    fighter joueur(perso);
     // on gère les évènements   
 	sf::Event event;
     // on fait tourner la boucle principale
@@ -104,6 +102,7 @@ int main(){
     sf::Thread thread(std::bind(&Thread_fight, window, &joueur));
     thread.launch();
     bots.current_bot()->alive = false;
+    bool heal = false;
     while (window->isOpen() && !quit)
     {
         bots.check_and_follow(perso.getPosition());
@@ -125,7 +124,11 @@ int main(){
                         window->close();
                     }
                     printf_s("polling");
-                    perso.actionKey(event, element);         
+                    perso.actionKey(event, element, &heal);
+                    if(heal){
+                        joueur.heal();  
+                        heal = false;
+                    }
                     perso.checkKeyMove(event);  // Check status of movement key
                 }
                 WinMutex.lock();
@@ -138,6 +141,11 @@ int main(){
                 bots.draw(*window);
                 window->draw(perso);
 
+                //std::cout << "coords=" << perso.getPosition().x << " " << perso.getPosition().y << std::endl;
+                if(element.check_collision(perso.getPosition())){
+                    printf_s("---------------------------Collision! perte hp");
+                    joueur.subit_atq(3);
+                }
                 element.load_allElement(*window);
                 
                 window->draw(map_decors);
@@ -161,6 +169,8 @@ int main(){
                 break;
         }
     }
-    free(window);
+    std::cout << "le vrai chao!"<< std::endl;
+    thread.wait();
+    delete window;
     return 0;
 }

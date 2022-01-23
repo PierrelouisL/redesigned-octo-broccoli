@@ -18,6 +18,19 @@ void TileElement::load_allElement(sf::RenderWindow &window){
 
 }
 
+bool TileElement::check_collision(sf::Vector2f coords){
+	for(unsigned int i = 0; i < _vector_element.size(); i++){
+		if(_vector_type[i] == 3){
+			if(coords.x/64 + 1 > _vector_element[i].getPosition().x/64 && coords.x/64 - 1 < _vector_element[i].getPosition().x/64){
+				if((coords.y/64 +0.5) > _vector_element[i].getPosition().y/64 && (coords.y/64-0.5) < _vector_element[i].getPosition().y/64){
+					return true;
+				}	
+			}
+		}
+	}
+	return false;
+}
+
 void TileElement::put_VectorType(int val){
 	_vector_type.push_back(val);
 }
