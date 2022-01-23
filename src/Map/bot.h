@@ -45,6 +45,7 @@ public:
 	void print();
 	void draw(sf::RenderWindow &win);
 	int check_and_follow(sf::Vector2f coords);
+
 	~bot();
 };
 

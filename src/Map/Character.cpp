@@ -1,13 +1,12 @@
 #include "Character.h"
-#include "Obstacle.h"
-#include <wait.h>
 #include "bot.h"
+
 
 // Pour avoir une vraie fonction random
 #include "random.hpp"
 using Random = effolkronium::random_static;
 
-#define MOVESPEED 10
+#define MOVESPEED 3.5
 
 TileCharacter::TileCharacter(const TileCharacter& T){
 	this->setPosition(T.getPosition());
@@ -26,10 +25,12 @@ TileCharacter::TileCharacter(const TileCharacter& T){
 	_leftFlag = T._leftFlag;
 	_is_main_character = T._is_main_character;
 }
+extern int obstacle_ville1[61][60];
+
 
 void TileCharacter::load_character(){
 
-	TileCharacter perso(_character);
+	static sf::Clock clk;
 
 	// on définit le niveau à l'aide de numéro de tuiles
 	int level[] = { 0, 1, 8, 9 };
@@ -52,8 +53,22 @@ void TileCharacter::load_character(){
     	default:
     		break;
     }
+    if(oneMoveFlag()){
+    	if(clk.getElapsedTime().asSeconds() > 0.15f){
+	    	if(_n_sprite == 4){
+				_n_sprite = 1;
+			}
+			else{
+				_n_sprite += 1; 
+			}
+			clk.restart();
+	    }
+    }
+    else{
+    	_n_sprite = 1;
+    }
 
-   	std::string pathCharacter = "images/Personnage/" + _character + ".png";
+   	std::string pathCharacter = "images/Personnage/" + _character + std::to_string(_n_sprite) + ".png";
 	if(!this->load(pathCharacter, level, 2, 2)){
 		std::cout << "Erreur du chargement du personnage" << std::endl;
 	}
@@ -75,7 +90,7 @@ void TileCharacter::init_coord(sf::Vector2f coords){ // If bot
 }
 
 
-sf::Vector2f TileCharacter::checkFrontCase(int val){
+sf::Vector2f TileCharacter::checkFrontCase(int val, bool flag){
 
 	sf::Vector2f next_case1;
 	sf::Vector2f next_case2;
@@ -104,11 +119,21 @@ sf::Vector2f TileCharacter::checkFrontCase(int val){
 	next_case1 = next_case1 + next_case2;
 	next_case1 = next_case1/2.f;
 
-	if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] == val){
-		return next_case1;
+	if(!flag){
+		if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] == val){
+			return next_case1;
+		}
+		else{
+			return sf::Vector2f(-1, -1);	// Aucune case
+		}
 	}
 	else{
-		return sf::Vector2f(-1, -1);	// Aucune case
+		if(obstacle_ville1[ abs((int) ((next_case1.y)/64)) ][ abs((int) (next_case1.x/64)) ] > val){
+			return next_case1;
+		}
+		else{
+			return sf::Vector2f(-1, -1);	// Aucune case
+		}
 	}
 }
 
@@ -145,7 +170,7 @@ void TileCharacter::move(sf::View &view){
 	if(_leftFlag){  // left key is pressed: move our character
 		
 		_eye = Left;
-		next_case = checkFrontCase(0);
+		next_case = checkFrontCase(-1, true);
 		if( next_case != sf::Vector2f(-1, -1) ){
 			// Check if both corner touch an obstacle	
 			view.move(-MOVESPEED, 0);
@@ -154,7 +179,7 @@ void TileCharacter::move(sf::View &view){
     else if(_rightFlag){  // right key is pressed: move our character
     	
     	_eye = Right;
-    	next_case = checkFrontCase(0);
+    	next_case = checkFrontCase(-1, true);
     	if( next_case != sf::Vector2f(-1, -1) ){
 			// Check if both corner touch an obstacle
        		view.move(MOVESPEED, 0);
@@ -163,7 +188,7 @@ void TileCharacter::move(sf::View &view){
     else if(_upFlag){     // up key is pressed: move our character
 		
 		_eye = Back;
-		next_case = checkFrontCase(0);
+		next_case = checkFrontCase(-1, true);
 		if( next_case != sf::Vector2f(-1, -1) ){
 			// Check if both corner touch an obstacle
         	view.move(0, -MOVESPEED);
@@ -171,7 +196,7 @@ void TileCharacter::move(sf::View &view){
     }
     else if(_downFlag){   // down key is pressed: move our character
 		_eye = Face; 
-		next_case = checkFrontCase(0);
+		next_case = checkFrontCase(-1, true);
     	if( next_case != sf::Vector2f(-1, -1) ){
 			// Check if both corner touch an obstacle
         	view.move(0, MOVESPEED);
@@ -182,7 +207,7 @@ void TileCharacter::move(sf::View &view){
 
     _feet_bottomleft 	= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +64));	//
     _feet_bottomright	= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +64));	// Save the coord of each
-    _feet_topleft		= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +32));	// coord of character's feet
+    _feet_topleft		= sf::Vector2f(view.getCenter() + sf::Vector2f(-32, +32));	// corner of character's feet
 	_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
 }
 

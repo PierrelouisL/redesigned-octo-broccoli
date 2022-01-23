@@ -43,3 +43,11 @@ bool TileWindow::load(const std::string& tileset, const int* tiles, unsigned int
 
     return true;
 }
+
+void TileWindow::sound_LoadStart(sf::Music &music, std::string name, float volume, bool loop){
+
+    music.openFromFile(name);
+    music.setVolume(volume);
+    music.play();
+    music.setLoop(loop); 
+}

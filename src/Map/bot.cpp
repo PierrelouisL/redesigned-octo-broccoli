@@ -104,10 +104,8 @@ int bot::check_and_follow(sf::Vector2f coords){
 		//std::cout << "not found!" << std::endl;
 		return this->current;
 	}
-	//sf::View vieww(sf::Vector2f(this->bots[this->current]->getPosition().x, this->bots[this->current]->getPosition().y));
-	//std::cout << "player nearby nb= " << this->current << std::endl;
+
 	return this->current;
-	
 	// We first check where should we be heading to follow him
 	/*if(player.getPosition().x < this->bots[this->current]->getPosition().x){
 		// player coord x < bot coord x so we should decrease x

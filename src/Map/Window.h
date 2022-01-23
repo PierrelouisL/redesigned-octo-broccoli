@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -11,6 +12,7 @@ class TileWindow : public sf::Drawable, public sf::Transformable{
 		TileWindow(){};
 		
 		bool load(const std::string& tileset, const int* tiles, unsigned int width, unsigned int height);
+		void sound_LoadStart(sf::Music &music, std::string name, float volume, bool loop);
 
 	private:
 

@@ -3,8 +3,6 @@
 #include "Element.h"
 
 
-typedef enum orientation{ Face, Back, Left, Right } orientation;
-
 class TileCharacter : public TileWindow{
 
 	public:
@@ -22,11 +20,29 @@ class TileCharacter : public TileWindow{
 		void resetkey(){_upFlag = false; _downFlag = false; _leftFlag = false; _rightFlag = false;}
 		void change_char(std::string character){_character = character;};
 		bool oneMoveFlag(){return _upFlag || _downFlag || _leftFlag || _rightFlag;}
-		
 
+		void set_char(std::string character){_character = character;}
+		void set_eye(orientation val){_eye = val;}
+		void set_upflag	(bool val)	{_upFlag 	= val;}
+		void set_downflag(bool val)	{_downFlag 	= val;}
+		void set_leftflag(bool val)	{_leftFlag 	= val;}
+		void set_rightflag(bool val){_rightFlag = val;}
+		void set_feet_topleft(sf::Vector2f val)		{_feet_topleft 		= val;}
+		void set_feet_topright(sf::Vector2f val)	{_feet_topright 	= val;}
+		void set_feet_bottomleft(sf::Vector2f val)	{_feet_bottomleft	= val;}
+		void set_feet_bottomright(sf::Vector2f val)	{_feet_bottomright 	= val;}
+
+
+		orientation get_eye(){return _eye;}
+		bool get_upflag()	{return _upFlag 	;}
+		bool get_downflag()	{return _downFlag 	;}
+		bool get_leftflag()	{return _leftFlag 	;}
+		bool get_rightflag(){return _rightFlag 	;}
+		
 	private:
 		std::string _character;				// character's name
 		orientation _eye;					// character's view
+		int _n_sprite;				// number of the sprite to load 
 
 		sf::Vector2f _feet_topleft;			// Top left corner of character's feet
 		sf::Vector2f _feet_topright;		// Top right corner of character's feet 
@@ -38,6 +54,6 @@ class TileCharacter : public TileWindow{
 	    bool _leftFlag;						//
 	    bool _rightFlag;					//
 
-		 bool _is_main_character; 		// Is the character the playable character
+		bool _is_main_character; 		// Is the character the playable character
 
 };

@@ -12,7 +12,7 @@ cc = g++
 option = -Wall -g -std=c++11
 src_dir = src
 src_Map_dir = src/Map
-flags =  -lsfml-graphics -lsfml-window -lsfml-system -pthread
+flags =  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -pthread
 
 SRC = $(wildcard src/*.cpp)
 OBJS = $(SRC:.cpp=.o)

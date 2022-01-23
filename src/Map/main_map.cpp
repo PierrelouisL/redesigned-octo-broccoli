@@ -1,16 +1,10 @@
-#include <stdlib.h>
-#include "Window.h"
-#include "Character.h"
-#include "Map.h"
-#include "Element.h"
-#include "bot.h"
+#include "main_map.h"
 #include "fighter.h"
 #include "fight_scene.h"
 #include "menu.h"
 
 #include <thread>
 #include <mutex>
-
 
 /*
  *  Nous aurons une map de 944 pixels de large contre 624 pixels de hauteur en 16x16, nous affichons
@@ -29,9 +23,6 @@
 
 #define FIGHT_ENABLED  // A commenter si tu veux pas de combat!
 #define DEBUG
-
-//typedef enum{MENU, CITY, FIGHT, END}States;
-States Actual_state = MENU;
 
 bool quit = false;
 
@@ -74,37 +65,32 @@ void Thread_menu(sf::RenderWindow* window){
 
 
 int main(){
-    std::cout << "bonjour sur la nouvelle branche!" << std::endl;
 	// on crée la fenêtre
     sf::RenderWindow* window = new sf::RenderWindow;
-	window->create(sf::VideoMode(1152, 704),
-						"Petage de gueule en regle des pollueurs");
-    window->setFramerateLimit(45);
+	window->create(sf::VideoMode(1152, 704), "redesigned-octo-broccoli");
+    window->setFramerateLimit(120);
     window->setVerticalSyncEnabled(true);	
 	sf::View view = window->getDefaultView();
     window->setView(view);
 
-
     // on crée les objects qu'on va manipuler
-
-    TileMap map("images/Ville1.png", 59, 39);
-    TileMap map_decors("images/Ville2.png", 59, 39);
-
-    TileCharacter perso("perso_debug");
-    fighter joueur(perso);
-    perso.load_character();
+    TileMap map("images/Map/Map1.png", 60, 61);
+    TileMap map_decors("images/Map/Map2.png", 60, 61);
+    TileCharacter perso("Greta");           // Character mode normal
+    TileCharacterMario persoMario(perso);   // Same Character mode mario
+    TileCharacter *ptr_perso = &perso;      // Object that we will manipulate
     TileElement element;
+    TileGoal allGoal;
+    Gamemode g_mode = normal;
 
-    
-    map.load_map();
-    map_decors.load_map();
+    view.setCenter(sf::Vector2f(4.5*64, 30.5*64));  // Start at home
+    ptr_perso->init_coord(view);
 
-    //--
-    view.setCenter(sf::Vector2f(3.5*64, 30.5*64));  // Correspond with the bottom left corner (the map ville_proto1 start)
-    perso.init_coord(view);
-
-    // on gère les évènements   
+    // on gère les évènements et music
 	sf::Event event;
+    sf::Clock clk;
+    sf::Music music;
+    sf::Music sound_effect;
     // on fait tourner la boucle principale
     bots.print();
 
@@ -114,72 +100,189 @@ int main(){
     t_menu.launch();
     bots.current_bot()->alive = false;
     bool heal = false;
-    while (window->isOpen() && !quit)
-    {
-        bots.check_and_follow(perso.getPosition());
-        if(bots.current_bot()->alive && (Actual_state== FIGHT || Actual_state == CITY)){
-            Actual_state = FIGHT;
-        }
-        if(!bots.current_bot()->alive && (Actual_state== FIGHT || Actual_state == CITY)){
-            Actual_state = CITY;
-        }
-        switch(Actual_state){
-            case MENU:
-                //printf_s("DANS LE MENU!");
-                break;
-            case CITY:
-                window->setActive(true);
-                while(window->pollEvent(event)){
-                    if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
-                        printf("C'est chao\n");
-                        quit = 1;
-                        window->close();
-                    }
-                    printf_s("polling");
-                    perso.actionKey(event, element, &heal);
-                    if(heal){
-                        joueur.heal();  
-                        heal = false;
-                    }
-                    perso.checkKeyMove(event);  // Check status of movement key
-                }
-                WinMutex.lock();
-                perso.move(view);           // Move character
+    element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
+    while (window.isOpen() && !quit){
+        while (window.pollEvent(event)){
+            if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
+                printf("C'est chao\n");
+                window.close();
+            }
 
-                window->setView(view);
-                window->clear();
-                window->draw(map);
-                perso.setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
-                bots.draw(*window);
-                window->draw(perso);
+            if(event.type == sf::Event::KeyPressed){
+                if(event.key.code == sf::Keyboard::A){  // Action key = A
 
-                //std::cout << "coords=" << perso.getPosition().x << " " << perso.getPosition().y << std::endl;
-                if(element.check_collision(perso.getPosition())){
-                    printf_s("---------------------------Collision! perte hp");
-                    joueur.subit_atq(3);
+                    sf::Vector2f next_case = ptr_perso->checkFrontCase(4, false);                  // Tree spawn
+                    if( next_case != sf::Vector2f(-1, -1) ){
+                        
+                        ptr_perso->heal(); // Spawning a tree makes you get healed
+
+                        element.sound_LoadStart(sound_effect, "sound/Tree.wav", 25.f, false);
+
+                        obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = -1;
+
+                        TileMap temp_element;
+                        int level[] = { 0, 1 };
+                        
+                        temp_element.load("images/Decors/arbre.png", level, 1, 2);
+                        temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(-2, -80));         
+                        element.put_VectorElement(temp_element);
+                        element.put_VectorType(4);
+
+                        allGoal.add_tree();
+                        if(allGoal.get_goalTree()){
+                            map.change_map("images/Map/Map3.png");
+                            map.load_map();
+
+                            for(int i=0; i<7; i++){
+                                obstacle_ville1[10][19+i] = -2;
+                            }
+                        }
+                    }
+
+                    bots.check_and_follow(perso.getPosition());
+                    switch(g_mode){
+                        case normal:
+                                 
+                            if(bots.current_bot()->alive){
+                                g_mode = fight;
+                            }
+
+                            if( ptr_perso->checkFrontCase(-2, false) != sf::Vector2f(-1, -1) ){             // City to Trump's room 
+                                element.sound_LoadStart(music, "sound/HymneEtatUnis.wav", 20.f, true);
+                                view.setCenter(sf::Vector2f(7*64, 57.5*64));
+                            
+                            }
+                            else if( ptr_perso->checkFrontCase(-3, false) != sf::Vector2f(-1, -1) ){        // Trump's room to City
+                                element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
+                                view.setCenter(sf::Vector2f(22*64, 11.5*64));
+                            
+                            }           
+                            else if( ptr_perso->checkFrontCase(3, false) != sf::Vector2f(-1, -1) ){         // Camera event
+                                if(ptr_perso->get_eye() == TileCharacter::Left){
+                                    allGoal.done_goalCamera();
+                                    element.sound_LoadStart(sound_effect, "sound/discours_Greta.wav", 80.f, false);
+                                    while(music.getStatus() == sf::Music::Playing);
+                                }
+                            }
+                            else if( ptr_perso->checkFrontCase(10, false) != sf::Vector2f(-1, -1) ){        // TP at the start of mario event
+                                g_mode = mario;
+                                view.setCenter(sf::Vector2f(22*64, 56.5*64));
+                                element.sound_LoadStart(music, "sound/SuperMarioBros.wav", 50.f, true);
+                                ptr_perso = &persoMario;
+                            }
+                            break;
+
+                        case mario :
+
+                            if( ptr_perso->checkFrontCase(11, false) != sf::Vector2f(-1, -1) ){         // TP to House
+                                element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
+
+                                g_mode = normal;
+                                view.setCenter(sf::Vector2f(4.5*64, 30.5*64));
+                                music.stop();
+                                ptr_perso = &perso;
+                            }
+
+                            else if( ptr_perso->checkFrontCase(12, false) != sf::Vector2f(-1, -1) ){
+                                clk.restart();            
+                                element.sound_LoadStart(sound_effect, "sound/MushroomSound.wav", 5.f, false);
+                                for(int i=0; i<4; i++){
+                                    ptr_perso->scale( sf::Vector2f(2, 2));
+                                    ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64*2*(i*i+1), -64*2*(i+1+1)) );
+                                    window.setActive();
+                                    window.clear();
+                                    window.draw(map);
+                                    window.draw(*ptr_perso);
+                                    window.display();
+                                    clk.restart();
+                                    while(clk.getElapsedTime().asSeconds() < 2);
+                                }
+                                element.sound_LoadStart(sound_effect, "sound/BallonBoom.wav", 80.f, false);                                ptr_perso->setScale( sf::Vector2f(1, 1));
+                                view.setCenter(sf::Vector2f(22*64, 56.5*64));
+                            }  
+                            break;
+
+                        case fight :
+                            if(!bots.current_bot()->alive){
+                                g_mode = normal;
+                            }
+                            break;
+                        case menu:
+                            // We don't do anything here
+                            break;
+                        default :
+                            break;
+                    }
                 }
-                element.load_allElement(*window);
+
                 
-                window->draw(map_decors);
-                window->display();
-                WinMutex.unlock();
-                window->setActive(false);
-                break;
-            case FIGHT:
-                #ifdef FIGHT_ENABLED
-                perso.resetkey();
-                if(!bots.current_bot()->alive){
-                    // Bot dead so we move on
-                    printf_s("bot dead");
-                }else{
-                    //printf_s("bot alive");
-                }
-                #endif
-                break;
-            case END:
+                if(ptr_perso->oneMoveFlag()){
+                    sf::Vector2f next_case;
+                    switch(g_mode){
 
-                break;
+                        case normal :
+                            next_case = ptr_perso->checkFrontCase(5, false);                  // Car event
+                            if( next_case != sf::Vector2f(-1, -1) ){
+
+                                element.sound_LoadStart(sound_effect, "sound/Car.wav", 80.f, false);  
+
+                                obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
+
+                                TileMap temp_element;
+                                int level[] = { 0, 1, 2, 3};
+                                
+                                temp_element.load("images/Decors/voiture.png", level, 2, 2);
+                                temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(640, -64));        
+                                element.put_VectorElement(temp_element);
+                                element.put_VectorType(5);
+                            }
+                            next_case = ptr_perso->checkFrontCase(6, false);
+                            if(  next_case != sf::Vector2f(-1, -1) ){
+
+                                obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
+                                
+                                element.sound_LoadStart(sound_effect, "sound/SpecialSoundEffect.wav", 80.f, false);  
+                                view.zoom(3);
+                            }
+                            break;
+
+                        case mario : 
+                            break;
+
+                        case fight :
+                            break;
+
+                        default :
+                            break;
+                    }
+                }
+            }
+    
+            ptr_perso->checkKeyMove(event);  // Check status of movement key
+            //bots.check_and_follow(perso);
         }
+        window.setActive();
+        ptr_perso->move(view);           // Move character
+
+        // on dessine le niveau
+        window.setView(view);
+        window.clear();
+        window.draw(map);
+   
+        ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
+        //std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
+        //bots.check_and_follow(perso);
+        //perso2.setPosition(sf::Vector2f(192,2304 ));
+        //window.draw(perso2);
+        window.draw(*ptr_perso);
+
+        element.load_allElement(window);
+        //bots.draw(window);
+
+        window.draw(map_decors);
+        allGoal.display_goal(window, view.getCenter());
+
+        window.display();
     }
     std::cout << "le vrai chao!"<< std::endl;
     thread.wait();
