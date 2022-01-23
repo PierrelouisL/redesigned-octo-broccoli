@@ -58,7 +58,7 @@ typedef enum
 void aff_background(sf::RenderWindow *window);
 
 // Retourne -1 si un des personnage est mort donc on quitte, 0 sinon
-int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi);
+int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi, std::vector<sf::Text*> Atq);
 
 int handleEvents(sf::Event event);
 
@@ -70,3 +70,7 @@ void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8
 sf::RectangleShape aff_hp(sf::RenderWindow* window, fighter perso, bool who);
 
 int fight_scene(sf::RenderWindow* window, fighter* joueur, fighter* ennemi);
+
+void fight_init();
+
+void goodbye();

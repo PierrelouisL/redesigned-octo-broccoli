@@ -63,10 +63,10 @@ int bot::checknearby(sf::Vector2f coords){
 	for(int nb_bot = 1; nb_bot < this->bot_number ; ++nb_bot){
 		xbot = bots[nb_bot]->getPosition().x;
 		ybot = bots[nb_bot]->getPosition().y;
-		std::cout << "coords bot " << nb_bot << " x=" << xbot << " y=" << ybot << "coords perso x=" << coords.x << " y=" << coords.y << std::endl;
+		//std::cout << "coords bot " << nb_bot << " x=" << xbot << " y=" << ybot << "coords perso x=" << coords.x << " y=" << coords.y << std::endl;
 		if((xbot + 20) > coords.x && (xbot-20) < coords.x){
 			if((ybot + 20) > coords.y && (ybot-20)< coords.y){
-				std::cout << "player nearby! x = "<< xbot << " y = " << ybot << "nb_bot" << nb_bot<< std::endl;
+				//std::cout << "player nearby! x = "<< xbot << " y = " << ybot << "nb_bot" << nb_bot<< std::endl;
 				current = nb_bot;
 				return nb_bot;
 			}
@@ -98,14 +98,14 @@ void bot::print(){
  * @param player
  */
 int bot::check_and_follow(sf::Vector2f coords){
-	std::cout << "coords = " << coords.x << " " << coords.y << std::endl;
+	//std::cout << "coords = " << coords.x << " " << coords.y << std::endl;
 	checknearby(coords);
 	if(this->current <= 0){
-		std::cout << "not found!" << std::endl;
+		//std::cout << "not found!" << std::endl;
 		return this->current;
 	}
 	//sf::View vieww(sf::Vector2f(this->bots[this->current]->getPosition().x, this->bots[this->current]->getPosition().y));
-	std::cout << "player nearby nb= " << this->current << std::endl;
+	//std::cout << "player nearby nb= " << this->current << std::endl;
 	return this->current;
 	
 	// We first check where should we be heading to follow him

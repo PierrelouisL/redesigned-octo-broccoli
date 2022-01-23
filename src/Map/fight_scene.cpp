@@ -42,14 +42,14 @@ void blink(sf::Uint8 *A, char *blinking_way)
 	}
 }
 
-void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8 G, sf::Uint8 B, char last_pressed)
+void flagHandler(char flag, int *last_pos, std::vector<sf::Text*> Atq, sf::Uint8 R, sf::Uint8 G, sf::Uint8 B, char last_pressed)
 {
 	#ifdef DEBUG
 	std::cout << (int)flag << "=f" << std::endl;
 	#endif
 	if (flag == UP)
 	{ // Up
-		Atq[*last_pos].setFillColor(sf::Color(R, G, B, 255));
+		Atq[*last_pos]->setFillColor(sf::Color(R, G, B, 255));
 		switch (*last_pos)
 		{
 		case 0:
@@ -67,7 +67,7 @@ void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8
 	}
 	else if (flag == DOWN)
 	{ // Down
-		Atq[*last_pos].setFillColor(sf::Color(R, G, B, 255));
+		Atq[*last_pos]->setFillColor(sf::Color(R, G, B, 255));
 		switch (*last_pos)
 		{
 		case 0:
@@ -85,7 +85,7 @@ void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8
 	}
 	else if (flag == RIGHT)
 	{ // Right
-		Atq[*last_pos].setFillColor(sf::Color(R, G, B, 255));
+		Atq[*last_pos]->setFillColor(sf::Color(R, G, B, 255));
 		switch (*last_pos)
 		{
 		case 0:
@@ -103,7 +103,7 @@ void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8
 	}
 	else if (flag == LEFT)
 	{ // Left
-		Atq[*last_pos].setFillColor(sf::Color(R, G, B, 255));
+		Atq[*last_pos]->setFillColor(sf::Color(R, G, B, 255));
 		switch (*last_pos)
 		{
 		case 0:
@@ -158,27 +158,20 @@ bool returnFlag = false;
 char actionFlag = NOTHING; // Si une action est en cours on ne gere plus les evenements!
 
 
-void goodbye(sf::Texture *Background, sf::Sprite *Background_sprite, sf::Texture *Hp, sf::Sprite *Hp_Sprite, sf::Sprite *Hp2_Sprite, sf::Event *event){
+void goodbye(){
 	upFlag = false;
 	downFlag = false;
 	leftFlag = false;
 	rightFlag = false;
 	returnFlag = false;
 	actionFlag = NOTHING;
-	delete Background;
-	delete Background_sprite;
-	delete Hp;
-	delete Hp_Sprite;
-	delete Hp2_Sprite;
-	delete event;
 }
 
 
 sf::Font NiceFont;
-sf::Text Atq[4];
 
 
-int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
+int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi, std::vector<sf::Text*> Atq)
 {
 	static sf::Uint8 R = 255, G = 0, B = 0, A = 250;
 	sf::Font Font;
@@ -207,10 +200,6 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 		Battle_outline.setOutlineThickness(5.f);
 		Battle_outline.setOutlineColor(sf::Color(sf::Color::Red));
 		Battle_outline.setPosition(sf::Vector2f(5.f, 499.f));
-		Atq[0].setPosition(sf::Vector2f(20.f, 510.f));
-		Atq[1].setPosition(sf::Vector2f(600.f, 510.f));
-		Atq[2].setPosition(sf::Vector2f(20.f, 610.f));
-		Atq[3].setPosition(sf::Vector2f(600.f, 610.f));
 	}
 
 
@@ -222,11 +211,9 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 	{
 		if ((i != last_pos) && actionFlag == NOTHING)
 		{
-			Atq[i].setFont(Font);
-			Atq[i].setString(joueur->get_atk(i));
-			Atq[i].setCharacterSize(40);
-			Atq[i].setFillColor(sf::Color(R, G, B, 255));
-			window->draw(Atq[i]);
+			Atq[i]->setString(joueur->get_atk(i));
+			Atq[i]->setFillColor(sf::Color(R, G, B, 255));
+			window->draw(*Atq[i]);
 			std::string s = joueur->get_atk(i);
 			std::cout << "----------printing atq " << i << "string =" << s << std::endl;
 		}
@@ -265,10 +252,8 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 #ifdef DEBUG
 	std::cout << " last_pos= " << (int)last_pos << " A= " << (int)A << " last_pressed= " << (int)last_pressed << std::endl;
 #endif
-	Atq[last_pos].setFont(Font);
-	Atq[last_pos].setString(joueur->get_atk(last_pos));
-	Atq[last_pos].setCharacterSize(40);
-	Atq[last_pos].setFillColor(sf::Color(R, G, B, A));
+	Atq[last_pos]->setString(joueur->get_atk(last_pos));
+	Atq[last_pos]->setFillColor(sf::Color(R, G, B, A));
 	window->draw(aff_hp(window, *joueur, true));
 	window->draw(aff_hp(window, *ennemi, false));
 	switch(actionFlag){
@@ -276,7 +261,7 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi)
 			#ifdef DEBUG
 			std::cout << "--->draw atq" << std::endl;
 			#endif
-			window->draw(Atq[last_pos]);
+			window->draw(*Atq[last_pos]);
 			last_atq_ennemi = -1;
 			break;
 		case MES_PLAYER:
@@ -369,7 +354,7 @@ int handleEvents(sf::Event event)
 
 int fight_scene(sf::RenderWindow* window, fighter* joueur, fighter* ennemi)
 {
-	std::cout << "fight engaged!" << std::endl;
+	/*std::cout << "fight engaged!" << std::endl;
 	NiceFont.loadFromFile("images/SourceSansPro-Regular.otf");
 
 
@@ -453,6 +438,10 @@ int fight_scene(sf::RenderWindow* window, fighter* joueur, fighter* ennemi)
 		window->display();
 	}
 
-	goodbye(Background, Background_sprite, Hp, Hp_Sprite, Hp2_Sprite, event);
+	goodbye(Background, Background_sprite, Hp, Hp_Sprite, Hp2_Sprite, event);*/
 	return 0;
+}
+
+void fight_init(){
+	NiceFont.loadFromFile("images/SourceSansPro-Regular.otf");
 }

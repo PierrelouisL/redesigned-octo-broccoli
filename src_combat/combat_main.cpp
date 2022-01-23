@@ -1,4 +1,6 @@
 #include "combat.h"
+#include <thread>
+#include <mutex>
 
 //#define DEBUG // A commenter pour enlever les commentaires
 
@@ -10,7 +12,7 @@ bool rightFlag = false;
 bool returnFlag = false;
 char actionFlag = RIEN; // Si une action est en cours on ne gere plus les evenements!
 
-
+std::mutex DrawMutex;
 sf::Font NiceFont;
 
 int aff_combat(sf::RenderWindow *window, classetest* joueur, classetest* ennemi)
@@ -189,8 +191,22 @@ int handleEvents(sf::Event event)
 	return 0;
 }
 
+void print1(sf::RenderWindow *window/*, sf::Sprite Sprite1, sf::Sprite Sprite2*/){
+	std::lock_guard<std::mutex> iolock(DrawMutex);
+	window->setActive(true);
+	sf::Texture *Background = new sf::Texture;
+	Background->loadFromFile("images/background_combat_ville.png");
+	sf::Sprite *Background_sprite = new sf::Sprite;
+	Background_sprite->setTexture(*Background);
+	window->draw(*Background_sprite);
+	//window->draw(Sprite2);
+	window->setActive(false);
+}
+
+
 int main(int argc, char *argv[])
 {
+	std::cout << "Nb cpus = " << std::thread::hardware_concurrency() << std::endl;
 	sf::RenderWindow* window = new sf::RenderWindow;
 	window->create(sf::VideoMode(1152, 704),
 						"Petage de gueule en regle des pollueurs");
@@ -227,6 +243,9 @@ int main(int argc, char *argv[])
 	sf::Text Pollueur(sf::String("Pollueur"), NiceFont, 20);
 	Pollueur.setPosition(sf::Vector2f(910.f, 10.f));
 
+	
+	//std::vector<std::thread> threads(2);
+
 	while (1)
 	{
 		// on gère les évènements
@@ -239,10 +258,20 @@ int main(int argc, char *argv[])
 				return 0;
 			}
 		}
+		window->clear();
+		window->setActive(false);
+		std::thread t1(print1, window/*, *Background_sprite, *Hp_Sprite*/);
+		//std::thread t2(print1, window, *Hp2_Sprite, nom_joueur);
+		t1.join();
+		//t2.join();
+		std::lock_guard<std::mutex> iolock(DrawMutex);
+		window->setActive(true);
+		window->draw(Pollueur);
+		/*
 		// TODO: Gérer tout ça dans une fonction plus tard...
 		window->clear();
 		window->draw(*Background_sprite);
-		if(aff_combat(window, &joueur, &ennemi) < 0){
+		*/if(aff_combat(window, &joueur, &ennemi) < 0){
 			window->clear();
 			window->draw(*Background_sprite);
 			sf::Clock clk_fin;
@@ -260,11 +289,11 @@ int main(int argc, char *argv[])
 			window->display();
 			while(clk_fin.getElapsedTime().asSeconds() < 10); // Petit délai de 10s
 			exit(0);
-		}
+		}/*
 		window->draw(*Hp_Sprite);
 		window->draw(*Hp2_Sprite);
 		window->draw(nom_joueur);
-		window->draw(Pollueur);
+		window->draw(Pollueur);*/
 		window->display();
 	}
 
