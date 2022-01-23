@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+
+
 class TileWindow : public sf::Drawable, public sf::Transformable{
 
 	public:
@@ -31,3 +33,5 @@ class TileWindow : public sf::Drawable, public sf::Transformable{
 	    sf::Texture m_tileset;
 
 };
+
+typedef enum Gamemode{ normal, mario, fight, menu_ } Gamemode;

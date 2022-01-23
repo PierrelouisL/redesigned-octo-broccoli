@@ -5,8 +5,7 @@ typedef enum{
     intro, play, credits
 }sel;
 
-typedef enum{MENU, CITY, FIGHT, END}States;
-extern States Actual_state;
+extern Gamemode g_mode;
 extern bool quit;
 extern sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
 

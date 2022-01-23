@@ -11,7 +11,6 @@
 #include "bot.h"
 //#include "Obstacle.h"
 
-extern bool fight;
 
 bot::bot(int difficulty):difficulty(difficulty)
 {

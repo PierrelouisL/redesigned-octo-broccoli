@@ -129,7 +129,7 @@ void menu::Display(sf::RenderWindow* window){
 
     sf::Event event;
     while(window->isOpen()){
-        if(Actual_state == MENU){
+        if(g_mode == menu_){
             /*Console.lock();
             std::cout << "Print Menu!" << std::endl;
             Console.unlock();*/

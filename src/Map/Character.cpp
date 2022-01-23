@@ -8,23 +8,6 @@ using Random = effolkronium::random_static;
 
 #define MOVESPEED 3.5
 
-TileCharacter::TileCharacter(const TileCharacter& T){
-	this->setPosition(T.getPosition());
-	this->setOrigin(T.getOrigin());
-	this->setRotation(T.getRotation());
-	this->setScale(T.getScale());
-	_character = T._character;
-	_eye = T._eye;
-	_feet_topleft = T._feet_topleft;
-	_feet_topright = T._feet_topright;
-	_feet_bottomleft = T._feet_bottomleft;
-	_feet_bottomright = T._feet_bottomright;
-	_upFlag = T._upFlag;
-	_downFlag = T._downFlag;
-	_rightFlag = T._rightFlag;
-	_leftFlag = T._leftFlag;
-	_is_main_character = T._is_main_character;
-}
 extern int obstacle_ville1[61][60];
 
 
@@ -211,58 +194,6 @@ void TileCharacter::move(sf::View &view){
 	_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
 }
 
-void TileCharacter::actionKey(sf::Event &event, TileElement &element, bool* heal){
-	
-	if(event.type == sf::Event::KeyPressed){
-
-		if(event.key.code == sf::Keyboard::A){
-	        sf::Vector2f next_case = checkFrontCase(4);
-
-	    	if( next_case != sf::Vector2f(-1, -1) ){
-	    		
-	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = -1;
-
-				TileMap temp_element;
-	    		int level[] = { 0, 1 };
-	    		
-				if(!temp_element.load("images/arbre.png", level, 1, 2)){
-					std::cout << "Erreur du chargement de l'élément" << std::endl;
-				}
-
-				// We heal the player if he plants a tree!
-				std::cout << "healing!" << std::endl;
-				*heal = true;
-
-				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(-2, -80)); 		
-				element.put_VectorElement(temp_element);
-				element.put_VectorType(2);
-	    	}else{
-				*heal=false;
-			}
-	    }
-
-	    if(oneMoveFlag()){
-	    	sf::Vector2f next_case = checkFrontCase(5);
-	    	
-	    	if( next_case != sf::Vector2f(-1, -1) ){
-
-	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
-
-				TileMap temp_element;
-	    		int level[] = { 0, 1, 2, 3};
-	    		
-				if(!temp_element.load("images/voiture.png", level, 2, 2)){
-					std::cout << "Erreur du chargement de l'élément voiture" << std::endl;
-				}
-
-				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(640, -64)); 		
-				element.put_VectorElement(temp_element);
-				element.put_VectorType(3);
-	    	}
-	    }
-    } 
-}
-
 
 /**
  * @brief We'll init every positions using the bot_number, bot_difficulty and the obstacle array
@@ -271,7 +202,7 @@ void TileCharacter::actionKey(sf::Event &event, TileElement &element, bool* heal
 void bot::initpositions(){
 	//obstacle_ville1;
 	std::vector<sf::Vector2f> locations;
-	float spawn = (float)this->bot_number/TOT_POSSIBLE_SPOTS;
+	//float spawn = (float)this->bot_number/TOT_POSSIBLE_SPOTS;
 	sf::View pos;
 	int nb_spawned = 0;
 	// For every bot we try to find a appropriate location!

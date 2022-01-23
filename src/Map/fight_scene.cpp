@@ -17,7 +17,7 @@ typedef enum{MENU, CITY, FIGHT, END}States;
 
 extern sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
 extern sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
-extern States Actual_state;
+extern Gamemode g_mode;
 
 /* Miscs */
 
@@ -373,7 +373,7 @@ void fight_scene::Display(sf::RenderWindow* window, fighter* player, fighter* cu
 		window->display();
 		while(clk_fin.getElapsedTime().asSeconds() < 1); // Petit délai de 10s
 		goodbye();
-		Actual_state == CITY;
+		g_mode = normal;
 		currentbot->alive = false;
 		WinMutex.unlock();
 		window->setActive(false);

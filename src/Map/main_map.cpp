@@ -1,11 +1,4 @@
 #include "main_map.h"
-#include "fighter.h"
-#include "fight_scene.h"
-#include "menu.h"
-
-#include <thread>
-#include <mutex>
-
 /*
  *  Nous aurons une map de 944 pixels de large contre 624 pixels de hauteur en 16x16, nous affichons
  *  en 64x64(tile map déjà faite comme ça). Donc cela nous fait 59 blocs de large et 39 blocks de hauteur.
@@ -31,12 +24,13 @@ bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant
 sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
 sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
 
+Gamemode g_mode = menu_;
 
 void Thread_fight(sf::RenderWindow* window, fighter* player){
     fight_scene f_sc;
     sf::Event event;
     while(!quit){
-        if(Actual_state == FIGHT){
+        if(g_mode == fight){
         while(window->pollEvent(event)){
             if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
                 printf_s("C'est chao");
@@ -58,7 +52,7 @@ void Thread_menu(sf::RenderWindow* window){
     std::cout << "Thread lancé !" << std::endl;
     menu Ecran_menu;
     Ecran_menu.Display(window);
-    Actual_state = CITY;
+    g_mode = normal;
     printf_s("we quit!");
 }
 
@@ -81,11 +75,10 @@ int main(){
     TileCharacter *ptr_perso = &perso;      // Object that we will manipulate
     TileElement element;
     TileGoal allGoal;
-    Gamemode g_mode = normal;
 
     view.setCenter(sf::Vector2f(4.5*64, 30.5*64));  // Start at home
     ptr_perso->init_coord(view);
-
+    fighter* player = new fighter;
     // on gère les évènements et music
 	sf::Event event;
     sf::Clock clk;
@@ -94,18 +87,18 @@ int main(){
     // on fait tourner la boucle principale
     bots.print();
 
-    sf::Thread thread(std::bind(&Thread_fight, window, &joueur));
+    sf::Thread thread(std::bind(&Thread_fight, window, player));
     thread.launch();
     sf::Thread t_menu(std::bind(&Thread_menu, window));
     t_menu.launch();
     bots.current_bot()->alive = false;
     bool heal = false;
     element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
-    while (window.isOpen() && !quit){
-        while (window.pollEvent(event)){
+    while (window->isOpen() && !quit){
+        while (window->pollEvent(event)){
             if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
                 printf("C'est chao\n");
-                window.close();
+                window->close();
             }
 
             if(event.type == sf::Event::KeyPressed){
@@ -113,8 +106,8 @@ int main(){
 
                     sf::Vector2f next_case = ptr_perso->checkFrontCase(4, false);                  // Tree spawn
                     if( next_case != sf::Vector2f(-1, -1) ){
-                        
-                        ptr_perso->heal(); // Spawning a tree makes you get healed
+
+                        //ptr_perso->heal(); // Spawning a tree makes you get healed
 
                         element.sound_LoadStart(sound_effect, "sound/Tree.wav", 25.f, false);
 
@@ -189,15 +182,16 @@ int main(){
                                 for(int i=0; i<4; i++){
                                     ptr_perso->scale( sf::Vector2f(2, 2));
                                     ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64*2*(i*i+1), -64*2*(i+1+1)) );
-                                    window.setActive();
-                                    window.clear();
-                                    window.draw(map);
-                                    window.draw(*ptr_perso);
-                                    window.display();
+                                    window->setActive();
+                                    window->clear();
+                                    window->draw(map);
+                                    window->draw(*ptr_perso);
+                                    window->display();
                                     clk.restart();
                                     while(clk.getElapsedTime().asSeconds() < 2);
                                 }
-                                element.sound_LoadStart(sound_effect, "sound/BallonBoom.wav", 80.f, false);                                ptr_perso->setScale( sf::Vector2f(1, 1));
+                                element.sound_LoadStart(sound_effect, "sound/BallonBoom.wav", 80.f, false);                                
+                                ptr_perso->setScale( sf::Vector2f(1, 1));
                                 view.setCenter(sf::Vector2f(22*64, 56.5*64));
                             }  
                             break;
@@ -207,7 +201,7 @@ int main(){
                                 g_mode = normal;
                             }
                             break;
-                        case menu:
+                        case menu_:
                             // We don't do anything here
                             break;
                         default :
@@ -261,28 +255,28 @@ int main(){
             ptr_perso->checkKeyMove(event);  // Check status of movement key
             //bots.check_and_follow(perso);
         }
-        window.setActive();
+        window->setActive();
         ptr_perso->move(view);           // Move character
 
         // on dessine le niveau
-        window.setView(view);
-        window.clear();
-        window.draw(map);
+        window->setView(view);
+        window->clear();
+        window->draw(map);
    
         ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
         //std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
         //bots.check_and_follow(perso);
         //perso2.setPosition(sf::Vector2f(192,2304 ));
         //window.draw(perso2);
-        window.draw(*ptr_perso);
+        window->draw(*ptr_perso);
 
-        element.load_allElement(window);
+        element.load_allElement(*window);
         //bots.draw(window);
 
-        window.draw(map_decors);
-        allGoal.display_goal(window, view.getCenter());
+        window->draw(map_decors);
+        allGoal.display_goal(*window, view.getCenter());
 
-        window.display();
+        window->display();
     }
     std::cout << "le vrai chao!"<< std::endl;
     thread.wait();

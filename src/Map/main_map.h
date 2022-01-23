@@ -9,8 +9,14 @@
 #include "Element.h"
 #include "bot.h"
 #include "Goal.h"
+#include "fighter.h"
+#include "fight_scene.h"
+#include "menu.h"
+
+#include <thread>
+#include <mutex>
+
 
 
 extern int obstacle_ville1[61][60];
 
-typedef enum Gamemode{ normal, mario, fight } Gamemode;

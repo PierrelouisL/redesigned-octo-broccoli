@@ -6,14 +6,15 @@
 class TileCharacter : public TileWindow{
 
 	public:
-		TileCharacter():_character("perso_Fleche"), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
-		TileCharacter(const std::string &character): _character(character), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
-		TileCharacter(const TileCharacter& T);
+		typedef enum orientation{Face, Back, Left, Right} orientation;
+
+		TileCharacter():_character("Greta"), _eye(Face),_n_sprite(1), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
+		TileCharacter(const std::string &character): _character(character), _eye(Face), _n_sprite(1), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
 		void load_character();
 
 		void init_coord(sf::View &view); // If main character
 		void init_coord(sf::Vector2f coords); // If bot
-		sf::Vector2f checkFrontCase(int val);
+		sf::Vector2f checkFrontCase(int val, bool flag);
 		void checkKeyMove(sf::Event &event);
 		void move(sf::View &view);
 		void actionKey(sf::Event &event, TileElement &element, bool* heal);
