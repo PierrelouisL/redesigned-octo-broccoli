@@ -27,6 +27,92 @@ fighter::fighter(){
    alive = true;
 }
 
+/**
+ * @brief perso = 0 for player, 0 for bot, 1 for Donald Trump
+ * 
+ * @param perso 
+ */
+fighter::fighter(int perso){
+    switch(perso){
+        case 0:
+            atk_name[0] = "Soulevage en regle";
+            atk_name[1] = "Pleure";
+            atk_name[2] = "HOW DARE YOU";
+            atk_name[3] = "Fuir";
+
+            HP = 200;
+            HP_base = HP;
+
+            atk_dmg[0] = 50;
+            atk_dmg[1] = 2;
+            atk_dmg[2] = 100;
+            atk_dmg[3] = -1;
+
+            atk_desc[0] = sf::String("Le souleve avec une puissance phénomenale de 50PV");
+            atk_desc[1] = sf::String("0"); // Deuxième ligne atq0
+            atk_desc[2] = sf::String("Vous pleurez comme une victime ce qui fait perdre 2 HP a"); // <<<---- TAILLE MAX 
+            atk_desc[3] = sf::String("l'adversaire par compassion..."); // Deuxième ligne atq1
+            atk_desc[4] = sf::String("HOW DAARE YOU?!");
+            atk_desc[5] = sf::String("2"); // Deuxième ligne atq2
+            atk_desc[6] = sf::String("Vous fuiez comme un lâche");
+            atk_desc[7] = sf::String("3"); // Deuxième ligne atq3
+
+            alive = true;
+            break;
+        case 1:
+            atk_name[0] = "Soulevage en regle";
+            atk_name[1] = "Pleure";
+            atk_name[2] = "HOW DARE YOU";
+            atk_name[3] = "Fuir";
+
+            HP = 200;
+            HP_base = HP;
+
+            atk_dmg[0] = 50;
+            atk_dmg[1] = 2;
+            atk_dmg[2] = 100;
+            atk_dmg[3] = -1;
+
+            atk_desc[0] = sf::String("Le souleve avec une puissance phénomenale de 50PV");
+            atk_desc[1] = sf::String("0"); // Deuxième ligne atq0
+            atk_desc[2] = sf::String("Vous pleurez comme une victime ce qui fait perdre 2 HP a"); // <<<---- TAILLE MAX 
+            atk_desc[3] = sf::String("l'adversaire par compassion..."); // Deuxième ligne atq1
+            atk_desc[4] = sf::String("HOW DAARE YOU?!");
+            atk_desc[5] = sf::String("2"); // Deuxième ligne atq2
+            atk_desc[6] = sf::String("Vous fuiez comme un lâche");
+            atk_desc[7] = sf::String("3"); // Deuxième ligne atq3
+
+            alive = true;
+            break;
+
+        case 2:
+            atk_name[0] = "Soulevage en regle";
+            atk_name[1] = "Pleure";
+            atk_name[2] = "HOW DARE YOU";
+            atk_name[3] = "Fuir";
+
+            HP = 200;
+            HP_base = HP;
+
+            atk_dmg[0] = 50;
+            atk_dmg[1] = 2;
+            atk_dmg[2] = 100;
+            atk_dmg[3] = -1;
+
+            atk_desc[0] = sf::String("Le souleve avec une puissance phénomenale de 50PV");
+            atk_desc[1] = sf::String("0"); // Deuxième ligne atq0
+            atk_desc[2] = sf::String("Vous pleurez comme une victime ce qui fait perdre 2 HP a"); // <<<---- TAILLE MAX 
+            atk_desc[3] = sf::String("l'adversaire par compassion..."); // Deuxième ligne atq1
+            atk_desc[4] = sf::String("HOW DAARE YOU?!");
+            atk_desc[5] = sf::String("2"); // Deuxième ligne atq2
+            atk_desc[6] = sf::String("Vous fuiez comme un lâche");
+            atk_desc[7] = sf::String("3"); // Deuxième ligne atq3
+
+            alive = true;
+            break;
+    }
+}
+
 fighter::fighter(TileCharacter& character): fighter(){
     this->setOrigin(character.getOrigin());
     this->setPosition(character.getPosition());

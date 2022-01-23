@@ -27,6 +27,7 @@ public:
 	int alive;
     fighter();
 	fighter(TileCharacter& character);
+	fighter(int perso);
     sf::String get_atk(int nb);
 	sf::String phrase_fin(int issue_du_match);
 	int get_PV();

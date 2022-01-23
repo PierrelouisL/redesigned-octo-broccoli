@@ -245,10 +245,6 @@ int main(){
                                     element.sound_LoadStart(sound_effect, "sound/SpecialSoundEffect.wav", 80.f, false);  
                                     view.zoom(3);
                                 }
-                                next_case = ptr_perso->checkFrontCase(8, false);
-                                if( next_case != sf::Vector2f(-1, -1)){
-                                    g_mode = fight;
-                                }
                                 break;
 
                             case mario : 
@@ -261,6 +257,10 @@ int main(){
         
                 ptr_perso->checkKeyMove(event);  // Check status of movement key
                 //bots.check_and_follow(perso);
+            }
+            if( ptr_perso->checkFrontCase(8, false) != sf::Vector2f(-1, -1)){
+                ptr_perso->resetkey();
+                g_mode = fight;
             }
             window->setActive();
             ptr_perso->move(view);           // Move character
