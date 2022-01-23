@@ -113,7 +113,7 @@ int main(){
         }
         switch(Actual_state){
             case MENU:
-
+                
                 break;
             case CITY:
                 window->setActive(true);
