@@ -25,39 +25,27 @@ bool quit = false;
 Gamemode g_mode = menu_;
 bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant
 
-void Thread_fight(sf::RenderWindow* window, fighter* player){
+/*void Thread_fight(sf::RenderWindow* window, fighter* player){
     fight_scene f_sc;
     sf::Event event;
     while(!quit){
         if(g_mode == fight){
-        while(window->pollEvent(event)){
-            if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
-                printf_s("C'est chao");
-                quit = 1;
-                window->close();
+            while(window->pollEvent(event)){
+                if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
+                    printf_s("C'est chao");
+                    quit = 1;
+                    window->close();
+                }
+                printf_s("polling");
+                f_sc.handleEvents(event);
             }
-            printf_s("polling");
-            f_sc.handleEvents(event);
-        }
             printf_s("LETS GO!");
             f_sc.Display(window, player, bots.current_bot());
         }
         WinMutex.unlock();
     }
     return;
-}
-
-void Thread_menu(sf::RenderWindow* window){
-    std::cout << "Thread lancé !" << std::endl;
-    WinMutex.lock();
-    menu Ecran_menu;
-    Ecran_menu.Display(window);
-    g_mode = normal;
-    WinMutex.unlock();
-    printf_s("we quit!");
-}
-
-
+}*/
 
 int main(){
 
@@ -85,19 +73,19 @@ int main(){
     view.setCenter(sf::Vector2f(4.5*64, 30.5*64));  // Start at home
     ptr_perso->init_coord(view);
     fighter* player = new fighter;
+
     // on gère les évènements et music
 	sf::Event event;
     sf::Clock clk;
     sf::Music music;
     sf::Music sound_effect;
+
     // on fait tourner la boucle principale
     std::cout << "printing bot" << std::endl;
     bots.print();
 
-    sf::Thread thread(std::bind(&Thread_fight, &window, player));
-    thread.launch();
-    sf::Thread t_menu(std::bind(&Thread_menu, &window));
-    t_menu.launch();
+    //sf::Thread thread(std::bind(&Thread_fight, &window, player));
+    //thread.launch();
     bots.current_bot()->alive = false;
     bool heal = false;
     
@@ -114,7 +102,7 @@ int main(){
                 }
 
                 if(event.type == sf::Event::KeyPressed){
-                    if(event.key.code == sf::Keyboard::A){  // Action key = space
+                    if(event.key.code == sf::Keyboard::Space){  // Action key = space
 
                         sf::Vector2f next_case = ptr_perso->checkFrontCase(4, false);                  // Tree spawn
                         if( next_case != sf::Vector2f(-1, -1) ){
@@ -145,9 +133,6 @@ int main(){
                         }
                         switch(g_mode){
                             case normal:
-                                if(bots.current_bot()->alive){
-                                    g_mode = fight;
-                                }
 
                                 if( ptr_perso->checkFrontCase(-2, false) != sf::Vector2f(-1, -1) ){             // City to Trump's room 
                                     element.sound_LoadStart(music, "sound/HymneEtatUnis.wav", 20.f, true);
@@ -181,8 +166,8 @@ int main(){
 
                                     g_mode = normal;
                                     view.setCenter(sf::Vector2f(4.5*64, 30.5*64));
-                                    music.stop();
                                     ptr_perso = &perso;
+                                    ptr_perso->resetkey();
                                 }
 
                                 else if( ptr_perso->checkFrontCase(12, false) != sf::Vector2f(-1, -1) ){
@@ -198,6 +183,7 @@ int main(){
                                         window.display();
                                         clk.restart();
                                         while(clk.getElapsedTime().asSeconds() < 2);
+                                        sound_effect.play();
                                     }
                                     element.sound_LoadStart(sound_effect, "sound/BallonBoom.wav", 80.f, false);                                
                                     ptr_perso->setScale( sf::Vector2f(1, 1));
@@ -206,9 +192,7 @@ int main(){
                                 break;
 
                             case fight :
-                                if(!bots.current_bot()->alive){
-                                    g_mode = normal;
-                                }
+                                
                                 break;
                             case menu_ :
                                 // We don't do anything here
@@ -239,6 +223,7 @@ int main(){
                                     element.put_VectorElement(temp_element);
                                     element.put_VectorType(5);
                                 }
+
                                 next_case = ptr_perso->checkFrontCase(6, false);
                                 if(  next_case != sf::Vector2f(-1, -1) ){
 
@@ -247,9 +232,15 @@ int main(){
                                     element.sound_LoadStart(sound_effect, "sound/SpecialSoundEffect.wav", 80.f, false);  
                                     view.zoom(3);
                                 }
-                                break;
 
-                            case mario : 
+                                next_case = ptr_perso->checkFrontCase(8, false);
+                                if( next_case != sf::Vector2f(-1, -1)){
+                                    obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
+                                    ptr_perso->resetkey();
+                                    g_mode = fight;
+                                }
+
+                            case mario :
                                 break;
                             default :
                                 break;
@@ -260,15 +251,9 @@ int main(){
                 ptr_perso->checkKeyMove(event);  // Check status of movement key
                 //bots.check_and_follow(perso);
             }
-<<<<<<< HEAD
+
+           
             window.setActive();
-=======
-            if( ptr_perso->checkFrontCase(8, false) != sf::Vector2f(-1, -1)){
-                ptr_perso->resetkey();
-                g_mode = fight;
-            }
-            window->setActive();
->>>>>>> 2267624fa9e41362268d88963bf74e26ab6462f1
             ptr_perso->move(view);           // Move character
 
             // on dessine le niveau
@@ -288,6 +273,31 @@ int main(){
             window.display();
             WinMutex.unlock();
         }
+        else if(g_mode == menu_){
+            menu *Ecran_menu = new menu;
+            Ecran_menu->Display(window);
+            delete Ecran_menu;
+            g_mode = normal;
+        }
+        else if(g_mode == fight){
+            fight_scene *f_sc = new fight_scene;
+            while(window.pollEvent(event) && !bots.current_bot()->alive){
+
+                printf("caca\n");
+                if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
+                    printf_s("C'est chao");
+                    quit = true;
+                    window.close();
+                }
+                printf_s("polling");
+                f_sc->handleEvents(event);
+            }
+            printf_s("LETS GO!");
+            f_sc->Display(window, player, bots.current_bot());
+            ptr_perso->resetkey();
+            delete f_sc;
+        }
+        
     }
     std::cout << "le vrai chao!"<< std::endl;
     //thread.wait();

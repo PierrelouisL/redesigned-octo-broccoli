@@ -31,7 +31,7 @@
  */
 class bot
 {
-	int checknearby(sf::Vector2f coords);
+	//int checknearby(sf::Vector2f coords);
 	void initpositions();
 private:
 	int difficulty;
@@ -44,7 +44,7 @@ public:
 	void rm_bot(){bots[current]->alive = false;}
 	void print();
 	void draw(sf::RenderWindow &win);
-	int check_and_follow(sf::Vector2f coords);
+	//int check_and_follow(sf::Vector2f coords);
 
 	~bot();
 };

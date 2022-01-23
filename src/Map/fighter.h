@@ -24,7 +24,7 @@ typedef enum{
 class fighter : public TileCharacter
 {
 public:
-	int alive;
+	bool alive;
     fighter();
 	fighter(TileCharacter& character);
 	fighter(int perso);

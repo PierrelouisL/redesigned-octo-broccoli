@@ -351,49 +351,47 @@ int fight_scene::handleEvents(sf::Event event)
 }
 
 
-void fight_scene::Display(sf::RenderWindow* window, fighter* player, fighter* currentbot){
-	WinMutex.lock();
-	window->setActive(true);
-	window->clear();
-	window->setView(window->getDefaultView());
-	window->draw(*Background_sprite);
-	if(aff_combat(window, player, currentbot, Atq) < 0){
+void fight_scene::Display(sf::RenderWindow& window, fighter* player, fighter* currentbot){
+
+	window.setActive(true);
+	window.clear();
+	window.setView(window.getDefaultView());
+	window.draw(*Background_sprite);
+	if(aff_combat(&window, player, currentbot, Atq) < 0){
 		sf::Clock clk_fin;
 		sf::RectangleShape HideMes(sf::Vector2f(1142.f, 200.f));
 		HideMes.setFillColor(sf::Color(200, 226, 226, 255));
 		HideMes.setPosition(sf::Vector2f(5.f, 499.f));
-		window->draw(HideMes);
+		window.draw(HideMes);
 		if(player->get_PV() < 0){
 			std::cout << "le joueur est mort" << std::endl;
-			player->aff_fin(window, VICTOIRE); // A remplacer  plus tard
+			player->aff_fin(&window, VICTOIRE); // A remplacer  plus tard
 		}else{
 			std::cout << "Le pollueur est mort bien vu" << std::endl;
-			currentbot->aff_fin(window, DEFAITE);
+			currentbot->aff_fin(&window, DEFAITE);
 		}
-		window->display();
-		while(clk_fin.getElapsedTime().asSeconds() < 1); // Petit délai de 10s
+		window.display();
+		while(clk_fin.getElapsedTime().asSeconds() > 5); // Petit délai de 10s
 		goodbye();
 		g_mode = normal;
 		currentbot->alive = false;
-		WinMutex.unlock();
-		window->setActive(false);
+		return;
 		// On passe à l'état city et on attend qu'on revienne pour repartir!
 	}
-	#ifdef DEBUG
-	std::cout <<"drawing.."<< std::endl;
-	#endif
-	window->draw(*Hp_Sprite);
-	window->draw(*Hp2_Sprite);
-	window->draw(*nom_joueur);
-	window->draw(*nom_joueur);
-	window->display();
-	window->setActive(false);
+
+	window.draw(*Hp_Sprite);
+	window.draw(*Hp2_Sprite);
+	window.draw(*nom_joueur);
+	window.draw(*nom_joueur);
+	window.display();
+	window.setActive(false);
 }
 
 
 fight_scene::~fight_scene()
 {
 	delete Background;
+	delete Background_sprite;
 	delete Hp;
 	delete Hp2_Sprite;
 	delete Hp_Sprite;

@@ -56,7 +56,7 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     	clk.restart();
     }
 
-    if(clk.getElapsedTime().asSeconds() > 0.38){	// Jump time
+    if(clk.getElapsedTime().asSeconds() > 0.37){	// Jump time
 		_gravity = false;
     }
 
@@ -67,26 +67,25 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     if(_gravity){ 									// Go up for the jump
     	_enable_jump = false;
 		if( checkFrontCase(-1, true, sf::Vector2f(0, -100)) != sf::Vector2f(-1, -1) ){
-			view.move(0, -7);
+			view.move(0, -6.5);
 		}
 		else{										// If the hit something with your head
 			_gravity = false;
-			view.move(0, 7);
+			view.move(0, 6.5);
 		}
     }
     else{											// Go down
 		if( checkFrontCase(-1, true, sf::Vector2f(0, 0)) != sf::Vector2f(-1, -1) ){
-			view.move(0, 7);
+			view.move(0, 6.5);
 		}
 		else{										// Hit the ground
 			_enable_jump = true;
 		}
 	}
     
-    // Some event when you touch the right case in mario land
-    if( checkFrontCase(10, false, sf::Vector2f(0, 0)) != sf::Vector2f(-1, -1) ){	
+    if( checkFrontCase(10, false, sf::Vector2f(0, 0)) != sf::Vector2f(-1, -1) ){    
         view.setCenter(sf::Vector2f(22*64, 56.5*64));
-    }
+    } 
 
     this->load_character();
     init_coord(view);

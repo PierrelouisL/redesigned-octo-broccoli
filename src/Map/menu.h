@@ -40,7 +40,7 @@ private:
     
 public:
     menu();
-    void Display(sf::RenderWindow* window);
+    void Display(sf::RenderWindow &window);
     ~menu();
 };
 

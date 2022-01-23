@@ -36,7 +36,7 @@ private:
 public:
     fight_scene(/* args */);
     int handleEvents(sf::Event event);
-    void Display(sf::RenderWindow* window, fighter* player, fighter* currentbot);
+    void Display(sf::RenderWindow &window, fighter* player, fighter* currentbot);
     ~fight_scene();
 };
 

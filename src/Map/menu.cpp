@@ -106,16 +106,10 @@ void menu::rotate_circle(float theta){
 }
 
 
-void menu::Display(sf::RenderWindow* window){
-    window->setActive(true);
-	window->clear();
-	window->setView(window->getDefaultView());
-
-    /*sf::CircleShape circle_debug;
-    circle_debug.setRadius(100.f);
-    circle_debug.setOutlineThickness(10.f);
-    circle_debug.setOutlineColor(sf::Color(250,150,100));
-    circle_debug.setPosition(470.f, 100.f); //- 50 pos */
+void menu::Display(sf::RenderWindow &window){
+    window.setActive(true);
+	window.clear();
+	window.setView(window.getDefaultView());
 
     sf::Text t_redesigned(sf::String("redesigned"),TextFont, 70);
     t_redesigned.setPosition(470.f, 148.f);
@@ -124,17 +118,14 @@ void menu::Display(sf::RenderWindow* window){
     sf::Text t_broccoli(sf::String("broccoli"),TextFont, 70);
     t_broccoli.setPosition(500.f, 260.f);
 
-
     sf::Event event;
-    while(window->isOpen()){
+    while(window.isOpen()){
         if(g_mode == menu_){
-            /*Console.lock();
-            std::cout << "Print Menu!" << std::endl;
-            Console.unlock();*/
-            while(window->pollEvent(event)){
+            
+            while(window.pollEvent(event)){
                 if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
                     std::cout << "Tchao bye!"<< std::endl;
-                    window->close();
+                    window.close();
                     quit = true;
                 }
                 // Si on relache la touche
@@ -161,9 +152,7 @@ void menu::Display(sf::RenderWindow* window){
                     selected = credits;
                 }
             }else if(_returnFlag){
-                if(selected ==play){
-                    // We quit to display game!
-                    window->setActive(false);
+                if(selected == play){
                     return;
                 }
                 update_displayed_text();
@@ -178,25 +167,22 @@ void menu::Display(sf::RenderWindow* window){
             
             //rotation2 += 2;
             rotate_circle(rotation);
-            window->clear();
-            window->draw(*Sel_arrow_S);
+            window.clear();
+            window.draw(*Sel_arrow_S);
             for(int i = 0; i< 8; ++i){
-                window->draw(*Brocco_S[i]);
+                window.draw(*Brocco_S[i]);
             }
             for(int i = 0; i < 8; ++i){
-                window->draw(*Menu_text[i]);
+                window.draw(*Menu_text[i]);
             }
             for(int i=0; i< 3; ++i){
-                window->draw(*Menu_options[i]);
+                window.draw(*Menu_options[i]);
             }
-            window->draw(t_redesigned);
-            window->draw(t_octo);
-            window->draw(t_broccoli);
-            /*Console.lock();
-            std::cout << "Displaying!" << std::endl;
-            Console.unlock();*/
-            //window->draw(circle_debug);
-            window->display();
+            window.draw(t_redesigned);
+            window.draw(t_octo);
+            window.draw(t_broccoli);
+
+            window.display();
             _upFlag = false;
             _downFlag = false;
         }

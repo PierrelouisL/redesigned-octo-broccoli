@@ -58,7 +58,7 @@ void bot::draw(sf::RenderWindow &win){
  * 
  * @param player 
  */
-int bot::checknearby(sf::Vector2f coords){
+/*int bot::checknearby(sf::Vector2f coords){
 	// We first check if we have a player nearby any of all the bots!
 	float xbot = 0, ybot = 0;
 	for(int nb_bot = 1; nb_bot < this->bot_number ; ++nb_bot){
@@ -77,8 +77,7 @@ int bot::checknearby(sf::Vector2f coords){
 	}
 	return -1;
 
-	
-}
+}*/
 
 
 
@@ -98,7 +97,7 @@ void bot::print(){
  * 
  * @param player
  */
-int bot::check_and_follow(sf::Vector2f coords){
+/*int bot::check_and_follow(sf::Vector2f coords){
 	print();
 	checknearby(coords);
 	if(this->current <= 0){
@@ -108,7 +107,7 @@ int bot::check_and_follow(sf::Vector2f coords){
 
 	return this->current;
 	// We first check where should we be heading to follow him
-	/*if(player.getPosition().x < this->bots[this->current]->getPosition().x){
+	if(player.getPosition().x < this->bots[this->current]->getPosition().x){
 		// player coord x < bot coord x so we should decrease x
 		std::cout << "decreasing x... xplayer= " <<  player.getPosition().x << " xbot= " << this->bots[this->current]->getPosition().x << std::endl;
 		//this->bots[this->current]->move
@@ -127,8 +126,8 @@ int bot::check_and_follow(sf::Vector2f coords){
 			// same spot so we launch COMBATTT
 			std::cout << "FIGHT!" << std::endl;
 		}
-	}*/
-}
+	}
+}*/
 
 /**
  * @brief We'll init every positions using the bot_number, bot_difficulty and the obstacle array
@@ -154,8 +153,8 @@ void bot::initpositions(){
 				bots.push_back(new fighter);
 				bots[nb_spawned]->change_char("Routier");
 				bots[nb_spawned]->load_character();
-				bots[nb_spawned]->init_coord(sf::Vector2f(y*64, x*64));
-				bots[nb_spawned]->setPosition(sf::Vector2f(y*64, x*64));
+				bots[nb_spawned]->init_coord(sf::Vector2f(y*64, x*64)+sf::Vector2f(-32, -80));
+				bots[nb_spawned]->setPosition(sf::Vector2f(y*64, x*64)+sf::Vector2f(-32, -80));
 			}
 		}
 	}
