@@ -9,6 +9,7 @@ class TileElement : public TileMap{
 		void put_VectorType(int val);
 		void put_VectorElement(TileMap element);
 		void put_VectorCoord(sf::Vector2f coord);
+		bool check_collision(sf::Vector2f coord_player);
 
 		void addTree(){_nb_tree++;}
 

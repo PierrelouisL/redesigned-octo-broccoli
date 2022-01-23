@@ -1,5 +1,10 @@
 #include "main_map.h"
+#include "fighter.h"
+#include "fight_scene.h"
+#include "menu.h"
 
+#include <thread>
+#include <mutex>
 
 /*
  *  Nous aurons une map de 944 pixels de large contre 624 pixels de hauteur en 16x16, nous affichons
@@ -16,15 +21,57 @@
  *             
  */
 
+#define FIGHT_ENABLED  // A commenter si tu veux pas de combat!
+#define DEBUG
+
+bool quit = false;
+
+bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant
+
+sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
+sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
+
+
+void Thread_fight(sf::RenderWindow* window, fighter* player){
+    fight_scene f_sc;
+    sf::Event event;
+    while(!quit){
+        if(Actual_state == FIGHT){
+        while(window->pollEvent(event)){
+            if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
+                printf_s("C'est chao");
+                quit = 1;
+                window->close();
+            }
+            printf_s("polling");
+            f_sc.handleEvents(event);
+        }
+            printf_s("LETS GO!");
+            f_sc.Display(window, player, bots.current_bot());
+        }
+        WinMutex.unlock();
+    }
+    return;
+}
+
+void Thread_menu(sf::RenderWindow* window){
+    std::cout << "Thread lancé !" << std::endl;
+    menu Ecran_menu;
+    Ecran_menu.Display(window);
+    Actual_state = CITY;
+    printf_s("we quit!");
+}
+
+
 
 int main(){
-    std::cout << "bonjour sur la nouvelle branche!" << std::endl;
 	// on crée la fenêtre
-    sf::RenderWindow window(sf::VideoMode(1152, 768), "EcoBehave");
-    window.setFramerateLimit(120);
-    window.setVerticalSyncEnabled(true);	
-	sf::View view = window.getDefaultView();
-    window.setView(view);
+    sf::RenderWindow* window = new sf::RenderWindow;
+	window->create(sf::VideoMode(1152, 704), "redesigned-octo-broccoli");
+    window->setFramerateLimit(120);
+    window->setVerticalSyncEnabled(true);	
+	sf::View view = window->getDefaultView();
+    window->setView(view);
 
     // on crée les objects qu'on va manipuler
     TileMap map("images/Map/Map1.png", 60, 61);
@@ -36,15 +83,8 @@ int main(){
     TileGoal allGoal;
     Gamemode g_mode = normal;
 
-    map.load_map();
-    map_decors.load_map();
-    ptr_perso->load_character();
-
     view.setCenter(sf::Vector2f(4.5*64, 30.5*64));  // Start at home
     ptr_perso->init_coord(view);
-    //perso2.init_coord(view);
-    //--
-    bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant)
 
     // on gère les évènements et music
 	sf::Event event;
@@ -52,11 +92,16 @@ int main(){
     sf::Music music;
     sf::Music sound_effect;
     // on fait tourner la boucle principale
+    bots.print();
 
+    sf::Thread thread(std::bind(&Thread_fight, window, &joueur));
+    thread.launch();
+    sf::Thread t_menu(std::bind(&Thread_menu, window));
+    t_menu.launch();
+    bots.current_bot()->alive = false;
+    bool heal = false;
     element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
-
-    while (window.isOpen()){
-
+    while (window.isOpen() && !quit){
         while (window.pollEvent(event)){
             if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
                 printf("C'est chao\n");
@@ -68,6 +113,8 @@ int main(){
 
                     sf::Vector2f next_case = ptr_perso->checkFrontCase(4, false);                  // Tree spawn
                     if( next_case != sf::Vector2f(-1, -1) ){
+                        
+                        ptr_perso->heal(); // Spawning a tree makes you get healed
 
                         element.sound_LoadStart(sound_effect, "sound/Tree.wav", 25.f, false);
 
@@ -92,9 +139,14 @@ int main(){
                         }
                     }
 
+                    bots.check_and_follow(perso.getPosition());
                     switch(g_mode){
                         case normal:
                                  
+                            if(bots.current_bot()->alive){
+                                g_mode = fight;
+                            }
+
                             if( ptr_perso->checkFrontCase(-2, false) != sf::Vector2f(-1, -1) ){             // City to Trump's room 
                                 element.sound_LoadStart(music, "sound/HymneEtatUnis.wav", 20.f, true);
                                 view.setCenter(sf::Vector2f(7*64, 57.5*64));
@@ -151,8 +203,13 @@ int main(){
                             break;
 
                         case fight :
+                            if(!bots.current_bot()->alive){
+                                g_mode = normal;
+                            }
                             break;
-
+                        case menu:
+                            // We don't do anything here
+                            break;
                         default :
                             break;
                     }
@@ -227,6 +284,8 @@ int main(){
 
         window.display();
     }
-
+    std::cout << "le vrai chao!"<< std::endl;
+    thread.wait();
+    delete window;
     return 0;
 }

@@ -12,6 +12,7 @@
 #pragma once
 #include "Window.h"
 #include "Character.h"
+#include "fighter.h"
 
 #define EASY 0
 #define MEDIUM 1
@@ -30,16 +31,21 @@
  */
 class bot
 {
-	int checknearby(TileCharacter player);
+	int checknearby(sf::Vector2f coords);
 	void initpositions();
 private:
 	int difficulty;
 	int bot_number;
-	std::vector<TileCharacter*> bots;
+	int current;
+	std::vector<fighter*> bots;
 public:
 	bot(int difficulty);
+	fighter* current_bot(){return bots[current];}
+	void rm_bot(){bots[current]->alive = false;}
+	void print();
 	void draw(sf::RenderWindow &win);
-	//void check_and_follow(TileCharacter player);
+	int check_and_follow(sf::Vector2f coords);
+
 	~bot();
 };
 

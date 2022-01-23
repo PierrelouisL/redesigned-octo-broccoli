@@ -8,7 +8,25 @@ using Random = effolkronium::random_static;
 
 #define MOVESPEED 3.5
 
+TileCharacter::TileCharacter(const TileCharacter& T){
+	this->setPosition(T.getPosition());
+	this->setOrigin(T.getOrigin());
+	this->setRotation(T.getRotation());
+	this->setScale(T.getScale());
+	_character = T._character;
+	_eye = T._eye;
+	_feet_topleft = T._feet_topleft;
+	_feet_topright = T._feet_topright;
+	_feet_bottomleft = T._feet_bottomleft;
+	_feet_bottomright = T._feet_bottomright;
+	_upFlag = T._upFlag;
+	_downFlag = T._downFlag;
+	_rightFlag = T._rightFlag;
+	_leftFlag = T._leftFlag;
+	_is_main_character = T._is_main_character;
+}
 extern int obstacle_ville1[61][60];
+
 
 void TileCharacter::load_character(){
 
@@ -193,6 +211,59 @@ void TileCharacter::move(sf::View &view){
 	_feet_topright		= sf::Vector2f(view.getCenter() + sf::Vector2f(+32, +32));	//
 }
 
+void TileCharacter::actionKey(sf::Event &event, TileElement &element, bool* heal){
+	
+	if(event.type == sf::Event::KeyPressed){
+
+		if(event.key.code == sf::Keyboard::A){
+	        sf::Vector2f next_case = checkFrontCase(4);
+
+	    	if( next_case != sf::Vector2f(-1, -1) ){
+	    		
+	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = -1;
+
+				TileMap temp_element;
+	    		int level[] = { 0, 1 };
+	    		
+				if(!temp_element.load("images/arbre.png", level, 1, 2)){
+					std::cout << "Erreur du chargement de l'élément" << std::endl;
+				}
+
+				// We heal the player if he plants a tree!
+				std::cout << "healing!" << std::endl;
+				*heal = true;
+
+				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(-2, -80)); 		
+				element.put_VectorElement(temp_element);
+				element.put_VectorType(2);
+	    	}else{
+				*heal=false;
+			}
+	    }
+
+	    if(oneMoveFlag()){
+	    	sf::Vector2f next_case = checkFrontCase(5);
+	    	
+	    	if( next_case != sf::Vector2f(-1, -1) ){
+
+	    		obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
+
+				TileMap temp_element;
+	    		int level[] = { 0, 1, 2, 3};
+	    		
+				if(!temp_element.load("images/voiture.png", level, 2, 2)){
+					std::cout << "Erreur du chargement de l'élément voiture" << std::endl;
+				}
+
+				temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(640, -64)); 		
+				element.put_VectorElement(temp_element);
+				element.put_VectorType(3);
+	    	}
+	    }
+    } 
+}
+
+
 /**
  * @brief We'll init every positions using the bot_number, bot_difficulty and the obstacle array
  * 
@@ -206,30 +277,21 @@ void bot::initpositions(){
 	// For every bot we try to find a appropriate location!
 	//auto val = Random::get<bool>( 0.7 ) // 70% to generate true
 
-	std::cout << "chances to spawn = " << spawn << std::endl;
+	//std::cout << "chances to spawn = " << spawn << std::endl;
 	for(int y = 0; y < 59; ++y){
-		for(int x = 2; x < 39; ++x){
-			// For each case of the obstacle array we check if we can spawn!
-			if(obstacle_ville1[x][y] > -1){
-				//std::cout << "x=" << x << " y=" << y << " obst=" << obstacle_ville1[y][x] << std::endl;
-				if(Random::get<bool>(spawn)){
-					if(nb_spawned < this->bot_number){
-						nb_spawned++;
-						// A bot can spawn!
-						std::cout << "a bot spawned! pos=" << x*64 << " y= " << y*64 <<" nb = " << nb_spawned << "obstc=" << obstacle_ville1[x][y]<< std::endl;
-						//bots.insert(bots.end(), new TileCharacter());
-						bots.push_back(new TileCharacter("Gretta"));
-						//bots[nb_spawned]->change_char("Gretta");
-						bots[nb_spawned]->load_character();
-						bots[nb_spawned]->init_coord(sf::Vector2f(y*64, x*64));
-						bots[nb_spawned]->setPosition(sf::Vector2f(y*64, x*64));
-						//pos.setCenter(x,y);
-						//bots[i]->init_coord();
-					}else{
-						return;
-					}
-				}
+		for(int x = 0; x < 39; ++x){
+			if(obstacle_ville1[x][y] == 8){
+				// We are in a spot for a bot so we should make one spawn!
+				nb_spawned++;
+				std::cout << "a bot spawned! pos=" << x*64 << " y= " << y*64 <<" nb = " << nb_spawned << "obstc=" << obstacle_ville1[x][y]<< std::endl;
+				//bots.insert(bots.end(), new TileCharacter());
+				bots.push_back(new fighter);
+				bots[nb_spawned]->change_char("Gretta");
+				bots[nb_spawned]->load_character();
+				bots[nb_spawned]->init_coord(sf::Vector2f(y*64, x*64));
+				bots[nb_spawned]->setPosition(sf::Vector2f(y*64, x*64));
 			}
 		}
 	}
+	this->bot_number = nb_spawned;
 }

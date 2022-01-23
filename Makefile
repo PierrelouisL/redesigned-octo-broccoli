@@ -9,10 +9,10 @@
 #-------------------------------------------------------------------------------
 
 cc = g++
-option = -Wall
+option = -Wall -g -std=c++11
 src_dir = src
 src_Map_dir = src/Map
-flags =  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+flags =  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -pthread
 
 SRC = $(wildcard src/*.cpp)
 OBJS = $(SRC:.cpp=.o)
@@ -28,8 +28,6 @@ OBJS_MAP = $(SRC_MAP:.cpp=.o)
 
 all: $(OBJS) App Combat Map
 
-clean: 
-	rm -rf $(OBJS) $(OBJS_MAP) App Combat Map
 
 $(src_dir)/%.o: $(src_dir)/%.cpp 
 	$(cc) $(option) -c $< -o $@
@@ -48,3 +46,6 @@ $(src_Map_dir)/%.o: $(src_Map_dir)/%.cpp
 
 Map : $(OBJS_MAP)
 	$(cc) $(option) $(OBJS_MAP) -o Map $(flags)
+
+clean: 
+	rm -rf $(OBJS) $(OBJS_MAP) App Combat Map

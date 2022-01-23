@@ -6,19 +6,19 @@
 class TileCharacter : public TileWindow{
 
 	public:
-
-		typedef enum orientation{ Face, Back, Left, Right } orientation;
-
-		TileCharacter(): _character("Greta"), _eye(Face), _n_sprite(1), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
-		TileCharacter(const std::string &character): _character(character), _eye(Face), _n_sprite(1), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
-
+		TileCharacter():_character("perso_Fleche"), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
+		TileCharacter(const std::string &character): _character(character), _eye(Face), _upFlag(false), _downFlag(false), _leftFlag(false), _rightFlag(false), _is_main_character(true){}
+		TileCharacter(const TileCharacter& T);
 		void load_character();
 
-		void init_coord(sf::View &view); 					// If main character
-		void init_coord(sf::Vector2f coords); 				// If bot
-		sf::Vector2f checkFrontCase(int val, bool flag);	// flag : false to compare val and the case, true to compare if val is > 
-		virtual void checkKeyMove(sf::Event &event);
-		virtual void move(sf::View &view);
+		void init_coord(sf::View &view); // If main character
+		void init_coord(sf::Vector2f coords); // If bot
+		sf::Vector2f checkFrontCase(int val);
+		void checkKeyMove(sf::Event &event);
+		void move(sf::View &view);
+		void actionKey(sf::Event &event, TileElement &element, bool* heal);
+		void resetkey(){_upFlag = false; _downFlag = false; _leftFlag = false; _rightFlag = false;}
+		void change_char(std::string character){_character = character;};
 		bool oneMoveFlag(){return _upFlag || _downFlag || _leftFlag || _rightFlag;}
 
 		void set_char(std::string character){_character = character;}
