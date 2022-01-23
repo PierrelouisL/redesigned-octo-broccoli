@@ -9,14 +9,25 @@
  * 
  */
 
-#include "fighter.h"
+#include "fight_scene.h"
 
 #define DEBUG // A commenter pour enlever les commentaires
 
+typedef enum{MENU, CITY, FIGHT, END}States;
+
+extern sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
+extern sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
+extern States Actual_state;
 
 /* Miscs */
 
-void blink(sf::Uint8 *A, char *blinking_way)
+void printf_s(std::string msg){
+    Console.lock();
+    std::cout << msg << std::endl;
+    Console.unlock();
+}
+
+void fight_scene::blink(sf::Uint8 *A, char *blinking_way)
 {
 	if (*blinking_way)
 	{ // Blinking_way = 1 donc on baisse la valeur
@@ -42,7 +53,7 @@ void blink(sf::Uint8 *A, char *blinking_way)
 	}
 }
 
-void flagHandler(char flag, int *last_pos, std::vector<sf::Text*> Atq, sf::Uint8 R, sf::Uint8 G, sf::Uint8 B, char last_pressed)
+void fight_scene::flagHandler(char flag, int *last_pos, std::vector<sf::Text*> Atq, sf::Uint8 R, sf::Uint8 G, sf::Uint8 B, char last_pressed)
 {
 	#ifdef DEBUG
 	std::cout << (int)flag << "=f" << std::endl;
@@ -126,7 +137,7 @@ void flagHandler(char flag, int *last_pos, std::vector<sf::Text*> Atq, sf::Uint8
 }
 
 // Actualise la barre d'hp du joueur ou de l'ennemi who = false pour ennemi who = true pour joueur
-sf::RectangleShape aff_hp(sf::RenderWindow* window, fighter perso, bool who){
+sf::RectangleShape fight_scene::aff_hp(sf::RenderWindow* window, fighter perso, bool who){
 	sf::RectangleShape barre_hp(sf::Vector2f(172.f,22.f)); // Ce qui sera en vert pour afficher ce qu'il reste d'hp au perso
 	//int PV = perso.get_PV();
 	float size = ((float)perso.get_pourcent_PV()/100)*172;
@@ -147,18 +158,7 @@ sf::RectangleShape aff_hp(sf::RenderWindow* window, fighter perso, bool who){
 	return barre_hp;
 }
 
-/* Fighter class */
-
-// Flags for key pressed
-bool upFlag = false;
-bool downFlag = false;
-bool leftFlag = false;
-bool rightFlag = false;
-bool returnFlag = false;
-char actionFlag = NOTHING; // Si une action est en cours on ne gere plus les evenements!
-
-
-void goodbye(){
+void fight_scene::goodbye(){
 	upFlag = false;
 	downFlag = false;
 	leftFlag = false;
@@ -168,10 +168,8 @@ void goodbye(){
 }
 
 
-sf::Font NiceFont;
 
-
-int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi, std::vector<sf::Text*> Atq)
+int fight_scene::aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi, std::vector<sf::Text*> Atq)
 {
 	static sf::Uint8 R = 255, G = 0, B = 0, A = 250;
 	sf::Font Font;
@@ -292,7 +290,7 @@ int aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* ennemi, std::
 	return 0;
 }
 
-int handleEvents(sf::Event event)
+int fight_scene::handleEvents(sf::Event event)
 {
 	if (event.type == sf::Event::Closed){
 		return 1;
@@ -352,96 +350,99 @@ int handleEvents(sf::Event event)
 	return 0;
 }
 
-int fight_scene(sf::RenderWindow* window, fighter* joueur, fighter* ennemi)
+
+void fight_scene::Display(sf::RenderWindow* window, fighter* player, fighter* currentbot){
+	WinMutex.lock();
+	window->setActive(true);
+	window->clear();
+	window->setView(window->getDefaultView());
+	window->draw(*Background_sprite);
+	if(aff_combat(window, player, currentbot, Atq) < 0){
+		sf::Clock clk_fin;
+		sf::RectangleShape HideMes(sf::Vector2f(1142.f, 200.f));
+		HideMes.setFillColor(sf::Color(200, 226, 226, 255));
+		HideMes.setPosition(sf::Vector2f(5.f, 499.f));
+		window->draw(HideMes);
+		if(player->get_PV() < 0){
+			std::cout << "le joueur est mort" << std::endl;
+			player->aff_fin(window, VICTOIRE); // A remplacer  plus tard
+		}else{
+			std::cout << "Le pollueur est mort bien vu" << std::endl;
+			currentbot->aff_fin(window, DEFAITE);
+		}
+		window->display();
+		while(clk_fin.getElapsedTime().asSeconds() < 1); // Petit délai de 10s
+		goodbye();
+		Actual_state == CITY;
+		currentbot->alive = false;
+		WinMutex.unlock();
+		window->setActive(false);
+		// On passe à l'état city et on attend qu'on revienne pour repartir!
+	}
+	#ifdef DEBUG
+	std::cout <<"drawing.."<< std::endl;
+	#endif
+	window->draw(*Hp_Sprite);
+	window->draw(*Hp2_Sprite);
+	window->draw(*nom_joueur);
+	window->draw(*nom_joueur);
+	window->display();
+	window->setActive(false);
+}
+
+
+fight_scene::~fight_scene()
 {
-	/*std::cout << "fight engaged!" << std::endl;
+	delete Background;
+	delete Hp;
+	delete Hp2_Sprite;
+	delete Hp_Sprite;
+	delete nom_pollueur;
+	delete nom_joueur;
+	for(int i = 0; i< 4; ++i){
+        delete Atq[i];
+    }
+}
+
+fight_scene::fight_scene()
+{
 	NiceFont.loadFromFile("images/SourceSansPro-Regular.otf");
-
-
-	// Allocation des textures -> Background, texte, hp
-	// Allocation background
-	sf::Texture *Background = new sf::Texture;
+	Background = new sf::Texture;
 	Background->loadFromFile("images/background_combat_ville.png");
-	sf::Sprite *Background_sprite = new sf::Sprite;
+	Background_sprite = new sf::Sprite;
 	Background_sprite->setTexture(*Background);
 
 	// Allocation HP1
-	sf::Texture *Hp = new sf::Texture;
+	Hp = new sf::Texture;
 	Hp->loadFromFile("images/hpbar.png");
-	sf::Sprite *Hp_Sprite = new sf::Sprite;
+	Hp_Sprite = new sf::Sprite;
 	Hp_Sprite->setTexture(*Hp);
 	Hp_Sprite->setPosition(sf::Vector2f(50.f, 0.f));
 
 	// Allocation HP2
-	sf::Sprite *Hp2_Sprite = new sf::Sprite;
+	Hp2_Sprite = new sf::Sprite;
 	Hp2_Sprite->setTexture(*Hp);
 	Hp2_Sprite->setPosition(sf::Vector2f(840.f, 0.f));
 
-	// Allocations events
-	//sf::Event event;
-	sf::Event *event = new sf::Event;
+	nom_joueur = new sf::Text;
+	nom_joueur->setFont(NiceFont);
+	nom_joueur->setCharacterSize(20);
+	nom_joueur->setString(sf::String("Joueur"));
+	nom_joueur->setPosition(sf::Vector2f(120.f, 10.f));
 
-	// Creation des classes joueur et ennemi
-	//fighter joueur, ennemi;
+	nom_pollueur = new sf::Text;
+	nom_pollueur->setFont(NiceFont);
+	nom_pollueur->setCharacterSize(20);
+	nom_pollueur->setString(sf::String("Pollueur"));
+	nom_pollueur->setPosition(sf::Vector2f(910.f, 10.f));
 
-	sf::Text nom_joueur(sf::String("Joueur"), NiceFont, 20);
-	nom_joueur.setPosition(sf::Vector2f(120.f, 10.f));
-	sf::Text Pollueur(sf::String("Pollueur"), NiceFont, 20);
-	Pollueur.setPosition(sf::Vector2f(910.f, 10.f));
-
-
-	while (1)
-	{
-		#ifndef DEBUG
-		std::cout << "|" << std::endl;
-		#endif
-		// on gère les évènements
-		while (window->pollEvent(*event))
-		{
-			if (handleEvents(*event))
-			{
-				window->close();
-				std::cout << "goodbye!" << std::endl;
-				goodbye(Background, Background_sprite, Hp, Hp_Sprite, Hp2_Sprite, event);
-				exit(0);
-			}
-		}
-		// TODO: Gérer tout ça dans une fonction plus tard...
-		window->clear();
-		window->setView(window->getDefaultView());
-		window->draw(*Background_sprite);
-		if(aff_combat(window, joueur, ennemi) < 0){
-			sf::Clock clk_fin;
-			sf::RectangleShape HideMes(sf::Vector2f(1142.f, 200.f));
-			HideMes.setFillColor(sf::Color(200, 226, 226, 255));
-			HideMes.setPosition(sf::Vector2f(5.f, 499.f));
-			window->draw(HideMes);
-			if(joueur->get_PV() < 0){
-				std::cout << "le joueur est mort" << std::endl;
-				joueur->aff_fin(window, VICTOIRE); // A remplacer  plus tard
-			}else{
-				std::cout << "Le pollueur est mort bien vu" << std::endl;
-				ennemi->aff_fin(window, DEFAITE);
-			}
-			window->display();
-			while(clk_fin.getElapsedTime().asSeconds() < 1); // Petit délai de 10s
-			goodbye(Background, Background_sprite, Hp, Hp_Sprite, Hp2_Sprite, event);
-			return 0 ;
-		}
-		#ifdef DEBUG
-		std::cout <<"drawing.."<< std::endl;
-		#endif
-		window->draw(*Hp_Sprite);
-		window->draw(*Hp2_Sprite);
-		window->draw(nom_joueur);
-		window->draw(Pollueur);
-		window->display();
-	}
-
-	goodbye(Background, Background_sprite, Hp, Hp_Sprite, Hp2_Sprite, event);*/
-	return 0;
-}
-
-void fight_init(){
-	NiceFont.loadFromFile("images/SourceSansPro-Regular.otf");
+    for(int i = 0; i< 4; ++i){
+        Atq.push_back(new sf::Text);
+        Atq[i]->setFont(NiceFont);
+        Atq[i]->setCharacterSize(40);
+    }
+    Atq[0]->setPosition(sf::Vector2f(20.f, 510.f));
+    Atq[1]->setPosition(sf::Vector2f(600.f, 510.f));
+    Atq[2]->setPosition(sf::Vector2f(20.f, 610.f));
+    Atq[3]->setPosition(sf::Vector2f(600.f, 610.f));
 }

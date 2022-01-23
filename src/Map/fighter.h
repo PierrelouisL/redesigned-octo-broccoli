@@ -12,7 +12,6 @@
 #pragma once
 #include "Window.h"
 #include "Character.h"
-//#include "bot.h"
 
 #define VICTOIRE 1
 #define DEFAITE 2
@@ -68,8 +67,6 @@ void flagHandler(char flag, int *last_pos, sf::Text *Atq, sf::Uint8 R, sf::Uint8
 
 // Actualise la barre d'hp du joueur ou de l'ennemi who = false pour ennemi who = true pour joueur
 sf::RectangleShape aff_hp(sf::RenderWindow* window, fighter perso, bool who);
-
-int fight_scene(sf::RenderWindow* window, fighter* joueur, fighter* ennemi);
 
 void fight_init();
 
