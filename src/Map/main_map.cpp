@@ -174,10 +174,18 @@ int main(){
                                 TileMap temp_element;
                                 int level[] = { 0, 1, 2, 3};
                                 
-                                temp_element.load("images/decors/voiture.png", level, 2, 2);
+                                temp_element.load("images/Decors/voiture.png", level, 2, 2);
                                 temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(640, -64));        
                                 element.put_VectorElement(temp_element);
                                 element.put_VectorType(5);
+                            }
+                            next_case = ptr_perso->checkFrontCase(6, false);
+                            if(  next_case != sf::Vector2f(-1, -1) ){
+
+                                obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
+                                
+                                element.sound_LoadStart(sound_effect, "sound/SpecialSoundEffect.wav", 80.f, false);  
+                                view.zoom(3);
                             }
                             break;
 
