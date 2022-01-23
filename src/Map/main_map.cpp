@@ -6,6 +6,7 @@
 #include "bot.h"
 #include "fighter.h"
 #include "fight_scene.h"
+#include "menu.h"
 
 #include <thread>
 #include <mutex>
@@ -29,8 +30,8 @@
 #define FIGHT_ENABLED  // A commenter si tu veux pas de combat!
 #define DEBUG
 
-typedef enum{MENU, CITY, FIGHT, END}States;
-States Actual_state = CITY;
+//typedef enum{MENU, CITY, FIGHT, END}States;
+States Actual_state = MENU;
 
 bool quit = false;
 
@@ -60,6 +61,14 @@ void Thread_fight(sf::RenderWindow* window, fighter* player){
         WinMutex.unlock();
     }
     return;
+}
+
+void Thread_menu(sf::RenderWindow* window){
+    std::cout << "Thread lancé !" << std::endl;
+    menu Ecran_menu;
+    Ecran_menu.Display(window);
+    Actual_state = CITY;
+    printf_s("we quit!");
 }
 
 
@@ -101,19 +110,22 @@ int main(){
 
     sf::Thread thread(std::bind(&Thread_fight, window, &joueur));
     thread.launch();
+    sf::Thread t_menu(std::bind(&Thread_menu, window));
+    t_menu.launch();
     bots.current_bot()->alive = false;
     bool heal = false;
     while (window->isOpen() && !quit)
     {
         bots.check_and_follow(perso.getPosition());
-        if(bots.current_bot()->alive){
+        if(bots.current_bot()->alive && (Actual_state== FIGHT || Actual_state == CITY)){
             Actual_state = FIGHT;
-        }else{
+        }
+        if(!bots.current_bot()->alive && (Actual_state== FIGHT || Actual_state == CITY)){
             Actual_state = CITY;
         }
         switch(Actual_state){
             case MENU:
-                
+                //printf_s("DANS LE MENU!");
                 break;
             case CITY:
                 window->setActive(true);
