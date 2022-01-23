@@ -63,7 +63,7 @@ void Thread_menu(sf::RenderWindow* window){
 int main(){
 	// on crée la fenêtre
     sf::RenderWindow* window = new sf::RenderWindow;
-	window->create(sf::VideoMode(1152, 704), "redesigned-octo-broccoli");
+	window->create(sf::VideoMode(1152, 768), "redesigned-octo-broccoli");
     window->setFramerateLimit(120);
     window->setVerticalSyncEnabled(true);	
 	sf::View view = window->getDefaultView();
@@ -77,6 +77,10 @@ int main(){
     TileCharacter *ptr_perso = &perso;      // Object that we will manipulate
     TileElement element;
     TileGoal allGoal;
+
+    map.load_map();
+    map_decors.load_map();
+    ptr_perso->load_character();
 
     view.setCenter(sf::Vector2f(4.5*64, 30.5*64));  // Start at home
     ptr_perso->init_coord(view);
@@ -134,11 +138,9 @@ int main(){
                             }
                         }
                     }
-                    std::cout << "jusque avant bot and follow" << std::endl;
                     bots.check_and_follow(perso.getPosition());
                     switch(g_mode){
                         case normal:
-                                 
                             if(bots.current_bot()->alive){
                                 g_mode = fight;
                             }
@@ -264,8 +266,9 @@ int main(){
         // on dessine le niveau
         window->setView(view);
         window->clear();
+        std::cout << "drawing map!" << std::endl;
         window->draw(map);
-   
+
         ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64, -64) );   // Set the middle of the character in the middle of the view
         //std::cout << "x=" << (int)view.getCenter().x/64 << "y = " << (int)view.getCenter().y/64 << std::endl;
         //bots.check_and_follow(perso);
@@ -283,7 +286,8 @@ int main(){
         WinMutex.unlock();
     }
     std::cout << "le vrai chao!"<< std::endl;
-    thread.wait();
+    exit(0);
+    //thread.wait();
     delete window;
     return 0;
 }
