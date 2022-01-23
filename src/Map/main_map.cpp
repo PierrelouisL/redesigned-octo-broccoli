@@ -27,12 +27,13 @@ int main(){
     window.setView(view);
 
     // on crée les objects qu'on va manipuler
-    TileMap map("images/Map1.png", 60, 61);
-    TileMap map_decors("images/Map2.png", 60, 61);
+    TileMap map("images/Map/Map1.png", 60, 61);
+    TileMap map_decors("images/Map/Map2.png", 60, 61);
     TileCharacter perso("Greta");           // Character mode normal
     TileCharacterMario persoMario(perso);   // Same Character mode mario
     TileCharacter *ptr_perso = &perso;      // Object that we will manipulate
     TileElement element;
+    TileGoal allGoal;
     Gamemode g_mode = normal;
 
     map.load_map();
@@ -45,12 +46,14 @@ int main(){
     //--
     bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant)
 
-    // on gère les évènements   
+    // on gère les évènements et music
 	sf::Event event;
     sf::Clock clk;
     sf::Music music;
     sf::Music sound_effect;
     // on fait tourner la boucle principale
+
+    element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
 
     while (window.isOpen()){
 
@@ -65,47 +68,54 @@ int main(){
 
                     sf::Vector2f next_case = ptr_perso->checkFrontCase(4, false);                  // Tree spawn
                     if( next_case != sf::Vector2f(-1, -1) ){
-                        
+
+                        element.sound_LoadStart(sound_effect, "sound/Tree.wav", 25.f, false);
+
                         obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = -1;
 
                         TileMap temp_element;
                         int level[] = { 0, 1 };
                         
-                        if(!temp_element.load("images/arbre.png", level, 1, 2)){
-                            std::cout << "Erreur du chargement de l'élément" << std::endl;
-                        }
-
+                        temp_element.load("images/Decors/arbre.png", level, 1, 2);
                         temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(-2, -80));         
                         element.put_VectorElement(temp_element);
                         element.put_VectorType(4);
+
+                        allGoal.add_tree();
+                        if(allGoal.get_goalTree()){
+                            map.change_map("images/Map/Map3.png");
+                            map.load_map();
+
+                            for(int i=0; i<7; i++){
+                                obstacle_ville1[10][19+i] = -2;
+                            }
+                        }
                     }
 
                     switch(g_mode){
                         case normal:
                                  
-                            if( ptr_perso->checkFrontCase(-2, false) != sf::Vector2f(-1, -1) ){         // City to Trump's room 
+                            if( ptr_perso->checkFrontCase(-2, false) != sf::Vector2f(-1, -1) ){             // City to Trump's room 
+                                element.sound_LoadStart(music, "sound/HymneEtatUnis.wav", 20.f, true);
                                 view.setCenter(sf::Vector2f(7*64, 57.5*64));
                             
                             }
-                            else if( ptr_perso->checkFrontCase(-3, false) != sf::Vector2f(-1, -1) ){         // Trump's room to City
+                            else if( ptr_perso->checkFrontCase(-3, false) != sf::Vector2f(-1, -1) ){        // Trump's room to City
+                                element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
                                 view.setCenter(sf::Vector2f(22*64, 11.5*64));
                             
                             }           
-                            else if( ptr_perso->checkFrontCase(3, false) != sf::Vector2f(-1, -1) ){          // Camera event
+                            else if( ptr_perso->checkFrontCase(3, false) != sf::Vector2f(-1, -1) ){         // Camera event
                                 if(ptr_perso->get_eye() == TileCharacter::Left){
-
-                                    music.openFromFile("sound/discours_Greta.wav");
-                                    music.setVolume(100.f);
-                                    music.play();
+                                    allGoal.done_goalCamera();
+                                    element.sound_LoadStart(sound_effect, "sound/discours_Greta.wav", 80.f, false);
                                     while(music.getStatus() == sf::Music::Playing);
                                 }
                             }
-                            else if( ptr_perso->checkFrontCase(10, false) != sf::Vector2f(-1, -1) ){         // TP at the start of mario event
+                            else if( ptr_perso->checkFrontCase(10, false) != sf::Vector2f(-1, -1) ){        // TP at the start of mario event
                                 g_mode = mario;
                                 view.setCenter(sf::Vector2f(22*64, 56.5*64));
-                                music.openFromFile("sound/SuperMarioBros.wav");
-                                music.setVolume(50.f);
-                                music.play();
+                                element.sound_LoadStart(music, "sound/SuperMarioBros.wav", 50.f, true);
                                 ptr_perso = &persoMario;
                             }
                             break;
@@ -113,6 +123,8 @@ int main(){
                         case mario :
 
                             if( ptr_perso->checkFrontCase(11, false) != sf::Vector2f(-1, -1) ){         // TP to House
+                                element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
+
                                 g_mode = normal;
                                 view.setCenter(sf::Vector2f(4.5*64, 30.5*64));
                                 music.stop();
@@ -121,10 +133,8 @@ int main(){
 
                             else if( ptr_perso->checkFrontCase(12, false) != sf::Vector2f(-1, -1) ){
                                 clk.restart();            
-                                sound_effect.openFromFile("sound/MushroomSound.wav");
-                                sound_effect.setVolume(5.f);
+                                element.sound_LoadStart(sound_effect, "sound/MushroomSound.wav", 5.f, false);
                                 for(int i=0; i<4; i++){
-                                    sound_effect.play(); 
                                     ptr_perso->scale( sf::Vector2f(2, 2));
                                     ptr_perso->setPosition( view.getCenter()+sf::Vector2f(-64*2*(i*i+1), -64*2*(i+1+1)) );
                                     window.setActive();
@@ -135,10 +145,7 @@ int main(){
                                     clk.restart();
                                     while(clk.getElapsedTime().asSeconds() < 2);
                                 }
-                                sound_effect.openFromFile("sound/BallonBoom.wav");
-                                sound_effect.setVolume(80.f);
-                                sound_effect.play(); 
-                                ptr_perso->setScale( sf::Vector2f(1, 1));
+                                element.sound_LoadStart(sound_effect, "sound/BallonBoom.wav", 80.f, false);                                ptr_perso->setScale( sf::Vector2f(1, 1));
                                 view.setCenter(sf::Vector2f(22*64, 56.5*64));
                             }  
                             break;
@@ -160,15 +167,14 @@ int main(){
                             next_case = ptr_perso->checkFrontCase(5, false);                  // Car event
                             if( next_case != sf::Vector2f(-1, -1) ){
 
+                                element.sound_LoadStart(sound_effect, "sound/Car.wav", 80.f, false);  
+
                                 obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
 
                                 TileMap temp_element;
                                 int level[] = { 0, 1, 2, 3};
                                 
-                                if(!temp_element.load("images/voiture.png", level, 2, 2)){
-                                    std::cout << "Erreur du chargement de l'élément voiture" << std::endl;
-                                }
-
+                                temp_element.load("images/decors/voiture.png", level, 2, 2);
                                 temp_element.setPosition(sf::Vector2f((int) (next_case.x/64)*64, (int) ((next_case.y)/64)*64) + sf::Vector2f(640, -64));        
                                 element.put_VectorElement(temp_element);
                                 element.put_VectorType(5);
@@ -209,6 +215,8 @@ int main(){
         //bots.draw(window);
 
         window.draw(map_decors);
+        allGoal.display_goal(window, view.getCenter());
+
         window.display();
     }
 

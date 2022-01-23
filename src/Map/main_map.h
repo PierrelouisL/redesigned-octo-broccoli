@@ -8,6 +8,7 @@
 #include "Map.h"
 #include "Element.h"
 #include "bot.h"
+#include "Goal.h"
 
 
 extern int obstacle_ville1[61][60];

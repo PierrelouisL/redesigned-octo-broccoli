@@ -32,7 +32,7 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
 	sf::Vector2f next_case;
 	orientation temp_eye = get_eye();
 	static sf::Clock clk;
-	static sf::Music music;
+	static sf::Music sound_effect;
 
 	if(get_leftflag()){  // left key is pressed: move our character
 		
@@ -64,9 +64,7 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     }
 
     if(get_upflag()){
-    	music.openFromFile("sound/MarioJump.wav");
-        music.setVolume(10.f);
-        music.play();
+    	sound_LoadStart(sound_effect, "sound/MarioJump.wav", 10.f, false);
         set_upflag(false);
     }
     if(_gravity){ 									// Go up for the jump
@@ -80,7 +78,6 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
 			_gravity = false;
 			view.move(0, 6);
 		}
-		
     }
     else{											// Go down
     	set_eye(Face); 
