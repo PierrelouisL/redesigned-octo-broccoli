@@ -11,7 +11,7 @@
 
 #include "fight_scene.h"
 
-#define DEBUG // A commenter pour enlever les commentaires
+//#define DEBUG // A commenter pour enlever les commentaires
 
 typedef enum{MENU, CITY, FIGHT, END}States;
 
@@ -212,11 +212,15 @@ int fight_scene::aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* 
 			Atq[i]->setString(joueur->get_atk(i));
 			Atq[i]->setFillColor(sf::Color(R, G, B, 255));
 			window->draw(*Atq[i]);
+			#ifdef DEBUG
 			std::string s = joueur->get_atk(i);
 			std::cout << "----------printing atq " << i << "string =" << s << std::endl;
+			#endif
 		}
 	}
+	#ifdef DEBUG
 	std::cout << "x win= "<< window->getView().getCenter().x << " y win = " << window->getView().getCenter().y << "comparé à 500 500" << std::endl;
+	#endif
 
 	if (upFlag)
 	{
@@ -239,7 +243,9 @@ int fight_scene::aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* 
 		if(actionFlag == NOTHING){
 			actionFlag = MES_PLAYER;
 			ennemi->subit_atq(joueur->get_dmg_atq(last_pos));
+			#ifdef DEBUG
 			std::cout << "Ennemi PV= " <<ennemi->get_PV() << " " << std::endl;
+			#endif
 			clk.restart();
 		}
 	}

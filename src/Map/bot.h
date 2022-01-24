@@ -26,16 +26,13 @@
 /**
  * @brief Class to setup every bot in the map, initialize it with the bot difficulty
  * 
- * A bot location is defined by a "20" and a walkable area for a bot by a "21", it walks in a straight line 
+ * A bot location is defined by a "8"
  * 
  */
 class bot
 {
-	//int checknearby(sf::Vector2f coords);
-	void initpositions();
 private:
 	int difficulty;
-	int bot_number;
 	int current;
 	std::vector<fighter*> bots;
 public:
@@ -44,7 +41,7 @@ public:
 	void rm_bot(){bots[current]->alive = false;}
 	void print();
 	void draw(sf::RenderWindow &win);
-	//int check_and_follow(sf::Vector2f coords);
+	void which_bot(sf::Vector2f coords);
 
 	~bot();
 };

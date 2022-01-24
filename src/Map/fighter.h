@@ -25,7 +25,7 @@ class fighter : public TileCharacter
 {
 public:
 	bool alive;
-    fighter();
+    fighter():fighter(0){}
 	fighter(TileCharacter& character);
 	fighter(int perso);
     sf::String get_atk(int nb);
@@ -43,7 +43,7 @@ private:
     int HP_base;            // Initial HP for hp bar
     int HP;
     int atk_dmg[4];         // Amount of dmg for each attack
-    sf::String atk_desc[8]; // Description for each attack
+    sf::String atk_desc[8]; // De	scription for each attack
     bool bot;               // Is it a bot or not?
 };
 

@@ -100,7 +100,6 @@ int main(){
                     window.close();
                     quit = true;
                 }
-
                 if(event.type == sf::Event::KeyPressed){
                     if(event.key.code == sf::Keyboard::Space){  // Action key = space
 
@@ -236,6 +235,7 @@ int main(){
                                 next_case = ptr_perso->checkFrontCase(8, false);
                                 if( next_case != sf::Vector2f(-1, -1)){
                                     obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
+                                    bots.which_bot(next_case); // We check which bot is detected and store it in the bots.current_bot();
                                     ptr_perso->resetkey();
                                     g_mode = fight;
                                 }
@@ -281,25 +281,23 @@ int main(){
         }
         else if(g_mode == fight){
             fight_scene *f_sc = new fight_scene;
-            while(window.pollEvent(event) && !bots.current_bot()->alive){
-
-                printf("caca\n");
-                if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
-                    printf_s("C'est chao");
-                    quit = true;
-                    window.close();
+            while(g_mode == fight){
+                while(window.pollEvent(event)){
+                    if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
+                        printf_s("Adios!");
+                        g_mode = normal;
+                        quit = true;
+                        window.close();
+                    }
+                    f_sc->handleEvents(event);
                 }
-                printf_s("polling");
-                f_sc->handleEvents(event);
+                f_sc->Display(window, player, bots.current_bot());
             }
-            printf_s("LETS GO!");
-            f_sc->Display(window, player, bots.current_bot());
             ptr_perso->resetkey();
             delete f_sc;
         }
         
     }
     std::cout << "le vrai chao!"<< std::endl;
-    //thread.wait();
     return 0;
 }
