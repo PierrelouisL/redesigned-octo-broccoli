@@ -1,4 +1,4 @@
-#include "Window.h"
+#include "../headers/Window.h"
 
 bool TileWindow::load(const std::string& tileset, const int* tiles, unsigned int width, unsigned int height){
     

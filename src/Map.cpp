@@ -1,5 +1,5 @@
-#include "Window.h"
-#include "Map.h"
+#include "../headers/Window.h"
+#include "../headers/Map.h"
 
 void TileMap::load_map(){
 

@@ -31,7 +31,7 @@ private:
     bool leftFlag = false;
     bool rightFlag = false;
     bool returnFlag = false;
-    char actionFlag = NOTHING; // Si une action est en cours on ne gere plus les evenements!
+    char actionFlag = NOTHING; 
 
 
 public:

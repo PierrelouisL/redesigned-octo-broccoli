@@ -1,17 +1,6 @@
-/**
- * @file bot.cpp
- * @author Pierre-Louis Lagunegrand
- * @brief 
- * @version 0.1
- * @date 2022-01-06
- * 
- * @copyright Copyright (c) 2022
- * 
- */
-#include "bot.h"
+#include "../headers/bot.h"
 
 extern int obstacle_ville1[61][60];
-//#include "Obstacle.h"
 
 /**
  * @brief Construct a new bot::bot object but Difficulty not yet implemented

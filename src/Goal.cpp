@@ -1,4 +1,4 @@
-#include "Goal.h"
+#include "../headers/Goal.h"
 
 void TileGoal::display_goal(sf::RenderWindow &window, sf::Vector2f center){
 	sf::Text objectif;

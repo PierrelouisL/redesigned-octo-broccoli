@@ -1,14 +1,3 @@
-/**
- * @file fighter.h
- * @author your name (you@domain.com)
- * @brief 
- * @version 0.1
- * @date 2022-01-17
- * 
- * @copyright Copyright (c) 2022
- * 
- */
-
 #pragma once
 #include "Window.h"
 #include "Character.h"

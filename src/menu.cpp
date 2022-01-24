@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "../headers/menu.h"
 #include "math.h"
 
 menu::menu() : rotation(0), rotation2(0){

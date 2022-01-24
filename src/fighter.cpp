@@ -1,4 +1,4 @@
-#include "fighter.h"
+#include "../headers/fighter.h"
 
 
 
@@ -25,7 +25,6 @@ fighter::fighter(int perso){
 
             atk_desc[0] = sf::String(L"How DARE you?!");
             atk_desc[1] = sf::String(L"Vous infligez 100 points de dégats."); // Deuxième ligne atq0
-            //atk_desc[2] = sf::String("Vous pleurez comme une victime ce qui fait perdre 2 HP a"); // <<<---- TAILLE MAX 
             atk_desc[2] = sf::String(L"Vous faites appel à la COP 22 ce qui fonctionne"); // <<<---- TAILLE MAX 
             atk_desc[3] = sf::String(L"plutôt bien, le pollueur perd 50 points de vie."); // Deuxième ligne atq1
             atk_desc[4] = sf::String(L"Vous manifestez ce qui n'a que peu d'effet, le pollueur");

@@ -1,9 +1,5 @@
-#include "Character.h"
+#include "../headers/Character.h"
 
-
-// Pour avoir une vraie fonction random
-#include "random.hpp"
-using Random = effolkronium::random_static;
 
 #define MOVESPEED 3.5 		// Define the movespeed of the character
 

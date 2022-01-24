@@ -1,37 +1,12 @@
-#include "main_map.h"
+#include "../headers/main_map.h"
 
 #define FIGHT_ENABLED  // A commenter si tu veux pas de combat!
-#define DEBUG
 
-//sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
-//sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
 
 bool quit = false;
 
 Gamemode g_mode = menu_;
 bot bots(HARD); // Difficulté des bots (nb de spawn pour l'instant
-
-/*void Thread_fight(sf::RenderWindow* window, fighter* player){
-    fight_scene f_sc;
-    sf::Event event;
-    while(!quit){
-        if(g_mode == fight){
-            while(window->pollEvent(event)){
-                if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
-                    printf_s("C'est chao");
-                    quit = 1;
-                    window->close();
-                }
-                printf_s("polling");
-                f_sc.handleEvents(event);
-            }
-            printf_s("LETS GO!");
-            f_sc.Display(window, player, bots.current_bot());
-        }
-        WinMutex.unlock();
-    }
-    return;
-}*/
 
 int main(){
 
@@ -240,7 +215,8 @@ int main(){
             if(element.check_collision(ptr_perso->getPosition())){
                 // Collision so player gets hurt!
                 player->subit_atq(2);
-                view.move(-5, 0);
+                if(view.getCenter().x > 100) // To not get pushed out of the map!
+                    view.move(-5, 0);
                 std::cout << "Ouch you just hit a car!" << std::endl;
             }
             
@@ -248,7 +224,6 @@ int main(){
             allGoal.display_goal(window, view.getCenter());
 
             window.display();
-            //WinMutex.unlock();
         }
         else if(g_mode == menu_){
             menu *Ecran_menu = new menu;
@@ -261,7 +236,6 @@ int main(){
             while(g_mode == fight){
                 while(window.pollEvent(event)){
                     if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
-                        //printf_s("Adios!");
                         g_mode = normal;
                         quit = true;
                         window.close();

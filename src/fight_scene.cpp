@@ -1,32 +1,17 @@
-/**
- * @file fighter.cpp
- * @author your name (you@domain.com)
- * @brief 
- * @version 0.1
- * @date 2022-01-17
- * 
- * @copyright Copyright (c) 2022
- * 
- */
-
-#include "fight_scene.h"
+#include "../headers/fight_scene.h"
 
 //#define DEBUG // A commenter pour enlever les commentaires
 
 typedef enum{MENU, CITY, FIGHT, END}States;
 
-//extern sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
-//extern sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
 extern Gamemode g_mode;
 
-/* Miscs */
-
-/*void printf_s(std::string msg){
-    Console.lock();
-    std::cout << msg << std::endl;
-    Console.unlock();
-}*/
-
+/**
+ * @brief Blinks by changing the A value
+ * 
+ * @param A 
+ * @param blinking_way 
+ */
 void fight_scene::blink(sf::Uint8 *A, char *blinking_way)
 {
 	if (*blinking_way)
@@ -317,7 +302,7 @@ int fight_scene::handleEvents(sf::Event event)
 		case sf::Keyboard::Right:
 			rightFlag = true;
 			break;
-		case sf::Keyboard::Return:
+		case sf::Keyboard::Space:
 			returnFlag = true;
 			break;
 		case sf::Keyboard::Escape:
@@ -345,9 +330,8 @@ int fight_scene::handleEvents(sf::Event event)
 		case sf::Keyboard::Right:
 			rightFlag = false;
 			break;
-		case sf::Keyboard::Return:
+		case sf::Keyboard::Space:
 			returnFlag = false;
-			//actionFlag = false;
 			break;
 		default:
 			break;
@@ -356,7 +340,13 @@ int fight_scene::handleEvents(sf::Event event)
 	return 0;
 }
 
-
+/**
+ * @brief Just displays the current fight scene player vs current bot
+ * 
+ * @param window 
+ * @param player 
+ * @param currentbot 
+ */
 void fight_scene::Display(sf::RenderWindow& window, fighter* player, fighter* currentbot){
 
 	window.setActive(true);
@@ -371,13 +361,13 @@ void fight_scene::Display(sf::RenderWindow& window, fighter* player, fighter* cu
 		window.draw(HideMes);
 		if(player->get_PV() < 0){
 			std::cout << "le joueur est mort" << std::endl;
-			player->aff_fin(&window, VICTOIRE); // A remplacer  plus tard
+			player->aff_fin(&window, VICTOIRE); 
 		}else{
 			std::cout << "Le pollueur est mort bien vu" << std::endl;
 			currentbot->aff_fin(&window, DEFAITE);
 		}
 		window.display();
-		while(clk_fin.getElapsedTime().asSeconds() > 5); // Petit délai de 10s
+		while(clk_fin.getElapsedTime().asSeconds() > 5); // Petit délai de 5s
 		goodbye();
 		g_mode = normal;
 		currentbot->alive = false;
@@ -390,7 +380,6 @@ void fight_scene::Display(sf::RenderWindow& window, fighter* player, fighter* cu
 	window.draw(*nom_joueur);
 	window.draw(*nom_joueur);
 	window.display();
-	window.setActive(false);
 }
 
 
