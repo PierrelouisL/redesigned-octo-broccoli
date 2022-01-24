@@ -1,24 +1,10 @@
 #include "main_map.h"
-/*
- *  Nous aurons une map de 944 pixels de large contre 624 pixels de hauteur en 16x16, nous affichons
- *  en 64x64(tile map déjà faite comme ça). Donc cela nous fait 59 blocs de large et 39 blocks de hauteur.
- *  Il y a donc une map de 59*64=3776 pixels de large et 39*64=2496 pixels de hauteur. 
- *  Tous ces pixels ne seront cependant pas affichés car la fenetre n'affichera que 3 immeubles de large et 1 immeuble + une route de hauteur.
- *  Cela fait donc une fenêtre de 3*6*1*64=1152 pixels de large et (8+4)*64=768 pixels de hauteur.
- *  Chaque case de 64*64 correspond à une classe définie: Immeuble, Route, voiture, Décor...
- *  Un immeuble n'est pas un décor (comme la route par exemple) car on peut interagir avec lui, pour entrer chez les boss.
- *  Nous aurons un vecteur géant 2D qui nous servira de map, permettant de situer n'importe quel élément et accéder directement
- *  aux fonctions de sa classe, l'affichage sera géré par les classes (constructeurs), collisions de même. 
- *  Pour cela nous aurons une classe mère, la classe Map qui servira de mère pour toutes les autres classes et ainsi créer un
- *  vecteur de la classe "Map". 
- *             
- */
 
 #define FIGHT_ENABLED  // A commenter si tu veux pas de combat!
 #define DEBUG
 
-sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
-sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
+//sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
+//sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
 
 bool quit = false;
 
@@ -90,7 +76,7 @@ int main(){
     
     while (window.isOpen() && !quit){
         if(g_mode == normal || g_mode == mario){
-            WinMutex.lock();
+            //WinMutex.lock();
             while (window.pollEvent(event)){
                 if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
                     printf("C'est chao\n");
@@ -166,7 +152,7 @@ int main(){
                                     ptr_perso->resetkey();
                                 }
 
-                                else if( ptr_perso->checkFrontCase(12, false) != sf::Vector2f(-1, -1) ){
+                                else if( ptr_perso->checkFrontCase(12, false) != sf::Vector2f(-1, -1) ){    // Ear mario mushroom event
                                     clk.restart();            
                                     element.sound_LoadStart(sound_effect, "sound/MushroomSound.wav", 5.f, false);
                                     for(int i=0; i<4; i++){
@@ -213,7 +199,7 @@ int main(){
                                     element.put_VectorType(5);
                                 }
 
-                                next_case = ptr_perso->checkFrontCase(6, false);
+                                next_case = ptr_perso->checkFrontCase(6, false);                    // Glitch map event
                                 if(  next_case != sf::Vector2f(-1, -1) ){
 
                                     obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
@@ -254,6 +240,7 @@ int main(){
             if(element.check_collision(ptr_perso->getPosition())){
                 // Collision so player gets hurt!
                 player->subit_atq(2);
+                view.move(-5, 0);
                 std::cout << "Ouch you just hit a car!" << std::endl;
             }
             
@@ -261,7 +248,7 @@ int main(){
             allGoal.display_goal(window, view.getCenter());
 
             window.display();
-            WinMutex.unlock();
+            //WinMutex.unlock();
         }
         else if(g_mode == menu_){
             menu *Ecran_menu = new menu;
@@ -274,7 +261,7 @@ int main(){
             while(g_mode == fight){
                 while(window.pollEvent(event)){
                     if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)){
-                        printf_s("Adios!");
+                        //printf_s("Adios!");
                         g_mode = normal;
                         quit = true;
                         window.close();

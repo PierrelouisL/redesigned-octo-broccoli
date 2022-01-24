@@ -15,17 +15,17 @@
 
 typedef enum{MENU, CITY, FIGHT, END}States;
 
-extern sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
-extern sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
+//extern sf::Mutex WinMutex; // We ensure that we finished drawing before drawing in another thread!
+//extern sf::Mutex Console; // We ensure that we finished drawing before drawing in another thread!
 extern Gamemode g_mode;
 
 /* Miscs */
 
-void printf_s(std::string msg){
+/*void printf_s(std::string msg){
     Console.lock();
     std::cout << msg << std::endl;
     Console.unlock();
-}
+}*/
 
 void fight_scene::blink(sf::Uint8 *A, char *blinking_way)
 {

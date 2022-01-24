@@ -5,7 +5,7 @@
 #include "random.hpp"
 using Random = effolkronium::random_static;
 
-#define MOVESPEED 3.5
+#define MOVESPEED 3.5 		// Define the movespeed of the character
 
 extern int obstacle_ville1[61][60];
 
@@ -36,7 +36,7 @@ void TileCharacter::load_character(){
     		break;
     }
     if(oneMoveFlag()){
-    	if(clk.getElapsedTime().asSeconds() > 0.15f){
+    	if(clk.getElapsedTime().asSeconds() > 0.15f){	// Change sprite while in movement
 	    	if(_n_sprite == 4){
 				_n_sprite = 1;
 			}

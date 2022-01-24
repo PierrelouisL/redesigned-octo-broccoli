@@ -8,7 +8,7 @@ void TileCharacterMario::checkKeyMove(sf::Event &event){
     // Si on appuit sur une touche
     if (event.type == sf::Event::KeyPressed){
         switch (event.key.code){
-            case sf::Keyboard::Up :     set_upflag(true); if(_enable_jump){_gravity = true;}		break;
+            case sf::Keyboard::Up :     set_upflag(true); if(_enable_jump){_gravity = false;}		break;
             case sf::Keyboard::Left:    set_leftflag(true); 	break;
             case sf::Keyboard::Right:   set_rightflag(true); 	break;
             default : break;
@@ -57,20 +57,20 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     }
 
     if(clk.getElapsedTime().asSeconds() > 0.37){	// Jump time
-		_gravity = false;
+		_gravity = true;
     }
 
     if(get_upflag()){
     	sound_LoadStart(sound_effect, "sound/MarioJump.wav", 10.f, false);
         set_upflag(false);
     }
-    if(_gravity){ 									// Go up for the jump
+    if(!_gravity){ 									// Go up for the jump
     	_enable_jump = false;
 		if( checkFrontCase(-1, true, sf::Vector2f(0, -100)) != sf::Vector2f(-1, -1) ){
 			view.move(0, -6.5);
 		}
 		else{										// If the hit something with your head
-			_gravity = false;
+			_gravity = true;
 			view.move(0, 6.5);
 		}
     }
@@ -88,5 +88,5 @@ void TileCharacterMario::move(sf::View &view){	// Allow player to move in differ
     } 
 
     this->load_character();
-    init_coord(view);
+    init_coord(view);           
 }

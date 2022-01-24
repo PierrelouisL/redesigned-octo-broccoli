@@ -3,8 +3,8 @@
 void TileElement::load_allElement(sf::RenderWindow &window){
 
 
-	for(unsigned int i = 0; i < _vector_element.size(); i++){
-		window.draw(_vector_element[i]);
+	for(unsigned int i = 0; i < _vector_element.size(); i++){		// Draw all the element which is in _vector_element[] 
+		window.draw(_vector_element[i]);		
 		
 		if(_vector_type[i] == 5){									// If  vector_element[i] is a car
 			_vector_element[i].move(-5, 0);

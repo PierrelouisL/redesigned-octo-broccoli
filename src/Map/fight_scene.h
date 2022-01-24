@@ -41,4 +41,4 @@ public:
     ~fight_scene();
 };
 
-void printf_s(std::string msg);
+//void printf_s(std::string msg);
