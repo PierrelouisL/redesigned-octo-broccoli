@@ -16,15 +16,18 @@ flags =  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 SRC = $(wildcard src/*.cpp)
 OBJS = $(SRC:.cpp=.o)
 
-.PHONY: all clean
+.PHONY: all clean cleano
 
-all: $(OBJS) Map
+all: $(OBJS) Map cleano
 
 $(src_dir)/%.o: $(src_dir)/%.cpp 
 	$(cc) $(option) -c $< -o $@
 
 Map : $(OBJS)
 	$(cc) $(option) $(OBJS) -o Broccoli $(flags)
+
+cleano: 
+	rm -rf $(OBJS)
 
 clean: 
 	rm -rf $(OBJS) Broccoli
