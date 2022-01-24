@@ -1,7 +1,7 @@
 # redesigned-octo-broccoli
 ## _There is no planet B_
 
-The documentation is available on the report (pdf file).
+The documentation is available in french on the report (pdf file).
 
 To install our game you just need to install SFML
 >sudo apt-get install libsfml-dev
