@@ -22,17 +22,26 @@ bot::bot(int difficulty):difficulty(difficulty)
 {
 	// For every bot we try to find a appropriate location!
 	//std::cout << "chances to spawn = " << spawn << std::endl;
-	for(int y = 0; y < 59; ++y){
-		for(int x = 1; x < 39; ++x){
+	for(int y = 0; y < 61; ++y){
+		for(int x = 1; x < 60; ++x){
 			if(obstacle_ville1[x][y] == 8){
 				// We are in a spot for a bot so we should make one spawn!
-				bots.push_back(new fighter(1));
+				bots.push_back(new fighter(1)); // 1 because bot
 				bots[bots.size()-1]->change_char("Routier");
 				bots[bots.size()-1]->load_character();
 				bots[bots.size()-1]->init_coord(sf::Vector2f(y*64, x*64)+sf::Vector2f(-32, -80));
 				bots[bots.size()-1]->setPosition(sf::Vector2f(y*64, x*64)+sf::Vector2f(-32, -80));
 				std::cout << "actually spawned x ; y " << bots[bots.size()-1]->getPosition().x << " ; " << bots[bots.size()-1]->getPosition().y << std::endl;
 			}
+			if(obstacle_ville1[x][y] == 9){
+				// The boss AKA Trump!
+				bots.push_back(new fighter(2)); // 2 because boss
+				bots[bots.size()-1]->change_char("Routier");
+				bots[bots.size()-1]->load_character();
+				bots[bots.size()-1]->init_coord(sf::Vector2f(y*64, x*64)+sf::Vector2f(-32, -80));
+				bots[bots.size()-1]->setPosition(sf::Vector2f(y*64, x*64)+sf::Vector2f(-32, -80));
+				std::cout << "actually spawned x ; y " << bots[bots.size()-1]->getPosition().x << " ; " << bots[bots.size()-1]->getPosition().y << std::endl;
+			} 
 		}
 	}
 }

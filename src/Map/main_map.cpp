@@ -84,10 +84,7 @@ int main(){
     std::cout << "printing bot" << std::endl;
     bots.print();
 
-    //sf::Thread thread(std::bind(&Thread_fight, &window, player));
-    //thread.launch();
     bots.current_bot()->alive = false;
-    bool heal = false;
     
     element.sound_LoadStart(music, "sound/AnimalCrossing.wav", 80.f, true);
     
@@ -106,7 +103,7 @@ int main(){
                         sf::Vector2f next_case = ptr_perso->checkFrontCase(4, false);                  // Tree spawn
                         if( next_case != sf::Vector2f(-1, -1) ){
 
-                            //ptr_perso->heal(); // Spawning a tree makes you get healed
+                            player->heal(); // Spawning a tree makes you get healed
 
                             element.sound_LoadStart(sound_effect, "sound/Tree.wav", 25.f, false);
 
@@ -189,13 +186,6 @@ int main(){
                                     view.setCenter(sf::Vector2f(22*64, 56.5*64));
                                 }  
                                 break;
-
-                            case fight :
-                                
-                                break;
-                            case menu_ :
-                                // We don't do anything here
-                                break;
                             default :
                                 break;
                         }
@@ -231,25 +221,20 @@ int main(){
                                     element.sound_LoadStart(sound_effect, "sound/SpecialSoundEffect.wav", 80.f, false);  
                                     view.zoom(3);
                                 }
-
-                                next_case = ptr_perso->checkFrontCase(8, false);
-                                if( next_case != sf::Vector2f(-1, -1)){
-                                    obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
-                                    bots.which_bot(next_case); // We check which bot is detected and store it in the bots.current_bot();
-                                    ptr_perso->resetkey();
-                                    g_mode = fight;
-                                }
-
-                            case mario :
-                                break;
                             default :
                                 break;
                         }
                     }
                 }
-        
+                sf::Vector2f next_case;
+                next_case = ptr_perso->checkFrontCase(8, false);
+                if( next_case != sf::Vector2f(-1, -1)){
+                    obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
+                    bots.which_bot(next_case); // We check which bot is detected and store it in the bots.current_bot();
+                    ptr_perso->resetkey();
+                    g_mode = fight;
+                }
                 ptr_perso->checkKeyMove(event);  // Check status of movement key
-                //bots.check_and_follow(perso);
             }
 
            
@@ -266,6 +251,11 @@ int main(){
             window.draw(*ptr_perso);
 
             element.load_allElement(window);
+            if(element.check_collision(ptr_perso->getPosition())){
+                // Collision so player gets hurt!
+                player->subit_atq(2);
+                std::cout << "Ouch you just hit a car!" << std::endl;
+            }
             
             window.draw(map_decors);
             allGoal.display_goal(window, view.getCenter());
