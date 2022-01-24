@@ -352,6 +352,10 @@ void fight_scene::Display(sf::RenderWindow& window, fighter* player, fighter* cu
 	window.setActive(true);
 	window.clear();
 	window.setView(window.getDefaultView());
+	if(currentbot->get_dmg_atq(0) == 100){ //It is Trump because atk0 = 100 dmg
+		Background->loadFromFile("images/bacgroundcombattrump.png");
+		Background_sprite->setTexture(*Background);
+	}
 	window.draw(*Background_sprite);
 	if(aff_combat(&window, player, currentbot, Atq) < 0){
 		sf::Clock clk_fin;

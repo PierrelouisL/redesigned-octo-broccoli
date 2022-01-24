@@ -195,6 +195,13 @@ int main(){
                     ptr_perso->resetkey();
                     g_mode = fight;
                 }
+                next_case = ptr_perso->checkFrontCase(9, false);
+                if( next_case != sf::Vector2f(-1, -1)){
+                    obstacle_ville1[ abs((int) ((next_case.y)/64)) ][ abs((int) (next_case.x/64)) ] = 0;
+                    bots.which_bot(next_case); // We check which bot is detected and store it in the bots.current_bot();
+                    ptr_perso->resetkey();
+                    g_mode = fight;
+                }
                 ptr_perso->checkKeyMove(event);  // Check status of movement key
             }
 

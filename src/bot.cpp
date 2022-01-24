@@ -50,8 +50,8 @@ bot::~bot()
 void bot::draw(sf::RenderWindow &win){
 	//std::cout << "printing" << std::endl;
 	for(unsigned int i = 0; i < bots.size(); ++i){
-		win.draw(*bots[i]);
-		//std::cout << perso.getPosition().x << " " << bots[i]->getPosition().x << std::endl;
+		if(bots[i]->get_dmg_atq(0) != 100)
+			win.draw(*bots[i]);
 	}
 }
 

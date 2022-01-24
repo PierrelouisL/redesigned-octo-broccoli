@@ -66,7 +66,7 @@ fighter::fighter(int perso){
             atk_name[2] = "TWEET";
             atk_name[3] = "MONEY";
 
-            HP = 200;
+            HP = 400;
             HP_base = HP;
 
             atk_dmg[0] = 100;
