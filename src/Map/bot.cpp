@@ -52,6 +52,7 @@ bot::~bot()
 		free(bots[i]);
 	}
 }
+
 /**
  * @brief draws every bot on the window 
  * 

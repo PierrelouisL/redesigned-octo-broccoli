@@ -30,11 +30,11 @@ menu::menu() : rotation(0), rotation2(0){
         Menu_options[i]->setFont(SelFont);
         Menu_options[i]->setCharacterSize(40);
     }
-    Menu_options[0]->setString(sf::String("Instructions"));
+    Menu_options[0]->setString(sf::String(L"Instructions"));
     Menu_options[0]->setPosition(sf::Vector2f(800, 500));
-    Menu_options[1]->setString(sf::String("Lancer partie"));
+    Menu_options[1]->setString(sf::String(L"Lancer partie"));
     Menu_options[1]->setPosition(sf::Vector2f(800, 550));
-    Menu_options[2]->setString(sf::String("Credits"));
+    Menu_options[2]->setString(sf::String(L"Crédits"));
     Menu_options[2]->setPosition(sf::Vector2f(800, 600));
 
     for(int i = 0; i< 8; ++i){
@@ -58,27 +58,27 @@ void menu::update_displayed_text(){
     switch (selected)
     {
     case intro:
-        Menu_text[0]->setString(sf::String("Bonjour et bienvenue sur redesigned-octo-broccoli!"));
-        Menu_text[1]->setString(sf::String("Le but du jeu est de sauver la planete, vous incarnez"));
-        Menu_text[2]->setString(sf::String("la jeune militante Greta Thunberg. "));
-        Menu_text[3]->setString(sf::String("A vous de sauver la planete contre les pollueurs, "));
-        Menu_text[4]->setString(sf::String("n'hesitez pas a planter des arbres dans les emplacements"));
-        Menu_text[5]->setString(sf::String("avec de la terre pour regenerer votre vie entre les combats."));
-        Menu_text[6]->setString(sf::String("La touche d'action (planter arbre, parler devant la camera"));
-        Menu_text[7]->setString(sf::String("ou encore entrer dans la Trump Tower) est la touche Espace."));
+        Menu_text[0]->setString(sf::String(L"Bonjour et bienvenue sur redesigned-octo-broccoli!"));
+        Menu_text[1]->setString(sf::String(L"Le but du jeu est de sauver la planete, vous incarnez"));
+        Menu_text[2]->setString(sf::String(L"la jeune militante Greta Thunberg. "));
+        Menu_text[3]->setString(sf::String(L"A vous de sauver la planete contre les pollueurs, "));
+        Menu_text[4]->setString(sf::String(L"n'hésitez pas à planter des arbres dans les emplacements"));
+        Menu_text[5]->setString(sf::String(L"avec de la terre pour regénérer votre vie entre les combats."));
+        Menu_text[6]->setString(sf::String(L"La touche d'action (planter arbre, parler devant la camera"));
+        Menu_text[7]->setString(sf::String(L"ou encore entrer dans la Trump Tower) est la touche Espace."));
         break;
     case play:  
         // No text bcs we launch game
         break;
     case credits:
-        Menu_text[0]->setString(sf::String("Jeu cree par Thanh-Liem TA et Pierre-Louis "));
-        Menu_text[1]->setString(sf::String("Lagunegrand, graphiques en jeu entièrement fait a la main"));
-        Menu_text[2]->setString(sf::String("principalement par Thanh-Liem."));
-        Menu_text[3]->setString(sf::String(" "));
-        Menu_text[4]->setString(sf::String(" "));
-        Menu_text[5]->setString(sf::String(" "));
-        Menu_text[6]->setString(sf::String(" "));
-        Menu_text[7]->setString(sf::String("(font) Webpixel bitmap by Manuel Viergutz"));
+        Menu_text[0]->setString(sf::String(L"Jeu créé par Thanh-Liem TA et Pierre-Louis "));
+        Menu_text[1]->setString(sf::String(L"Lagunegrand, graphiques en jeu entièrement fait à la main"));
+        Menu_text[2]->setString(sf::String(L"principalement par Thanh-Liem."));
+        Menu_text[3]->setString(sf::String(L" "));
+        Menu_text[4]->setString(sf::String(L" "));
+        Menu_text[5]->setString(sf::String(L" "));
+        Menu_text[6]->setString(sf::String(L" "));
+        Menu_text[7]->setString(sf::String(L"(font) Webpixel bitmap by Manuel Viergutz"));
         break;
     }
 }
@@ -111,11 +111,11 @@ void menu::Display(sf::RenderWindow &window){
 	window.clear();
 	window.setView(window.getDefaultView());
 
-    sf::Text t_redesigned(sf::String("redesigned"),TextFont, 70);
+    sf::Text t_redesigned(sf::String(L"redesigned"),TextFont, 70);
     t_redesigned.setPosition(470.f, 148.f);
-    sf::Text t_octo(sf::String("octo"),TextFont, 70);
+    sf::Text t_octo(sf::String(L"octo"),TextFont, 70);
     t_octo.setPosition(540.f, 205.f);
-    sf::Text t_broccoli(sf::String("broccoli"),TextFont, 70);
+    sf::Text t_broccoli(sf::String(L"broccoli"),TextFont, 70);
     t_broccoli.setPosition(500.f, 260.f);
 
     sf::Event event;

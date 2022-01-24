@@ -173,7 +173,7 @@ int fight_scene::aff_combat(sf::RenderWindow *window, fighter* joueur, fighter* 
 {
 	static sf::Uint8 R = 255, G = 0, B = 0, A = 250;
 	sf::Font Font;
-	Font.loadFromFile("images/SourceSansPro-Regular.otf");
+	Font.loadFromFile("images/webpixel bitmap_medium.otf");
 	static char last_pressed = UP, blinking_way = 1;
 	static int last_pos = 0;
 	static sf::RectangleShape Battle_outline(sf::Vector2f(1142.f, 200.f));
@@ -410,7 +410,7 @@ fight_scene::~fight_scene()
 
 fight_scene::fight_scene()
 {
-	NiceFont.loadFromFile("images/SourceSansPro-Regular.otf");
+	NiceFont.loadFromFile("images/webpixel bitmap_medium.otf");
 	Background = new sf::Texture;
 	Background->loadFromFile("images/background_combat_ville.png");
 	Background_sprite = new sf::Sprite;

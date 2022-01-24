@@ -10,6 +10,7 @@ class fight_scene
     void flagHandler(char flag, int *last_pos, std::vector<sf::Text*> Atq, sf::Uint8 R, sf::Uint8 G, sf::Uint8 B, char last_pressed);
     void goodbye();
     sf::RectangleShape aff_hp(sf::RenderWindow* window, fighter perso, bool who);
+
 private:
 
     // Rendering 
@@ -34,7 +35,7 @@ private:
 
 
 public:
-    fight_scene(/* args */);
+    fight_scene();
     int handleEvents(sf::Event event);
     void Display(sf::RenderWindow &window, fighter* player, fighter* currentbot);
     ~fight_scene();

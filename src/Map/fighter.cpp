@@ -10,10 +10,10 @@
 fighter::fighter(int perso){
     switch(perso){
         case 0:
-            atk_name[0] = "How dare you?!";
-            atk_name[1] = "Cop 22";
-            atk_name[2] = "Manifestation";
-            atk_name[3] = "Loi n°2021-1104";
+            atk_name[0] = L"How dare you?!";
+            atk_name[1] = L"Cop 22";
+            atk_name[2] = L"Manifestation";
+            atk_name[3] = L"Loi n°2021-1104";
 
             HP = 200;
             HP_base = HP;
@@ -23,15 +23,15 @@ fighter::fighter(int perso){
             atk_dmg[2] = 10;
             atk_dmg[3] = 30;
 
-            atk_desc[0] = sf::String("How DARE you?!");
-            atk_desc[1] = sf::String("Vous infligez 100 points de degats."); // Deuxième ligne atq0
+            atk_desc[0] = sf::String(L"How DARE you?!");
+            atk_desc[1] = sf::String(L"Vous infligez 100 points de dégats."); // Deuxième ligne atq0
             //atk_desc[2] = sf::String("Vous pleurez comme une victime ce qui fait perdre 2 HP a"); // <<<---- TAILLE MAX 
-            atk_desc[2] = sf::String("Vous faites appel a la COP 22 ce qui fonctionne"); // <<<---- TAILLE MAX 
-            atk_desc[3] = sf::String("plutot bien, le pollueur perd 50 points de vie."); // Deuxième ligne atq1
-            atk_desc[4] = sf::String("Vous manifestez ce qui n'a que peu d'effet, le pollueur");
-            atk_desc[5] = sf::String("perd 10 points de vie."); // Deuxième ligne atq2
-            atk_desc[6] = sf::String("Vous invoquez la loi du 22 aout 2021 pour lutter contre");
-            atk_desc[7] = sf::String("le rechauffement climatique, l'ennemi perd 30 PV."); // Deuxième ligne atq3
+            atk_desc[2] = sf::String(L"Vous faites appel à la COP 22 ce qui fonctionne"); // <<<---- TAILLE MAX 
+            atk_desc[3] = sf::String(L"plutôt bien, le pollueur perd 50 points de vie."); // Deuxième ligne atq1
+            atk_desc[4] = sf::String(L"Vous manifestez ce qui n'a que peu d'effet, le pollueur");
+            atk_desc[5] = sf::String(L"perd 10 points de vie."); // Deuxième ligne atq2
+            atk_desc[6] = sf::String(L"Vous invoquez la loi du 22 aout 2021 pour lutter contre");
+            atk_desc[7] = sf::String(L"le réchauffement climatique, l'ennemi perd 30 PV."); // Deuxième ligne atq3
 
             alive = true;
             break;
@@ -49,14 +49,14 @@ fighter::fighter(int perso){
             atk_dmg[2] = 50;
             atk_dmg[3] = 70;
 
-            atk_desc[0] = sf::String("Le pollueur jette une cigarette par terre et s'en allume une autre,");
-            atk_desc[1] = sf::String("vous perdez 10 points de vie."); // Deuxième ligne atq0
-            atk_desc[2] = sf::String("Le pollueur fonce a toute allure sur l'herbe fraiche avec son "); // <<<---- TAILLE MAX 
-            atk_desc[3] = sf::String("gros 4x4, ce qui vous fait perdre 30 points de vie."); // Deuxième ligne atq1
-            atk_desc[4] = sf::String("Attaque coupe! (coupe un arbre dans le coin), ce qui vous fait ");
-            atk_desc[5] = sf::String("perdre 50 points de vie"); // Deuxième ligne atq2
-            atk_desc[6] = sf::String("Le pollueur vous CIMENTE LA FACE!");
-            atk_desc[7] = sf::String("Vous perdez 70 points de vie"); // Deuxième ligne atq3
+            atk_desc[0] = sf::String(L"Le pollueur jette une cigarette par terre et s'en allume une autre,");
+            atk_desc[1] = sf::String(L"vous perdez 10 points de vie."); // Deuxième ligne atq0
+            atk_desc[2] = sf::String(L"Le pollueur fonce à toute allure sur l'herbe fraiche avec son "); // <<<---- TAILLE MAX 
+            atk_desc[3] = sf::String(L"gros 4x4, ce qui vous fait perdre 30 points de vie."); // Deuxième ligne atq1
+            atk_desc[4] = sf::String(L"Attaque coupe! (coupe un arbre dans le coin), ce qui vous fait ");
+            atk_desc[5] = sf::String(L"perdre 50 points de vie"); // Deuxième ligne atq2
+            atk_desc[6] = sf::String(L"Le pollueur vous CIMENTE LA FACE!");
+            atk_desc[7] = sf::String(L"Vous perdez 70 points de vie"); // Deuxième ligne atq3
 
             alive = true;
             break;
@@ -75,14 +75,14 @@ fighter::fighter(int perso){
             atk_dmg[2] = -20;
             atk_dmg[3] = 100;
 
-            atk_desc[0] = sf::String("Trump ne fait rien... l'environnement en souffre, vous perdez");
-            atk_desc[1] = sf::String("100 points de vie"); // Deuxième ligne atq0
-            atk_desc[2] = sf::String("'FAKE NEWS'  Trump crie au mensonge, une centaine d'ahuris le"); // <<<---- TAILLE MAX 
-            atk_desc[3] = sf::String("croit, vous perdez 30 points de vie"); // Deuxième ligne atq1
-            atk_desc[4] = sf::String("Trump tweete...");
-            atk_desc[5] = sf::String("Vous gagnez 20 points de vie"); // Deuxième ligne atq2
-            atk_desc[6] = sf::String("Trump soudoie d'autres membres du gouvernement, ce qui vous fait");
-            atk_desc[7] = sf::String("perdre 100 points de vie."); // Deuxième ligne atq3
+            atk_desc[0] = sf::String(L"Trump ne fait rien... l'environnement en souffre, vous perdez");
+            atk_desc[1] = sf::String(L"100 points de vie"); // Deuxième ligne atq0
+            atk_desc[2] = sf::String(L"'FAKE NEWS'  Trump crie au mensonge, une centaine d'ahuris le"); // <<<---- TAILLE MAX 
+            atk_desc[3] = sf::String(L"croit, vous perdez 30 points de vie"); // Deuxième ligne atq1
+            atk_desc[4] = sf::String(L"Trump tweete...");
+            atk_desc[5] = sf::String(L"Vous gagnez 20 points de vie"); // Deuxième ligne atq2
+            atk_desc[6] = sf::String(L"Trump soudoie d'autres membres du gouvernement, ce qui vous fait");
+            atk_desc[7] = sf::String(L"perdre 100 points de vie."); // Deuxième ligne atq3
 
             alive = true;
             break;
@@ -126,13 +126,13 @@ sf::String fighter::phrase_fin(int issue_du_match){
     if(issue_du_match == VICTOIRE)
         return "A mort la planete!";
     else   
-        return "D'accord je vais faire attention avec la planete.";
+        return L"D'accord je vais faire attention à la planete.";
 }
 
 void fighter::aff_fin(sf::RenderWindow* window, int issue_du_match){
     static sf::Uint8 R = 255, G = 0, B = 0, A = 250;
     sf::Font NiceFont;
-    NiceFont.loadFromFile("images/SourceSansPro-Regular.otf");
+    NiceFont.loadFromFile("images/webpixel bitmap_medium.otf");
     sf::Text Msg_Fin;
     Msg_Fin.setPosition(sf::Vector2f(20.f, 510.f));
     Msg_Fin.setFont(NiceFont);
@@ -145,7 +145,7 @@ void fighter::aff_fin(sf::RenderWindow* window, int issue_du_match){
 void fighter::aff_message(sf::RenderWindow* win, int nb_atq){
     static sf::Uint8 R = 255, G = 0, B = 0, A = 250;
     sf::Font NiceFont;
-    NiceFont.loadFromFile("images/SourceSansPro-Regular.otf");
+    NiceFont.loadFromFile("images/webpixel bitmap_medium.otf");
     sf::Text Msg_Atq[2];
     Msg_Atq[0].setPosition(sf::Vector2f(20.f, 510.f));
     Msg_Atq[0].setFont(NiceFont);
